@@ -2,6 +2,7 @@ package com.develop.zuzik.audioplayerexample.player;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
@@ -10,11 +11,17 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerAlreadyIniti
 import com.develop.zuzik.audioplayerexample.player.exceptions.UnknownPlayerSourceException;
 import com.develop.zuzik.audioplayerexample.player.player_sources.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_sources.RawResourcePlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_sources.UriPlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.ErrorPlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.InitializedPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PlaybackCompletedPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PreparedPlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.PreparingPlayerState;
+
+import java.io.IOException;
 
 /**
  * User: zuzik
@@ -34,8 +41,16 @@ public class Playback implements PlayerStateContainer {
 		this.playerSource = playerSource;
 		if (playerSource instanceof RawResourcePlayerSource) {
 			initWithRawResourcePlayerSource(context, (RawResourcePlayerSource) playerSource);
+		} else if (playerSource instanceof UriPlayerSource) {
+			initWithUriPlayerSource(context, (UriPlayerSource) playerSource);
 		} else {
 			throw new UnknownPlayerSourceException();
+		}
+	}
+
+	private void checkIfPlayerInitialized() throws PlayerAlreadyInitializedException {
+		if (this.player != null) {
+			throw new PlayerAlreadyInitializedException();
 		}
 	}
 
@@ -53,9 +68,18 @@ public class Playback implements PlayerStateContainer {
 		}
 	}
 
-	private void checkIfPlayerInitialized() throws PlayerAlreadyInitializedException {
-		if (this.player != null) {
-			throw new PlayerAlreadyInitializedException();
+	private void initWithUriPlayerSource(Context context, UriPlayerSource playerSource) throws CreatePlayerException {
+		this.player = new MediaPlayer();
+		setState(new IdlePlayerState(this.player, this));
+		this.player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		try {
+			this.player.setDataSource(context, playerSource.uri);
+			setState(new InitializedPlayerState(this.player, this));
+			setListeners();
+			setState(new PreparingPlayerState(this.player, this));
+			this.player.prepareAsync();
+		} catch (IOException | IllegalArgumentException | SecurityException | IllegalStateException e) {
+			throw new CreatePlayerException();
 		}
 	}
 
