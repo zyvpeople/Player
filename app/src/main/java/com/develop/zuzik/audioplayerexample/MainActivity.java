@@ -1,16 +1,15 @@
 package com.develop.zuzik.audioplayerexample;
 
-import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import com.develop.zuzik.audioplayerexample.player.Playback;
 import com.develop.zuzik.audioplayerexample.player.exceptions.CreatePlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerAlreadyInitializedException;
-
-import java.io.IOException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.UnknownPlayerSourceException;
+import com.develop.zuzik.audioplayerexample.player.player_sources.RawResourcePlayerSource;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +20,9 @@ public class MainActivity extends AppCompatActivity {
 
 		final Playback playback = new Playback();
 		try {
-			playback.initWithRawResource(this, R.raw.song);
+			playback.initWithPlayerSource(this, new RawResourcePlayerSource(R.raw.song));
+		} catch (UnknownPlayerSourceException e) {
+			e.printStackTrace();
 		} catch (PlayerAlreadyInitializedException e) {
 			e.printStackTrace();
 		} catch (CreatePlayerException e) {

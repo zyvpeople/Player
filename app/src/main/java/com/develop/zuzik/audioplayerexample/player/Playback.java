@@ -1,12 +1,15 @@
 package com.develop.zuzik.audioplayerexample.player;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.MediaPlayer;
-import android.support.annotation.RawRes;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.CreatePlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerAlreadyInitializedException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.UnknownPlayerSourceException;
+import com.develop.zuzik.audioplayerexample.player.player_sources.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_sources.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.ErrorPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PlaybackCompletedPlayerState;
@@ -24,9 +27,22 @@ public class Playback implements PlayerStateContainer {
 
 	//region Initialization
 
-	public void initWithRawResource(Context context, @RawRes int resToPlay) throws PlayerAlreadyInitializedException, CreatePlayerException {
+	public void initWithPlayerSource(Context context, PlayerSource playerSource)
+			throws UnknownPlayerSourceException, PlayerAlreadyInitializedException, CreatePlayerException {
 		checkIfPlayerInitialized();
-		this.player = MediaPlayer.create(context, resToPlay);
+		if (playerSource instanceof RawResourcePlayerSource) {
+			initWithRawResourcePlayerSource(context, (RawResourcePlayerSource) playerSource);
+		} else {
+			throw new UnknownPlayerSourceException();
+		}
+	}
+
+	private void initWithRawResourcePlayerSource(Context context, RawResourcePlayerSource playerSource) throws CreatePlayerException {
+		try {
+			this.player = MediaPlayer.create(context, playerSource.rawResId);
+		} catch (Resources.NotFoundException e) {
+			throw new CreatePlayerException();
+		}
 		if (this.player != null) {
 			setListeners();
 			setState(new PreparedPlayerState(this.player, this));
