@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
@@ -25,12 +26,12 @@ public abstract class PlayerState {
 		return this.stateContainer;
 	}
 
-	public void start() {
+	public void start(Context context) {
 	}
 
-	public void pause() {
+	public void pause(Context context) {
 	}
 
-	public void stop() {
+	public void stop(Context context) {
 	}
 }

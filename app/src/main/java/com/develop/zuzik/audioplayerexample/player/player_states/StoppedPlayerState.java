@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
@@ -15,8 +16,8 @@ public class StoppedPlayerState extends PlayerState {
 	}
 
 	@Override
-	public void stop() {
-		super.stop();
+	public void stop(Context context) {
+		super.stop(context);
 		getPlayer().stop();
 	}
 }

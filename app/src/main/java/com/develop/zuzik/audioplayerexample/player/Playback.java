@@ -24,12 +24,14 @@ public class Playback implements PlayerStateContainer {
 
 	private PlayerState state = new NullPlayerState();
 	private MediaPlayer player;
+	private PlayerSource playerSource;
 
 	//region Initialization
 
 	public void initWithPlayerSource(Context context, PlayerSource playerSource)
 			throws UnknownPlayerSourceException, PlayerAlreadyInitializedException, CreatePlayerException {
 		checkIfPlayerInitialized();
+		this.playerSource = playerSource;
 		if (playerSource instanceof RawResourcePlayerSource) {
 			initWithRawResourcePlayerSource(context, (RawResourcePlayerSource) playerSource);
 		} else {
@@ -67,16 +69,16 @@ public class Playback implements PlayerStateContainer {
 
 	//region Play
 
-	public void start() {
-		this.state.start();
+	public void start(Context context) {
+		this.state.start(context);
 	}
 
-	public void pause() {
-		this.state.pause();
+	public void pause(Context context) {
+		this.state.pause(context);
 	}
 
-	public void stop() {
-		this.state.stop();
+	public void stop(Context context) {
+		this.state.stop(context);
 	}
 
 	//endregion

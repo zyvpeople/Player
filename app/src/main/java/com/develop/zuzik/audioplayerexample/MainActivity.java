@@ -35,19 +35,19 @@ public class MainActivity extends AppCompatActivity {
 		play.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				playback.start();
+				playback.start(MainActivity.this);
 			}
 		});
 		pause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				playback.pause();
+				playback.pause(MainActivity.this);
 			}
 		});
 		stop.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				playback.stop();
+				playback.stop(MainActivity.this);
 			}
 		});
 	}
