@@ -112,7 +112,9 @@ public class Playback implements PlayerStateContainer {
 	@Override
 	public void setState(PlayerState state) {
 		logState(this.state, state);
+		this.state.onUnset();
 		this.state = state;
+		this.state.onSet();
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {

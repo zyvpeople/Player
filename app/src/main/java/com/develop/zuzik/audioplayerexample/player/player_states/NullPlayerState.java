@@ -9,4 +9,10 @@ public class NullPlayerState extends PlayerState {
 	public NullPlayerState() {
 		super(null, null);
 	}
+
+	public void onSet() {
+	}
+
+	public void onUnset() {
+	}
 }

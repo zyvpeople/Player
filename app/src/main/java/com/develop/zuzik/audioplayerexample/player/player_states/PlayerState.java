@@ -34,4 +34,18 @@ public abstract class PlayerState {
 
 	public void stop(Context context) {
 	}
+
+	public void onSet() {
+		this.player.setOnErrorListener((mp, what, extra) -> {
+			return true;
+		});
+		this.player.setOnCompletionListener(mp -> {
+
+		});
+	}
+
+	public void onUnset() {
+		this.player.setOnErrorListener(null);
+		this.player.setOnCompletionListener(null);
+	}
 }
