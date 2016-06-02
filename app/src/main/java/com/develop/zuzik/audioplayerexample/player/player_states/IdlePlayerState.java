@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.OnGetMaxDurationListener;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -21,10 +22,14 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void set() {
-		super.set();
+	public void set(OnGetMaxDurationListener onGetMaxDurationListener) {
+		super.set(onGetMaxDurationListener);
 		getPlayer().setOnPreparedListener(player -> {
 			player.start();
+			int duration = player.getDuration();
+			if (duration != -1) {
+				getOnGetMaxDurationListener().onGetMaxDuration(duration);
+			}
 			setState(new StartedPlayerState(player, getInitializer(), getStateContainer()));
 		});
 	}

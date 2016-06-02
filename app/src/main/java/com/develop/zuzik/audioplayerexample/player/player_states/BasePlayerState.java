@@ -3,6 +3,8 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.NullOnGetMaxDurationListener;
+import com.develop.zuzik.audioplayerexample.player.OnGetMaxDurationListener;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
@@ -15,6 +17,7 @@ public abstract class BasePlayerState implements PlayerState {
 	private final MediaPlayer player;
 	private final PlayerInitializer initializer;
 	private final PlayerStateContainer stateContainer;
+	private OnGetMaxDurationListener onGetMaxDurationListener = new NullOnGetMaxDurationListener();
 
 	protected BasePlayerState(MediaPlayer player,
 							  PlayerInitializer initializer,
@@ -40,10 +43,17 @@ public abstract class BasePlayerState implements PlayerState {
 		getStateContainer().setState(state);
 	}
 
+	protected final OnGetMaxDurationListener getOnGetMaxDurationListener() {
+		return this.onGetMaxDurationListener;
+	}
+
 	//region PlayerState
 
 	@Override
-	public void set() {
+	public void set(OnGetMaxDurationListener onGetMaxDurationListener) {
+		this.onGetMaxDurationListener = onGetMaxDurationListener != null
+				? onGetMaxDurationListener
+				: new NullOnGetMaxDurationListener();
 		this.player.setOnErrorListener((mp, what, extra) -> {
 			handleError();
 			return true;
@@ -59,6 +69,7 @@ public abstract class BasePlayerState implements PlayerState {
 
 	@Override
 	public void unset() {
+		this.onGetMaxDurationListener = new NullOnGetMaxDurationListener();
 		this.player.setOnErrorListener(null);
 		this.player.setOnCompletionListener(null);
 	}

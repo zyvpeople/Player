@@ -2,6 +2,8 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
 
+import com.develop.zuzik.audioplayerexample.player.OnGetMaxDurationListener;
+
 /**
  * User: zuzik
  * Date: 5/29/16
@@ -9,7 +11,7 @@ import android.content.Context;
 public class NullPlayerState implements PlayerState {
 
 	@Override
-	public void set() {
+	public void set(OnGetMaxDurationListener onGetMaxDurationListener) {
 	}
 
 	@Override

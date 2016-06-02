@@ -35,4 +35,36 @@
         android:layout_height="64dp"
         android:text="Fake error"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp">
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Duration"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:gravity="center"
+            tools:text="01:00"/>
+
+    </LinearLayout>
+
 </LinearLayout>

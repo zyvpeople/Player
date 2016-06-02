@@ -20,6 +20,8 @@ import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
 public class Playback implements PlayerStateContainer {
 
 	private PlayerState state = new NullPlayerState();
+	private final PlayerInitializer initializer;
+	private OnGetMaxDurationListener onGetMaxDurationListener = new NullOnGetMaxDurationListener();
 
 	public Playback(Uri uri) {
 		this(new UriPlayerInitializer(uri));
@@ -30,10 +32,24 @@ public class Playback implements PlayerStateContainer {
 	}
 
 	private Playback(PlayerInitializer initializer) {
-		setState(new IdlePlayerState(new MediaPlayer(), initializer, this));
+		this.initializer = initializer;
 	}
 
+	//region Getters/Setters
+
+	public void setOnGetMaxDurationListener(OnGetMaxDurationListener onGetMaxDurationListener) {
+		this.onGetMaxDurationListener = onGetMaxDurationListener != null
+				? onGetMaxDurationListener
+				: new NullOnGetMaxDurationListener();
+	}
+
+	//endregion
+
 	//region Play
+
+	public void init() {
+		setState(new IdlePlayerState(new MediaPlayer(), this.initializer, this));
+	}
 
 	public void play(Context context) {
 		this.state.play(context);
@@ -56,7 +72,7 @@ public class Playback implements PlayerStateContainer {
 		logState(this.state, state);
 		this.state.unset();
 		this.state = state;
-		this.state.set();
+		this.state.set(this.onGetMaxDurationListener);
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {
