@@ -14,6 +14,8 @@ import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInit
  */
 public class IdlePlayerState extends BasePlayerState {
 
+	private boolean preparing;
+
 	public IdlePlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
 		super(player, initializer, stateContainer);
 	}
@@ -36,6 +38,10 @@ public class IdlePlayerState extends BasePlayerState {
 	@Override
 	public void play(Context context) {
 		super.play(context);
+		if (this.preparing) {
+			return;
+		}
+		this.preparing = true;
 		getPlayer().reset();
 		try {
 			getInitializer().initialize(context, getPlayer());
