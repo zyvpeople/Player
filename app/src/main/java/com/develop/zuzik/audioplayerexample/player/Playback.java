@@ -17,7 +17,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState
 import com.develop.zuzik.audioplayerexample.player.player_states.InitializedPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PlaybackCompletedPlayerState;
-import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.BasePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PreparedPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PreparingPlayerState;
 
@@ -29,7 +29,7 @@ import java.io.IOException;
  */
 public class Playback implements PlayerStateContainer {
 
-	private PlayerState state = new NullPlayerState();
+	private BasePlayerState state = new NullPlayerState();
 	private MediaPlayer player;
 	private PlayerSource playerSource;
 
@@ -110,14 +110,14 @@ public class Playback implements PlayerStateContainer {
 	//region PlayerStateContainer
 
 	@Override
-	public void setState(PlayerState state) {
+	public void setState(BasePlayerState state) {
 		logState(this.state, state);
 		this.state.onUnset();
 		this.state = state;
 		this.state.onSet();
 	}
 
-	private void logState(PlayerState oldState, PlayerState newState) {
+	private void logState(BasePlayerState oldState, BasePlayerState newState) {
 		Log.i(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
 	}
 

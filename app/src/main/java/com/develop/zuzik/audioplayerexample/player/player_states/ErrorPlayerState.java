@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  * User: zuzik
  * Date: 5/29/16
  */
-public class ErrorPlayerState extends PlayerState {
+public class ErrorPlayerState extends BasePlayerState {
 
 	public ErrorPlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
 		super(player, stateContainer);

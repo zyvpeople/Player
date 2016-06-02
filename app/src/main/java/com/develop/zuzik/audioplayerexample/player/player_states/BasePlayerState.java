@@ -9,11 +9,11 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  * User: zuzik
  * Date: 5/29/16
  */
-public abstract class PlayerState {
+public abstract class BasePlayerState {
 	private final MediaPlayer player;
 	private final PlayerStateContainer stateContainer;
 
-	public PlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
+	public BasePlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
 		this.player = player;
 		this.stateContainer = stateContainer;
 	}

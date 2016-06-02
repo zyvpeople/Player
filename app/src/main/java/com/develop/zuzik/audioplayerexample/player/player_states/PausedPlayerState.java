@@ -9,7 +9,7 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  * User: zuzik
  * Date: 5/29/16
  */
-public class PausedPlayerState extends PlayerState {
+public class PausedPlayerState extends BasePlayerState {
 
 	public PausedPlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
 		super(player, stateContainer);

@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  * User: zuzik
  * Date: 5/29/16
  */
-public class IdlePlayerState extends PlayerState {
+public class IdlePlayerState extends BasePlayerState {
 
 	public IdlePlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
 		super(player, stateContainer);
