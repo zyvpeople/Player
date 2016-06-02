@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 /**
  * User: zuzik
@@ -10,7 +11,7 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  */
 public class ErrorPlayerState extends BasePlayerState {
 
-	public ErrorPlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
-		super(player, stateContainer);
+	public ErrorPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
+		super(player, initializer, stateContainer);
 	}
 }

@@ -4,17 +4,23 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 /**
  * User: zuzik
  * Date: 5/29/16
  */
-public abstract class BasePlayerState {
+public abstract class BasePlayerState implements PlayerState {
+
 	private final MediaPlayer player;
+	private final PlayerInitializer initializer;
 	private final PlayerStateContainer stateContainer;
 
-	public BasePlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
+	protected BasePlayerState(MediaPlayer player,
+							  PlayerInitializer initializer,
+							  PlayerStateContainer stateContainer) {
 		this.player = player;
+		this.initializer = initializer;
 		this.stateContainer = stateContainer;
 	}
 
@@ -22,30 +28,47 @@ public abstract class BasePlayerState {
 		return this.player;
 	}
 
+	protected final PlayerInitializer getInitializer() {
+		return this.initializer;
+	}
+
 	protected final PlayerStateContainer getStateContainer() {
 		return this.stateContainer;
 	}
 
-	public void start(Context context) {
+	protected final void setState(PlayerState state) {
+		getStateContainer().setState(state);
 	}
 
-	public void pause(Context context) {
-	}
+	//region PlayerState
 
-	public void stop(Context context) {
-	}
-
-	public void onSet() {
+	@Override
+	public void set() {
 		this.player.setOnErrorListener((mp, what, extra) -> {
+			setState(new ErrorPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 			return true;
 		});
-		this.player.setOnCompletionListener(mp -> {
-
-		});
+		this.player.setOnCompletionListener(mp ->
+				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer())));
 	}
 
-	public void onUnset() {
+	@Override
+	public void unset() {
 		this.player.setOnErrorListener(null);
 		this.player.setOnCompletionListener(null);
 	}
+
+	@Override
+	public void play(Context context) {
+	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void stop() {
+	}
+
+	//endregion
 }

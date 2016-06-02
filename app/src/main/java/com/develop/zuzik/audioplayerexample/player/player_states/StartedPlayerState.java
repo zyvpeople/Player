@@ -1,9 +1,9 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 /**
  * User: zuzik
@@ -11,27 +11,21 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  */
 public class StartedPlayerState extends BasePlayerState {
 
-	public StartedPlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
-		super(player, stateContainer);
+	public StartedPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
+		super(player, initializer, stateContainer);
 	}
 
 	@Override
-	public void start(Context context) {
-		super.start(context);
-		getPlayer().start();
-	}
-
-	@Override
-	public void pause(Context context) {
-		super.pause(context);
+	public void pause() {
+		super.pause();
 		getPlayer().pause();
-		getStateContainer().setState(new PausedPlayerState(getPlayer(), getStateContainer()));
+		setState(new PausedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 
 	@Override
-	public void stop(Context context) {
-		super.stop(context);
+	public void stop() {
+		super.stop();
 		getPlayer().stop();
-		getStateContainer().setState(new StoppedPlayerState(getPlayer(), getStateContainer()));
+		setState(new StoppedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 }

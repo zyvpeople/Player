@@ -1,8 +1,12 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import android.content.Context;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 /**
  * User: zuzik
@@ -10,7 +14,35 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  */
 public class IdlePlayerState extends BasePlayerState {
 
-	public IdlePlayerState(MediaPlayer player, PlayerStateContainer stateContainer) {
-		super(player, stateContainer);
+	public IdlePlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
+		super(player, initializer, stateContainer);
+	}
+
+	@Override
+	public void set() {
+		super.set();
+		getPlayer().setOnPreparedListener(player -> {
+			player.start();
+			setState(new StartedPlayerState(player, getInitializer(), getStateContainer()));
+		});
+	}
+
+	@Override
+	public void unset() {
+		super.unset();
+		getPlayer().setOnPreparedListener(null);
+	}
+
+	@Override
+	public void play(Context context) {
+		super.play(context);
+		getPlayer().reset();
+		try {
+			getInitializer().initialize(context, getPlayer());
+			getPlayer().prepareAsync();
+		} catch (PlayerInitializeException e) {
+			Log.e(getClass().getSimpleName(), e.getMessage());
+			setState(new ErrorPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		}
 	}
 }

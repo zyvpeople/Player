@@ -10,9 +10,9 @@ import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInit
  * User: zuzik
  * Date: 5/29/16
  */
-public class PausedPlayerState extends BasePlayerState {
+public class CompletedPlayerState extends BasePlayerState {
 
-	public PausedPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
+	public CompletedPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
 		super(player, initializer, stateContainer);
 	}
 
@@ -21,12 +21,5 @@ public class PausedPlayerState extends BasePlayerState {
 		super.play(context);
 		getPlayer().start();
 		getStateContainer().setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
-	}
-
-	@Override
-	public void stop() {
-		super.stop();
-		getPlayer().stop();
-		getStateContainer().setState(new StoppedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 }
