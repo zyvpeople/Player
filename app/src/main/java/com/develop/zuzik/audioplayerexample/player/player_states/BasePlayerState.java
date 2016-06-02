@@ -45,11 +45,16 @@ public abstract class BasePlayerState implements PlayerState {
 	@Override
 	public void set() {
 		this.player.setOnErrorListener((mp, what, extra) -> {
-			setState(new ErrorPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+			handleError();
 			return true;
 		});
 		this.player.setOnCompletionListener(mp ->
 				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer())));
+	}
+
+	private void handleError() {
+		getPlayer().reset();
+		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 
 	@Override
@@ -70,5 +75,11 @@ public abstract class BasePlayerState implements PlayerState {
 	public void stop() {
 	}
 
+	@Override
+	public void fakeError() {
+		handleError();
+	}
+
 	//endregion
+
 }

@@ -19,5 +19,6 @@ public class MainActivity extends AppCompatActivity {
 		findViewById(R.id.play).setOnClickListener(v -> playback.play(MainActivity.this));
 		findViewById(R.id.pause).setOnClickListener(v -> playback.pause());
 		findViewById(R.id.stop).setOnClickListener(v -> playback.stop());
+		findViewById(R.id.fakeError).setOnClickListener(v -> playback.fakeError());
 	}
 }

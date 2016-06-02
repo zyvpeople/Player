@@ -20,7 +20,7 @@ public class PausedPlayerState extends BasePlayerState {
 	public void play(Context context) {
 		super.play(context);
 		getPlayer().start();
-		getStateContainer().setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 
 	@Override
@@ -28,6 +28,6 @@ public class PausedPlayerState extends BasePlayerState {
 		super.stop();
 		getPlayer().stop();
 		getPlayer().reset();
-		getStateContainer().setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 }

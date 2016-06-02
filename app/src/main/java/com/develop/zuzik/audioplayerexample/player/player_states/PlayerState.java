@@ -19,4 +19,6 @@ public interface PlayerState {
 	void pause();
 
 	void stop();
+
+	void fakeError();
 }

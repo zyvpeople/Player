@@ -20,6 +20,6 @@ public class CompletedPlayerState extends BasePlayerState {
 	public void play(Context context) {
 		super.play(context);
 		getPlayer().start();
-		getStateContainer().setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 }

@@ -64,4 +64,12 @@ public class Playback implements PlayerStateContainer {
 	}
 
 	//endregion
+
+	//region Fake
+
+	public void fakeError() {
+		this.state.fakeError();
+	}
+
+	//endregion
 }

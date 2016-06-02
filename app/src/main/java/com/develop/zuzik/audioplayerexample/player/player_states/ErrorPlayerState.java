@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
@@ -13,5 +14,12 @@ public class ErrorPlayerState extends BasePlayerState {
 
 	public ErrorPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
 		super(player, initializer, stateContainer);
+	}
+
+	@Override
+	public void play(Context context) {
+		super.play(context);
+		getPlayer().reset();
+		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 }

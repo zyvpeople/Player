@@ -27,4 +27,8 @@ public class NullPlayerState implements PlayerState {
 	@Override
 	public void stop() {
 	}
+
+	@Override
+	public void fakeError() {
+	}
 }

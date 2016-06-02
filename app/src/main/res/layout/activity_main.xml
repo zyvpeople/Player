@@ -29,4 +29,10 @@
         android:layout_height="64dp"
         android:text="Stop"/>
 
+    <Button
+        android:id="@+id/fakeError"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="Fake error"/>
+
 </LinearLayout>
