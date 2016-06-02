@@ -22,4 +22,10 @@ public class CompletedPlayerState extends BasePlayerState {
 		getPlayer().start();
 		setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
+
+	@Override
+	public void seekTo(int positionInMilliseconds) {
+		super.seekTo(positionInMilliseconds);
+		seekToPosition(positionInMilliseconds);
+	}
 }

@@ -30,4 +30,10 @@ public class PausedPlayerState extends BasePlayerState {
 		getPlayer().reset();
 		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
+
+	@Override
+	public void seekTo(int positionInMilliseconds) {
+		super.seekTo(positionInMilliseconds);
+		seekToPosition(positionInMilliseconds);
+	}
 }

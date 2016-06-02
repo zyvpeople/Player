@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.player.OnGetMaxDurationListener;
+import com.develop.zuzik.audioplayerexample.player.OnSeekListener;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 
 /**
@@ -11,7 +12,7 @@ import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
  */
 public interface PlayerState {
 
-	void set(OnGetMaxDurationListener onGetMaxDurationListener);
+	void set(OnGetMaxDurationListener onGetMaxDurationListener, OnSeekListener onSeekListener);
 
 	void unset();
 
@@ -22,4 +23,6 @@ public interface PlayerState {
 	void stop();
 
 	void fakeError();
+
+	void seekTo(int positionInMilliseconds);
 }

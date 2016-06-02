@@ -4,7 +4,9 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.NullOnGetMaxDurationListener;
+import com.develop.zuzik.audioplayerexample.player.NullOnSeekListener;
 import com.develop.zuzik.audioplayerexample.player.OnGetMaxDurationListener;
+import com.develop.zuzik.audioplayerexample.player.OnSeekListener;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
@@ -18,6 +20,7 @@ public abstract class BasePlayerState implements PlayerState {
 	private final PlayerInitializer initializer;
 	private final PlayerStateContainer stateContainer;
 	private OnGetMaxDurationListener onGetMaxDurationListener = new NullOnGetMaxDurationListener();
+	private OnSeekListener onSeekListener = new NullOnSeekListener();
 
 	protected BasePlayerState(MediaPlayer player,
 							  PlayerInitializer initializer,
@@ -50,16 +53,22 @@ public abstract class BasePlayerState implements PlayerState {
 	//region PlayerState
 
 	@Override
-	public void set(OnGetMaxDurationListener onGetMaxDurationListener) {
+	public void set(OnGetMaxDurationListener onGetMaxDurationListener, OnSeekListener onSeekListener) {
 		this.onGetMaxDurationListener = onGetMaxDurationListener != null
 				? onGetMaxDurationListener
 				: new NullOnGetMaxDurationListener();
+		this.onSeekListener = onSeekListener != null
+				? onSeekListener
+				: new NullOnSeekListener();
 		this.player.setOnErrorListener((mp, what, extra) -> {
 			handleError();
 			return true;
 		});
 		this.player.setOnCompletionListener(mp ->
 				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer())));
+		this.player.setOnSeekCompleteListener(mp -> {
+			this.onSeekListener.onSeek(getPlayer().getCurrentPosition());
+		});
 	}
 
 	private void handleError() {
@@ -70,6 +79,7 @@ public abstract class BasePlayerState implements PlayerState {
 	@Override
 	public void unset() {
 		this.onGetMaxDurationListener = new NullOnGetMaxDurationListener();
+		this.onSeekListener = new NullOnSeekListener();
 		this.player.setOnErrorListener(null);
 		this.player.setOnCompletionListener(null);
 	}
@@ -89,6 +99,14 @@ public abstract class BasePlayerState implements PlayerState {
 	@Override
 	public void fakeError() {
 		handleError();
+	}
+
+	@Override
+	public void seekTo(int positionInMilliseconds) {
+	}
+
+	protected final void seekToPosition(int positionInMilliseconds) {
+		getPlayer().seekTo(positionInMilliseconds);
 	}
 
 	//endregion

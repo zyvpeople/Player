@@ -22,6 +22,7 @@ public class Playback implements PlayerStateContainer {
 	private PlayerState state = new NullPlayerState();
 	private final PlayerInitializer initializer;
 	private OnGetMaxDurationListener onGetMaxDurationListener = new NullOnGetMaxDurationListener();
+	private OnSeekListener onSeekListener = new NullOnSeekListener();
 
 	public Playback(Uri uri) {
 		this(new UriPlayerInitializer(uri));
@@ -41,6 +42,12 @@ public class Playback implements PlayerStateContainer {
 		this.onGetMaxDurationListener = onGetMaxDurationListener != null
 				? onGetMaxDurationListener
 				: new NullOnGetMaxDurationListener();
+	}
+
+	public void setOnSeekListener(OnSeekListener onSeekListener) {
+		this.onSeekListener = onSeekListener != null
+				? onSeekListener
+				: new NullOnSeekListener();
 	}
 
 	//endregion
@@ -63,6 +70,10 @@ public class Playback implements PlayerStateContainer {
 		this.state.stop();
 	}
 
+	public void seekTo(int positionInMilliseconds) {
+		this.state.seekTo(positionInMilliseconds);
+	}
+
 	//endregion
 
 	//region PlayerStateContainer
@@ -72,7 +83,7 @@ public class Playback implements PlayerStateContainer {
 		logState(this.state, state);
 		this.state.unset();
 		this.state = state;
-		this.state.set(this.onGetMaxDurationListener);
+		this.state.set(this.onGetMaxDurationListener, this.onSeekListener);
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {
