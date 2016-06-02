@@ -27,6 +27,7 @@ public class PausedPlayerState extends BasePlayerState {
 	public void stop() {
 		super.stop();
 		getPlayer().stop();
-		getStateContainer().setState(new StoppedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		getPlayer().reset();
+		getStateContainer().setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 }

@@ -29,8 +29,8 @@ public class IdlePlayerState extends BasePlayerState {
 
 	@Override
 	public void unset() {
-		super.unset();
 		getPlayer().setOnPreparedListener(null);
+		super.unset();
 	}
 
 	@Override
