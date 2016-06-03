@@ -44,6 +44,10 @@ public class Playback implements PlayerStateContainer {
 		this.state.setPlaybackListener(this.playbackListener);
 	}
 
+	public PlaybackBundle getPlaybackBundle() {
+		return this.state.getPlaybackBundle();
+	}
+
 	//endregion
 
 	//region Play

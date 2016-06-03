@@ -19,10 +19,14 @@ public class CompletedPlayerState extends BasePlayerState {
 	}
 
 	@Override
+	public PlaybackBundle getPlaybackBundle() {
+		return createBundle();
+	}
+
+	@Override
 	public void set() {
 		super.set();
-		int maxDuration = getPlayer().getDuration();
-		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.COMPLETED, maxDuration, maxDuration));
+		onPlaybackStateChanged(createBundle());
 	}
 
 	@Override
@@ -50,5 +54,10 @@ public class CompletedPlayerState extends BasePlayerState {
 	protected void onSeekCompleted() {
 		super.onSeekCompleted();
 		onPlaybackStateChanged(PlaybackState.COMPLETED);
+	}
+
+	private PlaybackBundle createBundle() {
+		int maxDuration = getPlayer().getDuration();
+		return new PlaybackBundle(PlaybackState.COMPLETED, maxDuration, maxDuration);
 	}
 }

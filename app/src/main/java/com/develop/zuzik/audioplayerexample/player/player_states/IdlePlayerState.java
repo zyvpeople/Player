@@ -23,13 +23,18 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
+	public PlaybackBundle getPlaybackBundle() {
+		return createBundle();
+	}
+
+	@Override
 	public void set() {
 		super.set();
 		getPlayer().setOnPreparedListener(player -> {
 			player.start();
 			setState(new StartedPlayerState(player, getInitializer(), getStateContainer()));
 		});
-		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.IDLE, 0, null));
+		onPlaybackStateChanged(createBundle());
 	}
 
 	@Override
@@ -47,12 +52,16 @@ public class IdlePlayerState extends BasePlayerState {
 		this.preparing = true;
 		getPlayer().reset();
 		try {
-			onPlaybackStateChanged(new PlaybackBundle(PlaybackState.PREPARING, 0, null));
+			onPlaybackStateChanged(createBundle());
 			getInitializer().initialize(context, getPlayer());
 			getPlayer().prepareAsync();
 		} catch (PlayerInitializeException e) {
 			Log.e(getClass().getSimpleName(), e.getMessage());
 			handleError();
 		}
+	}
+
+	private PlaybackBundle createBundle() {
+		return new PlaybackBundle(this.preparing ? PlaybackState.PREPARING : PlaybackState.IDLE, 0, null);
 	}
 }

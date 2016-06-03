@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.player.Playback;
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 
 import java.util.Arrays;
@@ -72,28 +73,30 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		updateUIWithPlaybackBundle(this.playback.getPlaybackBundle());
+		this.playback.setPlaybackListener(bundle -> updateUIWithPlaybackBundle(bundle));
+	}
 
-		this.playback.setPlaybackListener(bundle -> {
-			if (bundle.state == PlaybackState.ERROR) {
-				Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
-			}
+	private void updateUIWithPlaybackBundle(PlaybackBundle bundle) {
+		if (bundle.state == PlaybackState.ERROR) {
+			Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
+		}
 
-			setButtonEnabled(play, bundle.state, enablePlayButtonStates);
-			setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
-			setButtonEnabled(stop, bundle.state, enableStopButtonStates);
+		setButtonEnabled(play, bundle.state, enablePlayButtonStates);
+		setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
+		setButtonEnabled(stop, bundle.state, enableStopButtonStates);
 
-			maxDuration.setText(bundle.maxDurationInMilliseconds != null
-					? String.valueOf(bundle.maxDurationInMilliseconds)
-					: "-");
-			currentPosition.setText(String.valueOf(bundle.currentPositionInMilliseconds));
-			seekBar.setEnabled(bundle.maxDurationInMilliseconds != null);
-			seekBar.setMax(bundle.maxDurationInMilliseconds != null
-					? bundle.maxDurationInMilliseconds
-					: 100);
-			seekBar.setProgress(bundle.maxDurationInMilliseconds != null
-					? bundle.currentPositionInMilliseconds
-					: 0);
-		});
+		maxDuration.setText(bundle.maxDurationInMilliseconds != null
+				? String.valueOf(bundle.maxDurationInMilliseconds)
+				: "-");
+		currentPosition.setText(String.valueOf(bundle.currentPositionInMilliseconds));
+		seekBar.setEnabled(bundle.maxDurationInMilliseconds != null);
+		seekBar.setMax(bundle.maxDurationInMilliseconds != null
+				? bundle.maxDurationInMilliseconds
+				: 100);
+		seekBar.setProgress(bundle.maxDurationInMilliseconds != null
+				? bundle.currentPositionInMilliseconds
+				: 0);
 	}
 
 	@Override

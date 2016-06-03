@@ -2,6 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
 
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackListener;
 
 /**
@@ -9,6 +10,8 @@ import com.develop.zuzik.audioplayerexample.player.PlaybackListener;
  * Date: 6/2/16
  */
 public interface PlayerState {
+
+	PlaybackBundle getPlaybackBundle();
 
 	void setPlaybackListener(PlaybackListener playbackListener);
 
@@ -27,4 +30,5 @@ public interface PlayerState {
 	void seekTo(int positionInMilliseconds);
 
 	void release();
+
 }

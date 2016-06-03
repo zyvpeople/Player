@@ -2,13 +2,20 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
 
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 
 /**
  * User: zuzik
  * Date: 5/29/16
  */
 public class NullPlayerState implements PlayerState {
+
+	@Override
+	public PlaybackBundle getPlaybackBundle() {
+		return new PlaybackBundle(PlaybackState.NONE, 0, null);
+	}
 
 	@Override
 	public void setPlaybackListener(PlaybackListener playbackListener) {

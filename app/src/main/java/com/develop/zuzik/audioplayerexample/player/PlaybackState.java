@@ -10,5 +10,7 @@ public enum PlaybackState {
 	PLAYING,
 	PAUSED,
 	ERROR,
-	COMPLETED
+	COMPLETED,
+	END,
+	NONE
 }

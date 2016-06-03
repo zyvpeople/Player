@@ -2,6 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -19,12 +20,17 @@ import rx.android.schedulers.AndroidSchedulers;
 public class StartedPlayerState extends BasePlayerState {
 
 	private final Observable<Long> playerProgressObservable = Observable
-			.interval(1, TimeUnit.SECONDS)
+			.interval(10, TimeUnit.SECONDS)
 			.observeOn(AndroidSchedulers.mainThread());
 	private Subscription playerProgressSubscription;
 
 	public StartedPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
 		super(player, initializer, stateContainer);
+	}
+
+	@Override
+	public PlaybackBundle getPlaybackBundle() {
+		return createBundle(PlaybackState.PLAYING);
 	}
 
 	@Override

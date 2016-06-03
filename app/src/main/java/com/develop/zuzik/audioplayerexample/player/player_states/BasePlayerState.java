@@ -53,7 +53,7 @@ public abstract class BasePlayerState implements PlayerState {
 		this.playbackListener.onChange(bundle);
 	}
 
-	private PlaybackBundle createBundle(PlaybackState state) {
+	protected final PlaybackBundle createBundle(PlaybackState state) {
 		int currentPosition = getPlayer().getCurrentPosition();
 		int maxDuration = getPlayer().getDuration();
 		Integer maxDurationOrNull = maxDuration != -1 ? maxDuration : null;

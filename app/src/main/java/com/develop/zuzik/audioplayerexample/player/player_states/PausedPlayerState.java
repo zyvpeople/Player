@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -15,6 +16,11 @@ public class PausedPlayerState extends BasePlayerState {
 
 	public PausedPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
 		super(player, initializer, stateContainer);
+	}
+
+	@Override
+	public PlaybackBundle getPlaybackBundle() {
+		return createBundle(PlaybackState.PAUSED);
 	}
 
 	@Override
