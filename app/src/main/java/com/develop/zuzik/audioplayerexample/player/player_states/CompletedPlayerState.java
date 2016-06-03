@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -20,7 +21,8 @@ public class CompletedPlayerState extends BasePlayerState {
 	@Override
 	public void set() {
 		super.set();
-		onPlaybackStateChanged(PlaybackState.COMPLETED);
+		int maxDuration = getPlayer().getDuration();
+		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.COMPLETED, maxDuration, maxDuration));
 	}
 
 	@Override
