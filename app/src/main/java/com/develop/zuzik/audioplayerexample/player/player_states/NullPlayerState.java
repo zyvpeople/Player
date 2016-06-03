@@ -14,11 +14,15 @@ public class NullPlayerState implements PlayerState {
 
 	@Override
 	public PlaybackBundle getPlaybackBundle() {
-		return new PlaybackBundle(PlaybackState.NONE, 0, null);
+		return new PlaybackBundle(PlaybackState.NONE, 0, null, false);
 	}
 
 	@Override
 	public void setPlaybackListener(PlaybackListener playbackListener) {
+	}
+
+	@Override
+	public void setRepeat(boolean repeat) {
 	}
 
 	@Override

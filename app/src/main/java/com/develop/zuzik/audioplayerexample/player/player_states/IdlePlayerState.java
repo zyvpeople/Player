@@ -28,6 +28,13 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
+	public void setRepeat(boolean repeat) {
+		if (!this.preparing) {
+			getPlayer().setLooping(repeat);
+		}
+	}
+
+	@Override
 	public void set() {
 		super.set();
 		getPlayer().setOnPreparedListener(player -> {
@@ -62,6 +69,6 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	private PlaybackBundle createBundle() {
-		return new PlaybackBundle(this.preparing ? PlaybackState.PREPARING : PlaybackState.IDLE, 0, null);
+		return new PlaybackBundle(this.preparing ? PlaybackState.PREPARING : PlaybackState.IDLE, 0, null, getPlayer().isLooping());
 	}
 }

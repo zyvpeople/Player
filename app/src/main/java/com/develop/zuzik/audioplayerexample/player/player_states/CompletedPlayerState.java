@@ -24,6 +24,12 @@ public class CompletedPlayerState extends BasePlayerState {
 	}
 
 	@Override
+	public void setRepeat(boolean repeat) {
+		super.setRepeat(repeat);
+		getPlayer().setLooping(repeat);
+	}
+
+	@Override
 	public void set() {
 		super.set();
 		onPlaybackStateChanged(createBundle());
@@ -58,6 +64,6 @@ public class CompletedPlayerState extends BasePlayerState {
 
 	private PlaybackBundle createBundle() {
 		int maxDuration = getPlayer().getDuration();
-		return new PlaybackBundle(PlaybackState.COMPLETED, maxDuration, maxDuration);
+		return new PlaybackBundle(PlaybackState.COMPLETED, maxDuration, maxDuration, getPlayer().isLooping());
 	}
 }

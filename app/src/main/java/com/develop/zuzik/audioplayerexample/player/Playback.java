@@ -22,6 +22,7 @@ public class Playback implements PlayerStateContainer {
 	private PlayerState state = new NullPlayerState();
 	private final PlayerInitializer initializer;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
+	private boolean repeat;
 
 	public Playback(Uri uri) {
 		this(new UriPlayerInitializer(uri));
@@ -46,6 +47,11 @@ public class Playback implements PlayerStateContainer {
 
 	public PlaybackBundle getPlaybackBundle() {
 		return this.state.getPlaybackBundle();
+	}
+
+	public void setRepeat(boolean repeat) {
+		this.repeat = repeat;
+		this.state.setRepeat(this.repeat);
 	}
 
 	//endregion
@@ -87,6 +93,7 @@ public class Playback implements PlayerStateContainer {
 		this.state.setPlaybackListener(null);
 		this.state = state;
 		this.state.setPlaybackListener(this.playbackListener);
+		this.state.setRepeat(this.repeat);
 		this.state.set();
 	}
 

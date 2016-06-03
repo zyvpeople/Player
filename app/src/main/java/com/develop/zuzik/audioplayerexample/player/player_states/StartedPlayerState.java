@@ -34,6 +34,12 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
+	public void setRepeat(boolean repeat) {
+		super.setRepeat(repeat);
+		getPlayer().setLooping(repeat);
+	}
+
+	@Override
 	public void set() {
 		super.set();
 		onPlaybackStateChanged(PlaybackState.PLAYING);

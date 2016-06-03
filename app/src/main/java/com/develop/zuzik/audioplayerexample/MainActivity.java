@@ -1,11 +1,10 @@
 package com.develop.zuzik.audioplayerexample;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 	private SeekBar seekBar;
 	private TextView maxDuration;
 	private TextView currentPosition;
+	private SwitchCompat repeat;
 	private View loading;
 
 	Playback playback;
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 		this.seekBar = (SeekBar) findViewById(R.id.seekBar);
 		this.maxDuration = (TextView) findViewById(R.id.maxDuration);
 		this.currentPosition = (TextView) findViewById(R.id.currentPosition);
+		this.repeat = (SwitchCompat) findViewById(R.id.repeat);
 		this.loading = findViewById(R.id.loading);
 
 		this.play.setOnClickListener(v -> playback.play(MainActivity.this));
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
+		this.repeat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+			playback.setRepeat(isChecked);
+		});
 
 //		this.playback = new Playback(R.raw.song_short);
 		this.playback = new Playback(R.raw.song);
@@ -87,10 +91,6 @@ public class MainActivity extends AppCompatActivity {
 			Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
 		}
 
-		loading.setVisibility(bundle.state == PlaybackState.PREPARING
-				? View.VISIBLE
-				: View.GONE);
-
 		setButtonEnabled(play, bundle.state, enablePlayButtonStates);
 		setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
 		setButtonEnabled(stop, bundle.state, enableStopButtonStates);
@@ -106,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
 		seekBar.setProgress(bundle.maxDurationInMilliseconds != null
 				? bundle.currentPositionInMilliseconds
 				: 0);
+
+		repeat.setChecked(bundle.repeat);
+
+		loading.setVisibility(bundle.state == PlaybackState.PREPARING
+				? View.VISIBLE
+				: View.GONE);
 	}
 
 	@Override

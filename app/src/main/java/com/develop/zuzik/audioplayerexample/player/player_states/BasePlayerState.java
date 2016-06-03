@@ -57,7 +57,7 @@ public abstract class BasePlayerState implements PlayerState {
 		int currentPosition = getPlayer().getCurrentPosition();
 		int maxDuration = getPlayer().getDuration();
 		Integer maxDurationOrNull = maxDuration != -1 ? maxDuration : null;
-		return new PlaybackBundle(state, currentPosition, maxDurationOrNull);
+		return new PlaybackBundle(state, currentPosition, maxDurationOrNull, getPlayer().isLooping());
 	}
 
 	protected void onSeekCompleted() {
@@ -73,19 +73,28 @@ public abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
+	public void setRepeat(boolean repeat) {
+	}
+
+	@Override
 	public void set() {
 		this.player.setOnErrorListener((mp, what, extra) -> {
 			handleError();
 			return true;
 		});
-		this.player.setOnCompletionListener(mp ->
-				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer())));
+		this.player.setOnCompletionListener(mp -> {
+			if (getPlayer().isLooping()) {
+				setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+			} else {
+				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+			}
+		});
 		this.player.setOnSeekCompleteListener(mp -> onSeekCompleted());
 	}
 
 	protected final void handleError() {
 		getPlayer().reset();
-		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null));
+		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null, getPlayer().isLooping()));
 		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 

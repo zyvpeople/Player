@@ -15,6 +15,8 @@ public interface PlayerState {
 
 	void setPlaybackListener(PlaybackListener playbackListener);
 
+	void setRepeat(boolean repeat);
+
 	void set();
 
 	void unset();
