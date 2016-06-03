@@ -2,6 +2,7 @@ package com.develop.zuzik.audioplayerexample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -9,27 +10,34 @@ import com.develop.zuzik.audioplayerexample.player.Playback;
 
 public class MainActivity extends AppCompatActivity {
 
+	private Button play;
+	private Button pause;
+	private Button stop;
+	private Button fakeError;
+	private SeekBar seekBar;
+	private TextView maxDuration;
+	private TextView currentPosition;
+
 	Playback playback;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-//		playback = new Playback(R.raw.song_short);
-		playback = new Playback(R.raw.song);
-//		playback = new Playback(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"));
+		this.play = (Button) findViewById(R.id.play);
+		this.pause = (Button) findViewById(R.id.pause);
+		this.stop = (Button) findViewById(R.id.stop);
+		this.fakeError = (Button) findViewById(R.id.fakeError);
+		this.seekBar = (SeekBar) findViewById(R.id.seekBar);
+		this.maxDuration = (TextView) findViewById(R.id.maxDuration);
+		this.currentPosition = (TextView) findViewById(R.id.currentPosition);
 
-		findViewById(R.id.play).setOnClickListener(v -> playback.play(MainActivity.this));
-		findViewById(R.id.pause).setOnClickListener(v -> playback.pause());
-		findViewById(R.id.stop).setOnClickListener(v -> playback.stop());
-		findViewById(R.id.fakeError).setOnClickListener(v -> playback.fakeError());
-		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
-		seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		this.play.setOnClickListener(v -> playback.play(MainActivity.this));
+		this.pause.setOnClickListener(v -> playback.pause());
+		this.stop.setOnClickListener(v -> playback.stop());
+		this.fakeError.setOnClickListener(v -> playback.fakeError());
+		this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				if (fromUser) {
@@ -46,10 +54,18 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		TextView maxDuration = (TextView) findViewById(R.id.maxDuration);
-		TextView currentPosition = (TextView) findViewById(R.id.currentPosition);
+//		this.playback = new Playback(R.raw.song_short);
+		this.playback = new Playback(R.raw.song);
+//		this.playback = new Playback(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"));
 
-		playback.setPlaybackListener(bundle -> {
+		this.playback.init();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		this.playback.setPlaybackListener(bundle -> {
 			//TODO:configure buttons for state
 
 			maxDuration.setText(bundle.maxDurationInMilliseconds != null
@@ -64,13 +80,17 @@ public class MainActivity extends AppCompatActivity {
 					? bundle.currentPositionInMilliseconds
 					: 0);
 		});
-
-		playback.init();
 	}
 
 	@Override
 	protected void onStop() {
-		playback.release();
+		this.playback.setPlaybackListener(null);
 		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy() {
+		this.playback.release();
+		super.onDestroy();
 	}
 }
