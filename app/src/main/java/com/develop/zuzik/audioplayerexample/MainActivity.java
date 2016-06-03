@@ -3,7 +3,9 @@ package com.develop.zuzik.audioplayerexample;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 	private SeekBar seekBar;
 	private TextView maxDuration;
 	private TextView currentPosition;
+	private View loading;
 
 	Playback playback;
 	List<PlaybackState> enablePlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 		this.seekBar = (SeekBar) findViewById(R.id.seekBar);
 		this.maxDuration = (TextView) findViewById(R.id.maxDuration);
 		this.currentPosition = (TextView) findViewById(R.id.currentPosition);
+		this.loading = findViewById(R.id.loading);
 
 		this.play.setOnClickListener(v -> playback.play(MainActivity.this));
 		this.pause.setOnClickListener(v -> playback.pause());
@@ -65,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 //		this.playback = new Playback(R.raw.song_short);
-//		this.playback = new Playback(R.raw.song);
-		this.playback = new Playback(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"));
+		this.playback = new Playback(R.raw.song);
+//		this.playback = new Playback(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"));
 
 		this.playback.init();
 	}
@@ -82,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
 		if (bundle.state == PlaybackState.ERROR) {
 			Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
 		}
+
+		loading.setVisibility(bundle.state == PlaybackState.PREPARING
+				? View.VISIBLE
+				: View.GONE);
 
 		setButtonEnabled(play, bundle.state, enablePlayButtonStates);
 		setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
