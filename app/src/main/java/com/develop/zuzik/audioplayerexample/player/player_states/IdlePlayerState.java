@@ -4,8 +4,8 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.OnGetMaxDurationListener;
-import com.develop.zuzik.audioplayerexample.player.OnSeekListener;
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -23,16 +23,13 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void set(OnGetMaxDurationListener onGetMaxDurationListener, OnSeekListener onSeekListener) {
-		super.set(onGetMaxDurationListener, onSeekListener);
+	public void set() {
+		super.set();
 		getPlayer().setOnPreparedListener(player -> {
 			player.start();
-			int duration = player.getDuration();
-			if (duration != -1) {
-				getOnGetMaxDurationListener().onGetMaxDuration(duration);
-			}
 			setState(new StartedPlayerState(player, getInitializer(), getStateContainer()));
 		});
+		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.IDLE, 0, null));
 	}
 
 	@Override
@@ -50,6 +47,7 @@ public class IdlePlayerState extends BasePlayerState {
 		this.preparing = true;
 		getPlayer().reset();
 		try {
+			onPlaybackStateChanged(new PlaybackBundle(PlaybackState.PREPARING, 0, null));
 			getInitializer().initialize(context, getPlayer());
 			getPlayer().prepareAsync();
 		} catch (PlayerInitializeException e) {

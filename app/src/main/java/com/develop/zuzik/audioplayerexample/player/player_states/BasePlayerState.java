@@ -3,10 +3,10 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.NullOnGetMaxDurationListener;
-import com.develop.zuzik.audioplayerexample.player.NullOnSeekListener;
-import com.develop.zuzik.audioplayerexample.player.OnGetMaxDurationListener;
-import com.develop.zuzik.audioplayerexample.player.OnSeekListener;
+import com.develop.zuzik.audioplayerexample.player.NullPlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
@@ -19,8 +19,7 @@ public abstract class BasePlayerState implements PlayerState {
 	private final MediaPlayer player;
 	private final PlayerInitializer initializer;
 	private final PlayerStateContainer stateContainer;
-	private OnGetMaxDurationListener onGetMaxDurationListener = new NullOnGetMaxDurationListener();
-	private OnSeekListener onSeekListener = new NullOnSeekListener();
+	private PlaybackListener playbackListener = new NullPlaybackListener();
 
 	protected BasePlayerState(MediaPlayer player,
 							  PlayerInitializer initializer,
@@ -46,40 +45,50 @@ public abstract class BasePlayerState implements PlayerState {
 		getStateContainer().setState(state);
 	}
 
-	protected final OnGetMaxDurationListener getOnGetMaxDurationListener() {
-		return this.onGetMaxDurationListener;
+	protected final void onPlaybackStateChanged(PlaybackState state) {
+		this.playbackListener.onChange(createBundle(state));
+	}
+
+	protected final void onPlaybackStateChanged(PlaybackBundle bundle) {
+		this.playbackListener.onChange(bundle);
+	}
+
+	private PlaybackBundle createBundle(PlaybackState state) {
+		Integer currentPosition = getPlayer().getCurrentPosition();
+		int maxDuration = getPlayer().getDuration();
+		Integer maxDurationOrNull = maxDuration != -1 ? maxDuration : null;
+		return new PlaybackBundle(state, currentPosition, maxDurationOrNull);
 	}
 
 	//region PlayerState
 
 	@Override
-	public void set(OnGetMaxDurationListener onGetMaxDurationListener, OnSeekListener onSeekListener) {
-		this.onGetMaxDurationListener = onGetMaxDurationListener != null
-				? onGetMaxDurationListener
-				: new NullOnGetMaxDurationListener();
-		this.onSeekListener = onSeekListener != null
-				? onSeekListener
-				: new NullOnSeekListener();
+	public void setPlaybackListener(PlaybackListener playbackListener) {
+		this.playbackListener = playbackListener != null
+				? playbackListener
+				: new NullPlaybackListener();
+	}
+
+	@Override
+	public void set() {
 		this.player.setOnErrorListener((mp, what, extra) -> {
 			handleError();
 			return true;
 		});
 		this.player.setOnCompletionListener(mp ->
 				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer())));
-		this.player.setOnSeekCompleteListener(mp -> {
-			this.onSeekListener.onSeek(getPlayer().getCurrentPosition());
-		});
+		this.player.setOnSeekCompleteListener(mp ->
+				onPlaybackStateChanged(PlaybackState.PLAYING));
 	}
 
 	private void handleError() {
 		getPlayer().reset();
+		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null));
 		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
 
 	@Override
 	public void unset() {
-		this.onGetMaxDurationListener = new NullOnGetMaxDurationListener();
-		this.onSeekListener = new NullOnSeekListener();
 		this.player.setOnErrorListener(null);
 		this.player.setOnCompletionListener(null);
 	}

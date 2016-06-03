@@ -1,9 +1,7 @@
 package com.develop.zuzik.audioplayerexample;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -41,16 +39,24 @@ public class MainActivity extends AppCompatActivity {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
-		seekBar.setEnabled(false);
-		TextView duration = (TextView) findViewById(R.id.duration);
 
-		playback.setOnGetMaxDurationListener(maxDuration -> {
-			duration.setText(String.valueOf(maxDuration));
-			seekBar.setEnabled(true);
-			seekBar.setMax(maxDuration);
-		});
-		playback.setOnSeekListener(positionInMilliseconds -> {
-			seekBar.setProgress(positionInMilliseconds);
+		TextView maxDuration = (TextView) findViewById(R.id.maxDuration);
+		TextView currentPosition = (TextView) findViewById(R.id.currentPosition);
+
+		playback.setPlaybackListener(bundle -> {
+			//TODO:configure buttons for state
+
+			maxDuration.setText(bundle.maxDurationInMilliseconds != null
+					? String.valueOf(bundle.maxDurationInMilliseconds)
+					: "-");
+			currentPosition.setText(String.valueOf(bundle.currentPositionInMilliseconds));
+			seekBar.setEnabled(bundle.maxDurationInMilliseconds != null);
+			seekBar.setMax(bundle.maxDurationInMilliseconds != null
+					? bundle.maxDurationInMilliseconds
+					: 100);
+			seekBar.setProgress(bundle.maxDurationInMilliseconds != null
+					? bundle.currentPositionInMilliseconds
+					: 0);
 		});
 
 		playback.init();

@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.player;
 
-import com.develop.zuzik.audioplayerexample.player.player_states.BasePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
 
 /**

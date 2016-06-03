@@ -49,16 +49,36 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp">
+        android:layout_height="48dp">
 
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Duration"/>
+            android:text="Current position"/>
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/duration"
+            android:id="@+id/currentPosition"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:gravity="center"
+            tools:text="0"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Max duration"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/maxDuration"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
