@@ -20,7 +20,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class StartedPlayerState extends BasePlayerState {
 
 	private final Observable<Long> playerProgressObservable = Observable
-			.interval(10, TimeUnit.SECONDS)
+			.interval(1, TimeUnit.SECONDS)
 			.observeOn(AndroidSchedulers.mainThread());
 	private Subscription playerProgressSubscription;
 
