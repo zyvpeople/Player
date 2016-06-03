@@ -114,6 +114,12 @@ public abstract class BasePlayerState implements PlayerState {
 	public void seekTo(int positionInMilliseconds) {
 	}
 
+	@Override
+	public void release() {
+		getPlayer().release();
+		setState(new EndPlayerState());
+	}
+
 	protected final void seekToPosition(int positionInMilliseconds) {
 		getPlayer().seekTo(positionInMilliseconds);
 	}

@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.PlaybackListener;
  * User: zuzik
  * Date: 5/29/16
  */
-public class NullPlayerState implements PlayerState {
+public class EndPlayerState implements PlayerState {
 
 	@Override
 	public void setPlaybackListener(PlaybackListener playbackListener) {

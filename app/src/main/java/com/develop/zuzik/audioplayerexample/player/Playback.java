@@ -52,6 +52,10 @@ public class Playback implements PlayerStateContainer {
 		setState(new IdlePlayerState(new MediaPlayer(), this.initializer, this));
 	}
 
+	public void release() {
+		this.state.release();
+	}
+
 	public void play(Context context) {
 		this.state.play(context);
 	}
