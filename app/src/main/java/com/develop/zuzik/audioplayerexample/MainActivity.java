@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.player.Playback;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
@@ -73,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
 		super.onStart();
 
 		this.playback.setPlaybackListener(bundle -> {
+			if (bundle.state == PlaybackState.ERROR) {
+				Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
+			}
+
 			setButtonEnabled(play, bundle.state, enablePlayButtonStates);
 			setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
 			setButtonEnabled(stop, bundle.state, enableStopButtonStates);

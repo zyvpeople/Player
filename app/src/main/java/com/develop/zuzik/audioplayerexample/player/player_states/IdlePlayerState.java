@@ -52,7 +52,7 @@ public class IdlePlayerState extends BasePlayerState {
 			getPlayer().prepareAsync();
 		} catch (PlayerInitializeException e) {
 			Log.e(getClass().getSimpleName(), e.getMessage());
-			setState(new ErrorPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+			handleError();
 		}
 	}
 }

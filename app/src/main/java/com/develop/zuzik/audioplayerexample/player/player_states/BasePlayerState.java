@@ -83,7 +83,7 @@ public abstract class BasePlayerState implements PlayerState {
 		this.player.setOnSeekCompleteListener(mp -> onSeekCompleted());
 	}
 
-	private void handleError() {
+	protected final void handleError() {
 		getPlayer().reset();
 		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null));
 		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
