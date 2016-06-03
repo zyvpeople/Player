@@ -33,8 +33,22 @@ public class CompletedPlayerState extends BasePlayerState {
 	}
 
 	@Override
+	public void stop() {
+		super.stop();
+		getPlayer().stop();
+		getPlayer().reset();
+		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
+	}
+
+	@Override
 	public void seekTo(int positionInMilliseconds) {
 		super.seekTo(positionInMilliseconds);
 		seekToPosition(positionInMilliseconds);
+	}
+
+	@Override
+	protected void onSeekCompleted() {
+		super.onSeekCompleted();
+		onPlaybackStateChanged(PlaybackState.COMPLETED);
 	}
 }

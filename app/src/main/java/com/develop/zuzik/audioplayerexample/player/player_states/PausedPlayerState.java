@@ -43,4 +43,10 @@ public class PausedPlayerState extends BasePlayerState {
 		super.seekTo(positionInMilliseconds);
 		seekToPosition(positionInMilliseconds);
 	}
+
+	@Override
+	protected void onSeekCompleted() {
+		super.onSeekCompleted();
+		onPlaybackStateChanged(PlaybackState.PAUSED);
+	}
 }

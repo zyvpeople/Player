@@ -60,6 +60,9 @@ public abstract class BasePlayerState implements PlayerState {
 		return new PlaybackBundle(state, currentPosition, maxDurationOrNull);
 	}
 
+	protected void onSeekCompleted() {
+	}
+
 	//region PlayerState
 
 	@Override
@@ -77,8 +80,7 @@ public abstract class BasePlayerState implements PlayerState {
 		});
 		this.player.setOnCompletionListener(mp ->
 				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer())));
-		this.player.setOnSeekCompleteListener(mp ->
-				onPlaybackStateChanged(PlaybackState.PLAYING));
+		this.player.setOnSeekCompleteListener(mp -> onSeekCompleted());
 	}
 
 	private void handleError() {

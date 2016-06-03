@@ -36,9 +36,14 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
+	public void unset() {
+		this.playerProgressSubscription.unsubscribe();
+		super.unset();
+	}
+
+	@Override
 	public void pause() {
 		super.pause();
-		this.playerProgressSubscription.unsubscribe();
 		getPlayer().pause();
 		setState(new PausedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
 	}
@@ -55,5 +60,11 @@ public class StartedPlayerState extends BasePlayerState {
 	public void seekTo(int positionInMilliseconds) {
 		super.seekTo(positionInMilliseconds);
 		seekToPosition(positionInMilliseconds);
+	}
+
+	@Override
+	protected void onSeekCompleted() {
+		super.onSeekCompleted();
+		onPlaybackStateChanged(PlaybackState.PLAYING);
 	}
 }

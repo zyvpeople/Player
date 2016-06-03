@@ -7,6 +7,10 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.develop.zuzik.audioplayerexample.player.Playback;
+import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 	private TextView currentPosition;
 
 	Playback playback;
+	List<PlaybackState> enablePlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
+	List<PlaybackState> enablePauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
+	List<PlaybackState> enableStopButtonStates = Arrays.asList(PlaybackState.PLAYING, PlaybackState.PAUSED, PlaybackState.COMPLETED);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
 		super.onStart();
 
 		this.playback.setPlaybackListener(bundle -> {
-			//TODO:configure buttons for state
+			setButtonEnabled(play, bundle.state, enablePlayButtonStates);
+			setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
+			setButtonEnabled(stop, bundle.state, enableStopButtonStates);
 
 			maxDuration.setText(bundle.maxDurationInMilliseconds != null
 					? String.valueOf(bundle.maxDurationInMilliseconds)
@@ -92,5 +101,15 @@ public class MainActivity extends AppCompatActivity {
 	protected void onDestroy() {
 		this.playback.release();
 		super.onDestroy();
+	}
+
+	private void setButtonEnabled(Button button, PlaybackState currentState, List<PlaybackState> enableButtonStates) {
+		for (PlaybackState state : enableButtonStates) {
+			if (currentState == state) {
+				button.setEnabled(true);
+				return;
+			}
+		}
+		button.setEnabled(false);
 	}
 }
