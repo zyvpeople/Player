@@ -27,7 +27,7 @@ public interface PlayerState {
 
 	void stop();
 
-	void fakeError();
+	void simulateError();
 
 	void seekTo(int positionInMilliseconds);
 

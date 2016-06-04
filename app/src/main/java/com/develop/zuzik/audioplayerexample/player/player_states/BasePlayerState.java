@@ -117,7 +117,7 @@ public abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void fakeError() {
+	public void simulateError() {
 		handleError();
 	}
 
