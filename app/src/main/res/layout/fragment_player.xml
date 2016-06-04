@@ -70,7 +70,8 @@
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/repeat"
-                        style="@style/SecondaryButtonViewStyle.Repeat"/>
+                        style="@style/SecondaryButtonViewStyle.Repeat"
+                        tools:srcCompat="@drawable/ic_repeat_on"/>
 
                 </LinearLayout>
 

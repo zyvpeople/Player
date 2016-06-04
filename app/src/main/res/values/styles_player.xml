@@ -106,7 +106,7 @@
     </style>
 
     <style name="SecondaryButtonViewStyle.Repeat">
-        <item name="srcCompat">@drawable/ic_repeat</item>
+        <item name="srcCompat">@drawable/ic_repeat_on</item>
     </style>
 
     <style name="SecondaryButtonViewStyle.SkipPrevious">
