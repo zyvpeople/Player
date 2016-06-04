@@ -16,7 +16,7 @@ import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class ExampleActivity extends AppCompatActivity {
 
 	private Button play;
 	private Button pause;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_example);
 
 		this.play = (Button) findViewById(R.id.play);
 		this.pause = (Button) findViewById(R.id.pause);
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 		this.repeat = (SwitchCompat) findViewById(R.id.repeat);
 		this.loading = findViewById(R.id.loading);
 
-		this.play.setOnClickListener(v -> playback.play(MainActivity.this));
+		this.play.setOnClickListener(v -> playback.play(ExampleActivity.this));
 		this.pause.setOnClickListener(v -> playback.pause());
 		this.stop.setOnClickListener(v -> playback.stop());
 		this.fakeError.setOnClickListener(v -> playback.fakeError());
