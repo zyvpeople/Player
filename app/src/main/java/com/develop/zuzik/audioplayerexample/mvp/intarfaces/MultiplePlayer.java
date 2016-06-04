@@ -13,7 +13,7 @@ import rx.Observable;
  */
 public interface MultiplePlayer {
 	interface Model {
-		void init();
+		void init(Context context);
 
 		void destroy();
 
@@ -27,9 +27,9 @@ public interface MultiplePlayer {
 
 		void stop();
 
-		void skipNext();
+		void skipNext(Context context);
 
-		void skipPrevious();
+		void skipPrevious(Context context);
 
 		void seekToPosition(int positionInMilliseconds);
 
@@ -47,7 +47,7 @@ public interface MultiplePlayer {
 	}
 
 	interface Presenter {
-		void onInit(View view);
+		void onInit(Context context, View view);
 
 		void onDestroy();
 
@@ -63,9 +63,9 @@ public interface MultiplePlayer {
 
 		void onStop();
 
-		void onSkipNext();
+		void onSkipNext(Context context);
 
-		void onSkipPrevious();
+		void onSkipPrevious(Context context);
 
 		void onSeekToPosition(int positionInMilliseconds);
 

@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -15,21 +16,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.R;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
+import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
  * User: zuzik
  * Date: 6/4/16
  */
-public class PlayerFragment extends Fragment implements Player.View {
+public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 	private static final String TAG_STATE_PLAY = "TAG_STATE_PLAY";
 	private static final String TAG_STATE_PAUSE = "TAG_STATE_PAUSE";
@@ -55,12 +61,18 @@ public class PlayerFragment extends Fragment implements Player.View {
 
 	private SongDetailViewPagerAdapter adapter;
 
-	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(new RawResourcePlayerSource(R.raw.song)));
+	private MultiplePlayer.Presenter presenter = new MultiplePlayerPresenter(
+			new MultiplePlayerModel(
+					new MultiplePlayback(
+							Arrays.asList(
+									new RawResourcePlayerSource(R.raw.song),
+									new RawResourcePlayerSource(R.raw.song_short),
+									new UriPlayerSource(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"))))));
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.presenter.onInit(this);
+		this.presenter.onInit(getContext(), this);
 	}
 
 	@Override
@@ -92,10 +104,24 @@ public class PlayerFragment extends Fragment implements Player.View {
 
 		this.adapter = new SongDetailViewPagerAdapter(getChildFragmentManager(), 3);
 		this.viewPager.setAdapter(this.adapter);
+		this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int state) {
+			}
+		});
 
 		this.playPause.setOnClickListener(v -> {
 			if (TAG_STATE_PLAY.equals(v.getTag())) {
-				this.presenter.onPlay(getActivity());
+				this.presenter.onPlay(getContext());
 			} else if (TAG_STATE_PAUSE.equals(v.getTag())) {
 				this.presenter.onPause();
 			} else {
@@ -103,14 +129,19 @@ public class PlayerFragment extends Fragment implements Player.View {
 			}
 		});
 		this.repeat.setOnClickListener(v -> {
-			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
-				this.presenter.onDoNotRepeat();
-			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
-				this.presenter.onRepeat();
-			} else {
-				Log.w(getClass().getSimpleName(), "Tag is not set");
-			}
+			Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+			//TODO: uncomment and test for multiple playback
+//			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
+//				this.presenter.onRepeat(MultiplePlaybackRepeatMode.DO_NOT_REPEAT);
+//			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
+//				this.presenter.onRepeat(MultiplePlaybackRepeatMode.REPEAT_ONE);
+//			} else {
+//				Log.w(getClass().getSimpleName(), "Tag is not set");
+//			}
 		});
+		this.skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious(getContext()));
+		this.skipNext.setOnClickListener(v -> this.presenter.onSkipNext(getContext()));
+		this.shuffle.setOnClickListener(v -> Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show());
 		this.progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -141,38 +172,50 @@ public class PlayerFragment extends Fragment implements Player.View {
 
 	//region Player.View
 
+
 	@Override
-	public void display(PlaybackBundle bundle, boolean repeat) {
-		if (bundle.state == PlaybackState.ERROR) {
-			Toast.makeText(getActivity(), "Error playing song", Toast.LENGTH_SHORT).show();
+	public void display(MultiplePlaybackBundle bundle, MultiplePlaybackRepeatMode repeatMode) {
+		PlaybackBundle playbackBundle = bundle.currentPlaybackBundle;
+		PlaybackState playbackState = playbackBundle != null ? playbackBundle.state : PlaybackState.NONE;
+		Integer maxDurationInMilliseconds = playbackBundle != null ? playbackBundle.maxDurationInMilliseconds : null;
+		int currentPositionInMilliseconds = playbackBundle != null ? playbackBundle.currentPositionInMilliseconds : 0;
+
+		if (playbackState == PlaybackState.ERROR) {
+			Toast.makeText(getContext(), "Error playing song", Toast.LENGTH_SHORT).show();
 		}
 
-		this.totalTime.setText(bundle.maxDurationInMilliseconds != null
-				? timeToRepresentation(bundle.maxDurationInMilliseconds)
+		this.totalTime.setText(maxDurationInMilliseconds != null
+				? timeToRepresentation(maxDurationInMilliseconds)
 				: "");
-		this.currentTime.setText(bundle.maxDurationInMilliseconds != null
-				? timeToRepresentation(bundle.currentPositionInMilliseconds)
+		this.currentTime.setText(maxDurationInMilliseconds != null
+				? timeToRepresentation(currentPositionInMilliseconds)
 				: "");
-		this.progress.setVisibility(bundle.maxDurationInMilliseconds != null
+		this.progress.setVisibility(maxDurationInMilliseconds != null
 				? View.VISIBLE
 				: View.GONE);
-		this.progress.setMax(bundle.maxDurationInMilliseconds != null
-				? bundle.maxDurationInMilliseconds
+		this.progress.setMax(maxDurationInMilliseconds != null
+				? maxDurationInMilliseconds
 				: 100);
-		this.progress.setProgress(bundle.maxDurationInMilliseconds != null
-				? bundle.currentPositionInMilliseconds
+		this.progress.setProgress(maxDurationInMilliseconds != null
+				? currentPositionInMilliseconds
 				: 0);
 
-		if (bundle.state == PlaybackState.PLAYING) {
+		if (playbackState == PlaybackState.PLAYING) {
 			showPlayPauseButtonAsPause();
 		} else {
 			showPlayPauseButtonAsPlay();
 		}
 
-		if (repeat) {
-			showRepeatButtonAsOn();
-		} else {
-			showRepeatButtonAsOff();
+		switch (repeatMode) {
+			case REPEAT_ONE:
+				showRepeatButtonAsOn();
+				break;
+			case REPEAT_ALL:
+				//TODO: handle
+				break;
+			case DO_NOT_REPEAT:
+				showRepeatButtonAsOff();
+				break;
 		}
 	}
 

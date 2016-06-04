@@ -24,8 +24,8 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public void init() {
-		this.playback.init();
+	public void init(Context context) {
+		this.playback.init(context);
 		this.playback.setListener(bundle -> this.playbackStateChangedPublishSubject.onNext(bundle));
 	}
 
@@ -61,13 +61,13 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public void skipNext() {
-		this.playback.skipNext();
+	public void skipNext(Context context) {
+		this.playback.skipNext(context);
 	}
 
 	@Override
-	public void skipPrevious() {
-		this.playback.skipPrevious();
+	public void skipPrevious(Context context) {
+		this.playback.skipPrevious(context);
 	}
 
 	@Override

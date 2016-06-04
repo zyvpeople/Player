@@ -47,4 +47,15 @@ public class RawResourcePlayerSource implements PlayerSource {
 			throw new PlayerInitializeException();
 		}
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		} else if (o instanceof RawResourcePlayerSource) {
+			return this.rawResId == ((RawResourcePlayerSource) o).rawResId;
+		} else {
+			return false;
+		}
+	}
 }

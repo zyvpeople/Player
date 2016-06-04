@@ -17,16 +17,16 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	private final MultiplePlayer.Model model;
 	private MultiplePlayer.View view;
 	private Subscription playbackStateChangedSubscription;
-	private MultiplePlaybackRepeatMode repeatMode;
+	private MultiplePlaybackRepeatMode repeatMode = MultiplePlaybackRepeatMode.DO_NOT_REPEAT;
 
 	public MultiplePlayerPresenter(MultiplePlayer.Model model) {
 		this.model = model;
 	}
 
 	@Override
-	public void onInit(MultiplePlayer.View view) {
+	public void onInit(Context context, MultiplePlayer.View view) {
 		this.view = view;
-		this.model.init();
+		this.model.init(context);
 	}
 
 	@Override
@@ -75,13 +75,13 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public void onSkipNext() {
-		this.model.skipNext();
+	public void onSkipNext(Context context) {
+		this.model.skipNext(context);
 	}
 
 	@Override
-	public void onSkipPrevious() {
-		this.model.skipPrevious();
+	public void onSkipPrevious(Context context) {
+		this.model.skipPrevious(context);
 	}
 
 	@Override
@@ -92,6 +92,8 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	@Override
 	public void onRepeat(MultiplePlaybackRepeatMode repeatMode) {
 		this.model.repeat(repeatMode);
+		this.repeatMode = repeatMode;
+		updateView();
 	}
 
 	@Override

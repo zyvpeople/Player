@@ -13,6 +13,7 @@ import java.util.List;
  * User: zuzik
  * Date: 6/4/16
  */
+//TODO: handle repeat manually
 public class MultiplePlayback {
 
 	private final List<Playback> playbacks = new ArrayList<>();
@@ -96,8 +97,8 @@ public class MultiplePlayback {
 
 	//region Play
 
-	public void init() {
-		currentPlayback(this::initPlayback);
+	public void init(Context context) {
+		currentPlayback(result -> initPlayback(context, result, false));
 	}
 
 	public void release() {
@@ -120,34 +121,37 @@ public class MultiplePlayback {
 		currentPlayback(result -> result.seekTo(positionInMilliseconds));
 	}
 
-	public void skipNext() {
-		currentPlayback(currentPlayback -> {
-			nextPlayback(nextPlayback -> {
-				switchFromOldToNewPlayback(currentPlayback, nextPlayback);
-			});
-		});
+	public void skipNext(Context context) {
+		currentPlayback(currentPlayback ->
+				nextPlayback(nextPlayback ->
+						switchFromOldToNewPlayback(context, currentPlayback, nextPlayback)));
 	}
 
-	public void skipPrevious() {
-		currentPlayback(currentPlayback -> {
-			previousPlayback(previousPlayback -> {
-				switchFromOldToNewPlayback(currentPlayback, previousPlayback);
-			});
-		});
+	public void skipPrevious(Context context) {
+		currentPlayback(currentPlayback ->
+				previousPlayback(previousPlayback ->
+						switchFromOldToNewPlayback(context, currentPlayback, previousPlayback)));
 	}
 
-	private void switchFromOldToNewPlayback(Playback oldPlayback, Playback newPlayback) {
-		boolean playNewPlayback = oldPlayback.getPlaybackBundle().state == PlaybackState.PLAYING;
-		//TODO: if old was playing then play new (but we need context). Or replace it to some strategy
+	private void switchFromOldToNewPlayback(Context context, Playback oldPlayback, Playback newPlayback) {
 		releasePlayback(oldPlayback);
-		initPlayback(newPlayback);
+		initPlayback(context, newPlayback, true);
 	}
 
-	private void initPlayback(Playback playback) {
-		playback.init();
+	private void initPlayback(Context context, Playback playback, boolean play) {
 		playback.setPlaybackListener(bundle -> {
 			this.listener.onChange(getMultiplePlaybackBundle());
+			if (bundle.state == PlaybackState.COMPLETED
+					|| bundle.state == PlaybackState.ERROR
+					|| bundle.state == PlaybackState.END) {
+				//TODO:also should use shuffle flag and repeat mode
+				skipNext(context);
+			}
 		});
+		playback.init();
+		if (play) {
+			playback.play(context);
+		}
 	}
 
 	private void releasePlayback(Playback playback) {
@@ -159,6 +163,7 @@ public class MultiplePlayback {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int nextPlaybackIndex = (currentPlaybackIndex + 1) % this.playbacks.size();
+			this.currentPosition = nextPlaybackIndex;
 			listener.onFound(this.playbacks.get(nextPlaybackIndex));
 		});
 	}
@@ -167,6 +172,7 @@ public class MultiplePlayback {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int previousPlaybackIndex = (currentPlaybackIndex - 1 + this.playbacks.size()) % this.playbacks.size();
+			this.currentPosition = previousPlaybackIndex;
 			listener.onFound(this.playbacks.get(previousPlaybackIndex));
 		});
 	}
@@ -177,7 +183,6 @@ public class MultiplePlayback {
 
 	public void simulateError() {
 		currentPlayback(Playback::simulateError);
-		//TODO: maybe go to next playback. Or create strategy for this
 	}
 
 	//endregion

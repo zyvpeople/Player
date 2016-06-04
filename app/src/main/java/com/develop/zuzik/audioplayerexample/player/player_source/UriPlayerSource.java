@@ -31,4 +31,15 @@ public class UriPlayerSource implements PlayerSource {
 			throw new PlayerInitializeException();
 		}
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		} else if (o instanceof UriPlayerSource) {
+			return this.uri.equals(((UriPlayerSource) o).uri);
+		} else {
+			return false;
+		}
+	}
 }
