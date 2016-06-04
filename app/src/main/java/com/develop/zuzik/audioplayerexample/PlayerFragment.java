@@ -80,9 +80,6 @@ public class PlayerFragment extends Fragment implements Player.View {
 		this.singer.setText("Of monsters and men");
 		this.song.setText("Little talks");
 
-//		showPlayPauseButtonAsPlay();
-//		showRepeatButtonAsOff();
-
 		this.playPause.setOnClickListener(v -> {
 			if (TAG_STATE_PLAY.equals(v.getTag())) {
 				this.presenter.onPlay(getActivity());
@@ -132,14 +129,10 @@ public class PlayerFragment extends Fragment implements Player.View {
 	//region Player.View
 
 	@Override
-	public void display(PlaybackBundle bundle) {
+	public void display(PlaybackBundle bundle, boolean repeat) {
 		if (bundle.state == PlaybackState.ERROR) {
 			Toast.makeText(getActivity(), "Error playing song", Toast.LENGTH_SHORT).show();
 		}
-
-//		setButtonEnabled(play, bundle.state, enablePlayButtonStates);
-//		setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
-//		setButtonEnabled(stop, bundle.state, enableStopButtonStates);
 
 		this.totalTime.setText(bundle.maxDurationInMilliseconds != null
 				? timeToRepresentation(bundle.maxDurationInMilliseconds)
@@ -163,7 +156,7 @@ public class PlayerFragment extends Fragment implements Player.View {
 			showPlayPauseButtonAsPlay();
 		}
 
-		if (bundle.repeat) {
+		if (repeat) {
 			showRepeatButtonAsOn();
 		} else {
 			showRepeatButtonAsOff();

@@ -16,6 +16,7 @@ public class PlayerPresenter implements Player.Presenter {
 	private final Player.Model model;
 	private Player.View view;
 	private Subscription playbackStateChangedSubscription;
+	private boolean repeat;
 
 	public PlayerPresenter(Player.Model model) {
 		this.model = model;
@@ -35,8 +36,16 @@ public class PlayerPresenter implements Player.Presenter {
 
 	@Override
 	public void onAppear() {
-		this.view.display(this.model.getPlaybackState());
-		this.playbackStateChangedSubscription = this.model.onPlaybackStateChanged().subscribe(bundle -> this.view.display(bundle));
+		updateView();
+		this.playbackStateChangedSubscription = this.model.onPlaybackStateChanged().subscribe(this::updateView);
+	}
+
+	private void updateView() {
+		updateView(this.model.getPlaybackState());
+	}
+
+	private void updateView(PlaybackBundle bundle) {
+		this.view.display(bundle, this.repeat);
 	}
 
 	@Override
@@ -67,10 +76,14 @@ public class PlayerPresenter implements Player.Presenter {
 	@Override
 	public void onRepeat() {
 		this.model.repeat();
+		this.repeat = true;
+		updateView();
 	}
 
 	@Override
 	public void onDoNotRepeat() {
 		this.model.doNotRepeat();
+		this.repeat = false;
+		updateView();
 	}
 }

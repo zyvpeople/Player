@@ -32,7 +32,7 @@ public interface Player {
 	}
 
 	interface View {
-		void display(PlaybackBundle bundle);
+		void display(PlaybackBundle bundle, boolean repeat);
 	}
 
 	interface Presenter {
