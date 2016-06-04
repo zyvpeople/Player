@@ -2,13 +2,9 @@ package com.develop.zuzik.audioplayerexample.player;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.support.annotation.RawRes;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.UriPlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
@@ -20,20 +16,12 @@ import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
 public class Playback implements PlayerStateContainer {
 
 	private PlayerState state = new NullPlayerState();
-	private final PlayerInitializer initializer;
+	private final PlayerSource source;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private boolean repeat;
 
-	public Playback(Uri uri) {
-		this(new UriPlayerInitializer(uri));
-	}
-
-	public Playback(@RawRes int rawResId) {
-		this(new RawResourcePlayerInitializer(rawResId));
-	}
-
-	private Playback(PlayerInitializer initializer) {
-		this.initializer = initializer;
+	public Playback(PlayerSource source) {
+		this.source = source;
 	}
 
 	//region Getters/Setters
@@ -59,7 +47,7 @@ public class Playback implements PlayerStateContainer {
 	//region Play
 
 	public void init() {
-		setState(new IdlePlayerState(new MediaPlayer(), this.initializer, this));
+		setState(new IdlePlayerState(new MediaPlayer(), this.source, this));
 	}
 
 	public void release() {

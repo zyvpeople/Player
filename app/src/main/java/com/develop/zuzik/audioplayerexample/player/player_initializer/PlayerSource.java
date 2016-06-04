@@ -9,6 +9,6 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeEx
  * User: zuzik
  * Date: 6/2/16
  */
-public interface PlayerInitializer {
+public interface PlayerSource {
 	void initialize(Context context, MediaPlayer player) throws PlayerInitializeException;
 }

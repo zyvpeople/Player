@@ -14,11 +14,11 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class UriPlayerInitializer implements PlayerInitializer {
+public class UriPlayerSource implements PlayerSource {
 	@RawRes
 	public final Uri uri;
 
-	public UriPlayerInitializer(Uri uri) {
+	public UriPlayerSource(Uri uri) {
 		this.uri = uri;
 	}
 

@@ -5,7 +5,7 @@ import android.media.MediaPlayer;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,8 +24,8 @@ public class StartedPlayerState extends BasePlayerState {
 			.observeOn(AndroidSchedulers.mainThread());
 	private Subscription playerProgressSubscription;
 
-	public StartedPlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
-		super(player, initializer, stateContainer);
+	public StartedPlayerState(MediaPlayer player, PlayerSource source, PlayerStateContainer stateContainer) {
+		super(player, source, stateContainer);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class StartedPlayerState extends BasePlayerState {
 	public void pause() {
 		super.pause();
 		getPlayer().pause();
-		setState(new PausedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		setState(new PausedPlayerState(getPlayer(), getSource(), getStateContainer()));
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class StartedPlayerState extends BasePlayerState {
 		super.stop();
 		getPlayer().stop();
 		getPlayer().reset();
-		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		setState(new IdlePlayerState(getPlayer(), getSource(), getStateContainer()));
 	}
 
 	@Override

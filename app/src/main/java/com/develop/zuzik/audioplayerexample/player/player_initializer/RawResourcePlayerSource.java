@@ -15,11 +15,11 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class RawResourcePlayerInitializer implements PlayerInitializer {
+public class RawResourcePlayerSource implements PlayerSource {
 	@RawRes
 	public final int rawResId;
 
-	public RawResourcePlayerInitializer(int rawResId) {
+	public RawResourcePlayerSource(int rawResId) {
 		this.rawResId = rawResId;
 	}
 

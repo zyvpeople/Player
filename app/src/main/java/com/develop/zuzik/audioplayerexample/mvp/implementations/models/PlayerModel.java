@@ -1,12 +1,11 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
 import android.content.Context;
-import android.net.Uri;
-import android.support.annotation.RawRes;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.Playback;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -20,12 +19,8 @@ public class PlayerModel implements Player.Model {
 	private final Playback playback;
 	private final PublishSubject<PlaybackBundle> playbackStateChangedPublishSubject = PublishSubject.create();
 
-	public PlayerModel(Uri uri) {
-		this.playback = new Playback(uri);
-	}
-
-	public PlayerModel(@RawRes int rawResId) {
-		this.playback = new Playback(rawResId);
+	public PlayerModel(PlayerSource source) {
+		this.playback = new Playback(source);
 	}
 
 	@Override

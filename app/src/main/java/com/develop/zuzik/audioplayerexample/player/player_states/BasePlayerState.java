@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
 
 /**
  * User: zuzik
@@ -17,15 +17,15 @@ import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInit
 public abstract class BasePlayerState implements PlayerState {
 
 	private final MediaPlayer player;
-	private final PlayerInitializer initializer;
+	private final PlayerSource source;
 	private final PlayerStateContainer stateContainer;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 
 	protected BasePlayerState(MediaPlayer player,
-							  PlayerInitializer initializer,
+							  PlayerSource source,
 							  PlayerStateContainer stateContainer) {
 		this.player = player;
-		this.initializer = initializer;
+		this.source = source;
 		this.stateContainer = stateContainer;
 	}
 
@@ -33,8 +33,8 @@ public abstract class BasePlayerState implements PlayerState {
 		return this.player;
 	}
 
-	protected final PlayerInitializer getInitializer() {
-		return this.initializer;
+	protected final PlayerSource getSource() {
+		return this.source;
 	}
 
 	protected final PlayerStateContainer getStateContainer() {
@@ -84,9 +84,9 @@ public abstract class BasePlayerState implements PlayerState {
 		});
 		this.player.setOnCompletionListener(mp -> {
 			if (getPlayer().isLooping()) {
-				setState(new StartedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+				setState(new StartedPlayerState(getPlayer(), getSource(), getStateContainer()));
 			} else {
-				setState(new CompletedPlayerState(getPlayer(), getInitializer(), getStateContainer()));
+				setState(new CompletedPlayerState(getPlayer(), getSource(), getStateContainer()));
 			}
 		});
 		this.player.setOnSeekCompleteListener(mp -> onSeekCompleted());
@@ -95,7 +95,7 @@ public abstract class BasePlayerState implements PlayerState {
 	protected final void handleError() {
 		getPlayer().reset();
 		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null, getPlayer().isLooping()));
-		setState(new IdlePlayerState(getPlayer(), getInitializer(), getStateContainer()));
+		setState(new IdlePlayerState(getPlayer(), getSource(), getStateContainer()));
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.Playe
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
 
 import java.util.concurrent.TimeUnit;
@@ -54,7 +55,7 @@ public class PlayerFragment extends Fragment implements Player.View {
 
 	private SongDetailViewPagerAdapter adapter;
 
-	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(R.raw.song));
+	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(new RawResourcePlayerSource(R.raw.song)));
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {

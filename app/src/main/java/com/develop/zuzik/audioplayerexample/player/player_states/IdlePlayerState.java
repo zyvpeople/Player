@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
 
 /**
  * User: zuzik
@@ -18,8 +18,8 @@ public class IdlePlayerState extends BasePlayerState {
 
 	private boolean preparing;
 
-	public IdlePlayerState(MediaPlayer player, PlayerInitializer initializer, PlayerStateContainer stateContainer) {
-		super(player, initializer, stateContainer);
+	public IdlePlayerState(MediaPlayer player, PlayerSource source, PlayerStateContainer stateContainer) {
+		super(player, source, stateContainer);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class IdlePlayerState extends BasePlayerState {
 		super.set();
 		getPlayer().setOnPreparedListener(player -> {
 			player.start();
-			setState(new StartedPlayerState(player, getInitializer(), getStateContainer()));
+			setState(new StartedPlayerState(player, getSource(), getStateContainer()));
 		});
 		onPlaybackStateChanged(createBundle());
 	}
@@ -60,7 +60,7 @@ public class IdlePlayerState extends BasePlayerState {
 		getPlayer().reset();
 		try {
 			onPlaybackStateChanged(createBundle());
-			getInitializer().initialize(context, getPlayer());
+			getSource().initialize(context, getPlayer());
 			getPlayer().prepareAsync();
 		} catch (PlayerInitializeException e) {
 			Log.e(getClass().getSimpleName(), e.getMessage());

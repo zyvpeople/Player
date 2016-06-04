@@ -15,6 +15,7 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.Playe
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +36,11 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 	List<PlaybackState> enablePauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
 	List<PlaybackState> enableStopButtonStates = Arrays.asList(PlaybackState.PLAYING, PlaybackState.PAUSED, PlaybackState.COMPLETED);
 
-	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(R.raw.song));
+	//R.raw.song_short
+	//R.raw.song
+	//Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3")
+
+	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(new RawResourcePlayerSource(R.raw.song)));
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +84,6 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 				this.presenter.onDoNotRepeat();
 			}
 		});
-
-//		this.playback = new Playback(R.raw.song_short);
-//		this.playback = new Playback(R.raw.song);
-//		this.playback = new Playback(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"));
 
 		this.presenter.onInit(this);
 	}
