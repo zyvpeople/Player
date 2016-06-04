@@ -19,7 +19,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
 public class Playback implements PlayerStateContainer {
 
 	private PlayerState state = new NullPlayerState();
-	private final PlayerSource source;
+	public final PlayerSource source;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private boolean repeat;
 
@@ -40,6 +40,7 @@ public class Playback implements PlayerStateContainer {
 		return this.state.getPlaybackBundle();
 	}
 
+	//TODO: create 2 methods
 	public void setRepeat(boolean repeat) {
 		this.repeat = repeat;
 		this.state.setRepeat(this.repeat);
