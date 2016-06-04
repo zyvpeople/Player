@@ -20,7 +20,7 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.Playe
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
 
 import java.util.concurrent.TimeUnit;

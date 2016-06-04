@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.player_initializer;
+package com.develop.zuzik.audioplayerexample.player.player_source;
 
 import android.content.Context;
 import android.media.AudioManager;

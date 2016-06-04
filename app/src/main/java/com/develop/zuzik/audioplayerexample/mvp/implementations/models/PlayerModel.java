@@ -5,7 +5,7 @@ import android.content.Context;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.Playback;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;

@@ -7,7 +7,7 @@ import android.util.Log;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
