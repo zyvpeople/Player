@@ -63,6 +63,11 @@ public class PlayerModel implements Player.Model {
 	}
 
 	@Override
+	public void stop() {
+		this.playback.stop();
+	}
+
+	@Override
 	public void seekToPosition(int positionInMilliseconds) {
 		this.playback.seekTo(positionInMilliseconds);
 	}
@@ -75,5 +80,10 @@ public class PlayerModel implements Player.Model {
 	@Override
 	public void doNotRepeat() {
 		this.playback.setRepeat(false);
+	}
+
+	@Override
+	public void simulateError() {
+		this.playback.simulateError();
 	}
 }

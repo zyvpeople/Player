@@ -24,11 +24,15 @@ public interface Player {
 
 		void pause();
 
+		void stop();
+
 		void seekToPosition(int positionInMilliseconds);
 
 		void repeat();
 
 		void doNotRepeat();
+
+		void simulateError();
 	}
 
 	interface View {
@@ -50,10 +54,14 @@ public interface Player {
 
 		void onPause();
 
+		void onStop();
+
 		void onSeekToPosition(int positionInMilliseconds);
 
 		void onRepeat();
 
 		void onDoNotRepeat();
+
+		void simulateError();
 	}
 }

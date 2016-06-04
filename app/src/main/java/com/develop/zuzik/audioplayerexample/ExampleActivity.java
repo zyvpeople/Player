@@ -9,14 +9,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.develop.zuzik.audioplayerexample.player.Playback;
+import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
+import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class ExampleActivity extends AppCompatActivity {
+public class ExampleActivity extends AppCompatActivity implements Player.View {
 
 	private Button play;
 	private Button pause;
@@ -28,10 +30,11 @@ public class ExampleActivity extends AppCompatActivity {
 	private SwitchCompat repeat;
 	private View loading;
 
-	Playback playback;
 	List<PlaybackState> enablePlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
 	List<PlaybackState> enablePauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
 	List<PlaybackState> enableStopButtonStates = Arrays.asList(PlaybackState.PLAYING, PlaybackState.PAUSED, PlaybackState.COMPLETED);
+
+	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(R.raw.song));
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +51,15 @@ public class ExampleActivity extends AppCompatActivity {
 		this.repeat = (SwitchCompat) findViewById(R.id.repeat);
 		this.loading = findViewById(R.id.loading);
 
-		this.play.setOnClickListener(v -> playback.play(ExampleActivity.this));
-		this.pause.setOnClickListener(v -> playback.pause());
-		this.stop.setOnClickListener(v -> playback.stop());
-		this.fakeError.setOnClickListener(v -> playback.fakeError());
+		this.play.setOnClickListener(v -> this.presenter.onPlay(this));
+		this.pause.setOnClickListener(v -> this.presenter.onPause());
+		this.stop.setOnClickListener(v -> this.presenter.onStop());
+		this.fakeError.setOnClickListener(v -> this.presenter.simulateError());
 		this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				if (fromUser) {
-					playback.seekTo(progress);
+					presenter.onSeekToPosition(progress);
 				}
 			}
 
@@ -69,24 +72,42 @@ public class ExampleActivity extends AppCompatActivity {
 			}
 		});
 		this.repeat.setOnCheckedChangeListener((buttonView, isChecked) -> {
-			playback.setRepeat(isChecked);
+			if (isChecked) {
+				this.presenter.onRepeat();
+			} else {
+				this.presenter.onDoNotRepeat();
+			}
 		});
 
 //		this.playback = new Playback(R.raw.song_short);
-		this.playback = new Playback(R.raw.song);
+//		this.playback = new Playback(R.raw.song);
 //		this.playback = new Playback(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"));
 
-		this.playback.init();
+		this.presenter.onInit(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		this.presenter.onDestroy();
+		super.onDestroy();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		updateUIWithPlaybackBundle(this.playback.getPlaybackBundle());
-		this.playback.setPlaybackListener(bundle -> updateUIWithPlaybackBundle(bundle));
+		this.presenter.onAppear();
 	}
 
-	private void updateUIWithPlaybackBundle(PlaybackBundle bundle) {
+	@Override
+	protected void onStop() {
+		this.presenter.onDisappear();
+		super.onStop();
+	}
+
+	//region Player.View
+
+	@Override
+	public void display(PlaybackBundle bundle, boolean repeat) {
 		if (bundle.state == PlaybackState.ERROR) {
 			Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
 		}
@@ -107,24 +128,14 @@ public class ExampleActivity extends AppCompatActivity {
 				? bundle.currentPositionInMilliseconds
 				: 0);
 
-		repeat.setChecked(bundle.repeat);
+		this.repeat.setChecked(repeat);
 
 		loading.setVisibility(bundle.state == PlaybackState.PREPARING
 				? View.VISIBLE
 				: View.GONE);
 	}
 
-	@Override
-	protected void onStop() {
-		this.playback.setPlaybackListener(null);
-		super.onStop();
-	}
-
-	@Override
-	protected void onDestroy() {
-		this.playback.release();
-		super.onDestroy();
-	}
+	//endregion
 
 	private void setButtonEnabled(Button button, PlaybackState currentState, List<PlaybackState> enableButtonStates) {
 		for (PlaybackState state : enableButtonStates) {
@@ -136,3 +147,4 @@ public class ExampleActivity extends AppCompatActivity {
 		button.setEnabled(false);
 	}
 }
+

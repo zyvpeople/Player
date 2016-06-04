@@ -69,6 +69,11 @@ public class PlayerPresenter implements Player.Presenter {
 	}
 
 	@Override
+	public void onStop() {
+		this.model.stop();
+	}
+
+	@Override
 	public void onSeekToPosition(int positionInMilliseconds) {
 		this.model.seekToPosition(positionInMilliseconds);
 	}
@@ -85,5 +90,10 @@ public class PlayerPresenter implements Player.Presenter {
 		this.model.doNotRepeat();
 		this.repeat = false;
 		updateView();
+	}
+
+	@Override
+	public void simulateError() {
+		this.model.simulateError();
 	}
 }

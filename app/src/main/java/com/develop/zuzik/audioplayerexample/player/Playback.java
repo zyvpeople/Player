@@ -105,7 +105,7 @@ public class Playback implements PlayerStateContainer {
 
 	//region Fake
 
-	public void fakeError() {
+	public void simulateError() {
 		this.state.fakeError();
 	}
 
