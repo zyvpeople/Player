@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample;
+package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;

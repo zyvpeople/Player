@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/playerControls"
-        android:name="com.develop.zuzik.audioplayerexample.PlayerFragment"
+        android:name="com.develop.zuzik.audioplayerexample.presentation.fragments.PlayerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
