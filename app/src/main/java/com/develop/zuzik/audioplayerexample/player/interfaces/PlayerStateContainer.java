@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player;
+package com.develop.zuzik.audioplayerexample.player.interfaces;
 
 import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
 

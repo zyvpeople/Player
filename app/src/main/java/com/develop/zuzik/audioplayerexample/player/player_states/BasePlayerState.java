@@ -3,18 +3,18 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.NullPlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
-import com.develop.zuzik.audioplayerexample.player.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerSource;
 
 /**
  * User: zuzik
  * Date: 5/29/16
  */
-public abstract class BasePlayerState implements PlayerState {
+abstract class BasePlayerState implements PlayerState {
 
 	private final MediaPlayer player;
 	private final PlayerSource source;
