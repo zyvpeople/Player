@@ -13,12 +13,7 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class ExampleActivity extends AppCompatActivity implements Player.View {
 
@@ -31,14 +26,6 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 	private TextView currentPosition;
 	private SwitchCompat repeat;
 	private View loading;
-
-	List<PlaybackState> enablePlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
-	List<PlaybackState> enablePauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
-	List<PlaybackState> enableStopButtonStates = Arrays.asList(PlaybackState.PLAYING, PlaybackState.PAUSED, PlaybackState.COMPLETED);
-
-	//R.raw.song_short
-	//R.raw.song
-	//Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3")
 
 	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(new RawResourcePlayerSource(R.raw.song)));
 
@@ -108,46 +95,59 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 
 	//region Player.View
 
+	@Override
+	public void setRepeat() {
+		this.repeat.setChecked(true);
+	}
 
 	@Override
-	public void display(PlayerStateBundle bundle, boolean repeat) {
-		if (bundle.state == PlaybackState.ERROR) {
-			Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
-		}
+	public void setDoNotRepeat() {
+		this.repeat.setChecked(false);
+	}
 
-		setButtonEnabled(play, bundle.state, enablePlayButtonStates);
-		setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
-		setButtonEnabled(stop, bundle.state, enableStopButtonStates);
+	@Override
+	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
+		this.seekBar.setProgress(currentTimeInMilliseconds);
+		this.seekBar.setMax(totalTimeInMilliseconds);
+	}
 
-		if (bundle.maxTimeInMilliseconds.isPresent()) {
-			this.maxDuration.setText(bundle.maxTimeInMilliseconds.transform(String::valueOf).get());
-			this.seekBar.setEnabled(true);
-			this.seekBar.setMax(bundle.maxTimeInMilliseconds.get());
-			this.seekBar.setProgress(bundle.currentTimeInMilliseconds);
-		} else {
-			this.maxDuration.setText("-");
-			this.seekBar.setEnabled(false);
-			this.seekBar.setMax(100);
-			this.seekBar.setProgress(0);
-		}
-		this.currentPosition.setText(String.valueOf(bundle.currentTimeInMilliseconds));
+	@Override
+	public void showProgress() {
+		this.seekBar.setEnabled(true);
+	}
 
-		this.repeat.setChecked(repeat);
-		loading.setVisibility(bundle.state == PlaybackState.PREPARING
-				? View.VISIBLE
-				: View.GONE);
+	@Override
+	public void hideProgress() {
+		this.seekBar.setEnabled(false);
+	}
+
+	@Override
+	public void showTime(String currentTime, String totalTime) {
+		this.currentPosition.setText(currentTime);
+		this.maxDuration.setText(totalTime);
+	}
+
+	@Override
+	public void showError(String message) {
+		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void enablePlayControls(boolean play, boolean pause, boolean stop) {
+		this.play.setEnabled(play);
+		this.pause.setEnabled(pause);
+		this.stop.setEnabled(stop);
+	}
+
+	@Override
+	public void showLoading() {
+		this.loading.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideLoading() {
+		this.loading.setVisibility(View.GONE);
 	}
 
 	//endregion
-
-	private void setButtonEnabled(Button button, PlaybackState currentState, List<PlaybackState> enableButtonStates) {
-		for (PlaybackState state : enableButtonStates) {
-			if (currentState == state) {
-				button.setEnabled(true);
-				return;
-			}
-		}
-		button.setEnabled(false);
-	}
 }
-

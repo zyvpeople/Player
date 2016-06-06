@@ -38,7 +38,25 @@ public interface Player {
 	}
 
 	interface View {
-		void display(PlayerStateBundle bundle, boolean repeat);
+		void setRepeat();
+
+		void setDoNotRepeat();
+
+		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
+
+		void showProgress();
+
+		void hideProgress();
+
+		void showTime(String currentTime, String totalTime);
+
+		void showError(String message);
+
+		void enablePlayControls(boolean play, boolean pause, boolean stop);
+
+		void showLoading();
+
+		void hideLoading();
 	}
 
 	interface Presenter {

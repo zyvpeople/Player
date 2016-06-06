@@ -204,7 +204,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 	@Override
 	public void showError(String message) {
-		Toast.makeText(getContext(), "Error playing song", Toast.LENGTH_SHORT).show();
+		Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override

@@ -3,7 +3,11 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
+
+import java.util.Arrays;
+import java.util.List;
 
 import rx.Subscription;
 
@@ -11,12 +15,17 @@ import rx.Subscription;
  * User: zuzik
  * Date: 6/4/16
  */
+//TODO: there is a lot of duplication between Player and MultiplePlayer Presenters
 public class PlayerPresenter implements Player.Presenter {
 
 	private final Player.Model model;
 	private Player.View view;
 	private Subscription playbackStateChangedSubscription;
 	private boolean repeat;
+
+	List<PlaybackState> allowedPlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
+	List<PlaybackState> allowedPauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
+	List<PlaybackState> allowedStopButtonStates = Arrays.asList(PlaybackState.PLAYING, PlaybackState.PAUSED, PlaybackState.COMPLETED);
 
 	public PlayerPresenter(Player.Model model) {
 		this.model = model;
@@ -41,19 +50,11 @@ public class PlayerPresenter implements Player.Presenter {
 				.subscribe(aVoid -> updateView());
 	}
 
-	private void updateView() {
-		updateView(this.model.getPlayerStateBundle());
-	}
-
-	private void updateView(PlayerStateBundle bundle) {
-		this.view.display(bundle, this.repeat);
-	}
-
 	@Override
 	public void onDisappear() {
 		this.playbackStateChangedSubscription.unsubscribe();
 	}
-	
+
 	@Override
 	public void onPlay(Context context) {
 		this.model.play(context);
@@ -91,5 +92,38 @@ public class PlayerPresenter implements Player.Presenter {
 	@Override
 	public void simulateError() {
 		this.model.simulateError();
+	}
+
+	private void updateView() {
+		updateView(this.model.getPlayerStateBundle());
+	}
+
+	private void updateView(PlayerStateBundle bundle) {
+		this.view.enablePlayControls(
+				this.allowedPlayButtonStates.contains(bundle.state),
+				this.allowedPauseButtonStates.contains(bundle.state),
+				this.allowedStopButtonStates.contains(bundle.state));
+
+		if (bundle.maxTimeInMilliseconds.isPresent()) {
+			this.view.showTime(String.valueOf(bundle.currentTimeInMilliseconds), bundle.maxTimeInMilliseconds.transform(String::valueOf).get());
+			this.view.showProgress();
+			this.view.setProgress(bundle.currentTimeInMilliseconds, bundle.maxTimeInMilliseconds.get());
+		} else {
+			this.view.showTime("-", "-");
+			this.view.hideProgress();
+			this.view.setProgress(0, 100);
+		}
+
+		if (this.repeat) {
+			this.view.setRepeat();
+		} else {
+			this.view.setDoNotRepeat();
+		}
+
+		if (bundle.state == PlaybackState.PREPARING) {
+			this.view.showLoading();
+		} else {
+			this.view.hideLoading();
+		}
 	}
 }
