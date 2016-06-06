@@ -20,16 +20,11 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultipleP
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * User: zuzik
@@ -174,62 +169,55 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 
 	@Override
-	public void display(MultiplePlayerStateBundle bundle, MultiplePlaybackRepeatMode repeatMode) {
-		switch (repeatMode) {
-			case REPEAT_ONE:
-				showRepeatButtonAsOn();
-				break;
-			case REPEAT_ALL:
-				//TODO: handle
-				break;
-			case DO_NOT_REPEAT:
-				showRepeatButtonAsOff();
-				break;
-		}
-
-		if (bundle.currentPlayerStateBundle.isPresent()) {
-			PlayerStateBundle playerStateBundle = bundle.currentPlayerStateBundle.get();
-
-			if (playerStateBundle.state == PlaybackState.ERROR) {
-				Toast.makeText(getContext(), "Error playing song", Toast.LENGTH_SHORT).show();
-			}
-			if (playerStateBundle.state == PlaybackState.PLAYING) {
-				showPlayPauseButtonAsPause();
-			} else {
-				showPlayPauseButtonAsPlay();
-			}
-			if (playerStateBundle.maxTimeInMilliseconds.isPresent()) {
-				int maxTime = playerStateBundle.maxTimeInMilliseconds.get();
-				int currentTime = playerStateBundle.currentTimeInMilliseconds;
-				this.totalTime.setText(timeToRepresentation(maxTime));
-				this.currentTime.setText(timeToRepresentation(currentTime));
-				this.progress.setVisibility(View.VISIBLE);
-				this.progress.setMax(maxTime);
-				this.progress.setProgress(currentTime);
-			} else {
-				this.totalTime.setText("");
-				this.currentTime.setText("");
-				this.progress.setVisibility(View.GONE);
-				this.progress.setMax(100);
-				this.progress.setProgress(0);
-			}
+	public void enableRepeatMode(boolean doNotRepeat, boolean repeatOne, boolean repeatAll) {
+		if (doNotRepeat) {
+			showRepeatButtonAsOff();
+		} else if (repeatOne) {
+			showRepeatButtonAsOn();
+		} else if (repeatAll) {
+			//TODO: handle
 		} else {
-			this.totalTime.setText("");
-			this.currentTime.setText("");
-			this.progress.setVisibility(View.GONE);
-			this.progress.setMax(100);
-			this.progress.setProgress(0);
+		}
+	}
+
+	@Override
+	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
+		this.progress.setProgress(currentTimeInMilliseconds);
+		this.progress.setMax(totalTimeInMilliseconds);
+	}
+
+	@Override
+	public void showProgress() {
+		this.progress.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideProgress() {
+		this.progress.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void showTime(String currentTime, String totalTime) {
+		this.currentTime.setText(currentTime);
+		this.totalTime.setText(totalTime);
+	}
+
+	@Override
+	public void showError(String message) {
+		Toast.makeText(getContext(), "Error playing song", Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void enablePlayControls(boolean play, boolean pause, boolean stop) {
+		if (play) {
+			showPlayPauseButtonAsPlay();
+		} else if (pause) {
+			showPlayPauseButtonAsPause();
+		} else {
 		}
 	}
 
 	//endregion
-
-	private String timeToRepresentation(long milliseconds) {
-		return String.format("%d:%02d",
-				TimeUnit.MILLISECONDS.toMinutes(milliseconds),
-				TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-						TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
-	}
 
 	private void showPlayPauseButtonAsPlay() {
 		applyStateToPlayPauseButton(TAG_STATE_PLAY, R.drawable.ic_play);

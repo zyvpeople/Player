@@ -9,7 +9,7 @@ public enum PlaybackState {
 	PREPARING,
 	PLAYING,
 	PAUSED,
-	ERROR,
+	ERROR,//TODO:remove Error state
 	COMPLETED,
 	END,
 	NONE

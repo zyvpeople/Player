@@ -2,8 +2,8 @@ package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 
 import rx.Observable;
 
@@ -45,7 +45,20 @@ public interface MultiplePlayer {
 	}
 
 	interface View {
-		void display(MultiplePlayerStateBundle bundle, MultiplePlaybackRepeatMode repeatMode);
+
+		void enableRepeatMode(boolean doNotRepeat, boolean repeatOne, boolean repeatAll);
+
+		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
+
+		void showProgress();
+
+		void hideProgress();
+
+		void showTime(String currentTime, String totalTime);
+
+		void showError(String message);
+
+		void enablePlayControls(boolean play, boolean pause, boolean stop);
 	}
 
 	interface Presenter {
