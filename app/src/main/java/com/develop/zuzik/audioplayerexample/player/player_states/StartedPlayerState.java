@@ -2,10 +2,11 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,8 +30,15 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackBundle getPlaybackBundle() {
-		return createBundle(PlaybackState.PLAYING);
+	public PlayerStateBundle getPlayerStateBundle() {
+		int maxDuration = getPlayer().getDuration();
+		return new PlayerStateBundle(
+				PlaybackState.PLAYING,
+				getPlayer().getCurrentPosition(),
+				maxDuration != -1
+						? Optional.of(maxDuration)
+						: Optional.absent(),
+				getPlayer().isLooping());
 	}
 
 	@Override
@@ -42,9 +50,9 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void set() {
 		super.set();
-		onPlaybackStateChanged(PlaybackState.PLAYING);
+		onPlaybackStateChanged();
 		this.playerProgressSubscription = this.playerProgressObservable.subscribe(aLong ->
-				onPlaybackStateChanged(PlaybackState.PLAYING));
+				onPlaybackStateChanged());
 	}
 
 	@Override
@@ -77,6 +85,6 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	protected void onSeekCompleted() {
 		super.onSeekCompleted();
-		onPlaybackStateChanged(PlaybackState.PLAYING);
+		onPlaybackStateChanged();
 	}
 }

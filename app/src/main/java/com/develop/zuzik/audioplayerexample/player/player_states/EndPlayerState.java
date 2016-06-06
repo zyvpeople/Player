@@ -2,9 +2,10 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -13,8 +14,12 @@ import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 public class EndPlayerState implements PlayerState {
 
 	@Override
-	public PlaybackBundle getPlaybackBundle() {
-		return new PlaybackBundle(PlaybackState.END, 0, null, false);
+	public PlayerStateBundle getPlayerStateBundle() {
+		return new PlayerStateBundle(
+				PlaybackState.END,
+				0,
+				Optional.absent(),
+				false);
 	}
 
 	@Override

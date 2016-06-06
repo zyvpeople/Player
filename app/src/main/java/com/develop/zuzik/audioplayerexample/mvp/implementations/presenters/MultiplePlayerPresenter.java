@@ -3,7 +3,7 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
 
 import rx.Subscription;
@@ -45,7 +45,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 		updateView(this.model.getPlaybackState());
 	}
 
-	private void updateView(MultiplePlaybackBundle bundle) {
+	private void updateView(MultiplePlayerStateBundle bundle) {
 		this.view.display(bundle, this.repeatMode);
 	}
 
@@ -55,7 +55,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public MultiplePlaybackBundle getPlaybackState() {
+	public MultiplePlayerStateBundle getPlaybackState() {
 		return this.model.getPlaybackState();
 	}
 

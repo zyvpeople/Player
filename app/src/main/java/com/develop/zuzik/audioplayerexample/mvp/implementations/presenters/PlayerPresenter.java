@@ -3,7 +3,7 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 
 import rx.Subscription;
 
@@ -37,14 +37,15 @@ public class PlayerPresenter implements Player.Presenter {
 	@Override
 	public void onAppear() {
 		updateView();
-		this.playbackStateChangedSubscription = this.model.onPlaybackStateChanged().subscribe(this::updateView);
+		this.playbackStateChangedSubscription = this.model.onPlayerStateChangedObservable()
+				.subscribe(aVoid -> updateView());
 	}
 
 	private void updateView() {
-		updateView(this.model.getPlaybackState());
+		updateView(this.model.getPlayerStateBundle());
 	}
 
-	private void updateView(PlaybackBundle bundle) {
+	private void updateView(PlayerStateBundle bundle) {
 		this.view.display(bundle, this.repeat);
 	}
 
@@ -52,12 +53,7 @@ public class PlayerPresenter implements Player.Presenter {
 	public void onDisappear() {
 		this.playbackStateChangedSubscription.unsubscribe();
 	}
-
-	@Override
-	public PlaybackBundle getPlaybackState() {
-		return this.model.getPlaybackState();
-	}
-
+	
 	@Override
 	public void onPlay(Context context) {
 		this.model.play(context);

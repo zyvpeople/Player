@@ -2,7 +2,7 @@ package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
 
 import rx.Observable;
@@ -17,9 +17,9 @@ public interface MultiplePlayer {
 
 		void destroy();
 
-		MultiplePlaybackBundle getPlaybackState();
+		MultiplePlayerStateBundle getPlaybackState();
 
-		Observable<MultiplePlaybackBundle> onPlaybackStateChanged();
+		Observable<MultiplePlayerStateBundle> onPlaybackStateChanged();
 
 		void play(Context context);
 
@@ -43,7 +43,7 @@ public interface MultiplePlayer {
 	}
 
 	interface View {
-		void display(MultiplePlaybackBundle bundle, MultiplePlaybackRepeatMode repeatMode);
+		void display(MultiplePlayerStateBundle bundle, MultiplePlaybackRepeatMode repeatMode);
 	}
 
 	interface Presenter {
@@ -55,7 +55,7 @@ public interface MultiplePlayer {
 
 		void onDisappear();
 
-		MultiplePlaybackBundle getPlaybackState();
+		MultiplePlayerStateBundle getPlaybackState();
 
 		void onPlay(Context context);
 

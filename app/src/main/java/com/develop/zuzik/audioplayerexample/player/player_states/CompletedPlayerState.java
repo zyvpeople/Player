@@ -3,10 +3,11 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -19,8 +20,13 @@ public class CompletedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackBundle getPlaybackBundle() {
-		return createBundle();
+	public PlayerStateBundle getPlayerStateBundle() {
+		int maxDuration = getPlayer().getDuration();
+		return new PlayerStateBundle(
+				PlaybackState.COMPLETED,
+				maxDuration,
+				Optional.of(maxDuration),
+				getPlayer().isLooping());
 	}
 
 	@Override
@@ -32,7 +38,7 @@ public class CompletedPlayerState extends BasePlayerState {
 	@Override
 	public void set() {
 		super.set();
-		onPlaybackStateChanged(createBundle());
+		onPlaybackStateChanged();
 	}
 
 	@Override
@@ -59,11 +65,6 @@ public class CompletedPlayerState extends BasePlayerState {
 	@Override
 	protected void onSeekCompleted() {
 		super.onSeekCompleted();
-		onPlaybackStateChanged(PlaybackState.COMPLETED);
-	}
-
-	private PlaybackBundle createBundle() {
-		int maxDuration = getPlayer().getDuration();
-		return new PlaybackBundle(PlaybackState.COMPLETED, maxDuration, maxDuration, getPlayer().isLooping());
+		onPlaybackStateChanged();
 	}
 }

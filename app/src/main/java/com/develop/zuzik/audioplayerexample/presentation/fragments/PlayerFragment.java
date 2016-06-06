@@ -20,10 +20,10 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultipleP
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
@@ -67,7 +67,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 							Arrays.asList(
 									new RawResourcePlayerSource(R.raw.song),
 									new RawResourcePlayerSource(R.raw.song_short),
-									new UriPlayerSource(Uri.parse("http://storage.mp3.cc/download/454079/dG5Dd2NNMy8vZ1NUc2hINFZtRXl4OUt4c2RjZXhvdmkra3liTmFnOTFWMlZibUlCMlZRTXcwcVVhckszaldDSGRqMzRLaTg2ckpkQVhxZHYya3NKc09MM0VvNnFFQ2g3ZnNUYTlMS3M2YlY5MkhtcEpYTlR4V1JPaUJUcHhWMU8/Of_Monsters_And_Men-Little_Talks_(mp3.cc).mp3"))))));
+									new UriPlayerSource(Uri.parse("https://myzuka.fm/Song/Download/3651633?t=636008467740490540&s=0ebd8ff44dd75c2806598937d34ae320"))))));
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -174,38 +174,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 
 	@Override
-	public void display(MultiplePlaybackBundle bundle, MultiplePlaybackRepeatMode repeatMode) {
-		PlaybackBundle playbackBundle = bundle.currentPlaybackBundle;
-		PlaybackState playbackState = playbackBundle != null ? playbackBundle.state : PlaybackState.NONE;
-		Integer maxDurationInMilliseconds = playbackBundle != null ? playbackBundle.maxDurationInMilliseconds : null;
-		int currentPositionInMilliseconds = playbackBundle != null ? playbackBundle.currentPositionInMilliseconds : 0;
-
-		if (playbackState == PlaybackState.ERROR) {
-			Toast.makeText(getContext(), "Error playing song", Toast.LENGTH_SHORT).show();
-		}
-
-		this.totalTime.setText(maxDurationInMilliseconds != null
-				? timeToRepresentation(maxDurationInMilliseconds)
-				: "");
-		this.currentTime.setText(maxDurationInMilliseconds != null
-				? timeToRepresentation(currentPositionInMilliseconds)
-				: "");
-		this.progress.setVisibility(maxDurationInMilliseconds != null
-				? View.VISIBLE
-				: View.GONE);
-		this.progress.setMax(maxDurationInMilliseconds != null
-				? maxDurationInMilliseconds
-				: 100);
-		this.progress.setProgress(maxDurationInMilliseconds != null
-				? currentPositionInMilliseconds
-				: 0);
-
-		if (playbackState == PlaybackState.PLAYING) {
-			showPlayPauseButtonAsPause();
-		} else {
-			showPlayPauseButtonAsPlay();
-		}
-
+	public void display(MultiplePlayerStateBundle bundle, MultiplePlaybackRepeatMode repeatMode) {
 		switch (repeatMode) {
 			case REPEAT_ONE:
 				showRepeatButtonAsOn();
@@ -216,6 +185,40 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 			case DO_NOT_REPEAT:
 				showRepeatButtonAsOff();
 				break;
+		}
+
+		if (bundle.currentPlayerStateBundle.isPresent()) {
+			PlayerStateBundle playerStateBundle = bundle.currentPlayerStateBundle.get();
+
+			if (playerStateBundle.state == PlaybackState.ERROR) {
+				Toast.makeText(getContext(), "Error playing song", Toast.LENGTH_SHORT).show();
+			}
+			if (playerStateBundle.state == PlaybackState.PLAYING) {
+				showPlayPauseButtonAsPause();
+			} else {
+				showPlayPauseButtonAsPlay();
+			}
+			if (playerStateBundle.maxTimeInMilliseconds.isPresent()) {
+				int maxTime = playerStateBundle.maxTimeInMilliseconds.get();
+				int currentTime = playerStateBundle.currentTimeInMilliseconds;
+				this.totalTime.setText(timeToRepresentation(maxTime));
+				this.currentTime.setText(timeToRepresentation(currentTime));
+				this.progress.setVisibility(View.VISIBLE);
+				this.progress.setMax(maxTime);
+				this.progress.setProgress(currentTime);
+			} else {
+				this.totalTime.setText("");
+				this.currentTime.setText("");
+				this.progress.setVisibility(View.GONE);
+				this.progress.setMax(100);
+				this.progress.setProgress(0);
+			}
+		} else {
+			this.totalTime.setText("");
+			this.currentTime.setText("");
+			this.progress.setVisibility(View.GONE);
+			this.progress.setMax(100);
+			this.progress.setProgress(0);
 		}
 	}
 

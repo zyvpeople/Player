@@ -5,6 +5,7 @@ import android.content.Context;
 import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullMultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +18,17 @@ import java.util.List;
 public class MultiplePlayback {
 
 	private final List<Playback> playbacks = new ArrayList<>();
-	private Integer currentPosition;
+	private Optional<Integer> currentPosition;
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
-	private MultiplePlaybackRepeatMode repeatMode;
+	private MultiplePlaybackRepeatMode repeatMode = MultiplePlaybackRepeatMode.DO_NOT_REPEAT;
 
 	public MultiplePlayback(List<PlayerSource> sources) {
 		for (PlayerSource source : sources) {
 			this.playbacks.add(new Playback(source));
 		}
-		if (!sources.isEmpty()) {
-			this.currentPosition = 0;
-		}
+		this.currentPosition = sources.isEmpty()
+				? Optional.absent()
+				: Optional.of(0);
 	}
 
 	public void setListener(MultiplePlaybackListener listener) {
@@ -36,32 +37,22 @@ public class MultiplePlayback {
 				: new NullMultiplePlaybackListener();
 	}
 
-	public MultiplePlaybackBundle getMultiplePlaybackBundle() {
-		Playback currentPlaybackOrNull = currentPlaybackOrNull();
-		PlaybackBundle currentPlaybackBundle = currentPlaybackOrNull != null
-				? currentPlaybackOrNull.getPlaybackBundle()
-				: null;
-		//TODO: replace to bundle
-		PlayerSource currentPlayerSource = currentPlaybackOrNull != null
-				? currentPlaybackOrNull.source
-				: null;
-		return new MultiplePlaybackBundle(
+	public MultiplePlayerStateBundle getMultiplePlaybackBundle() {
+		return new MultiplePlayerStateBundle(
 				this.repeatMode,
-				currentPlaybackBundle,
-				currentPlayerSource,
+				currentPlayback().transform(Playback::getPlayerStateBundle),
+				currentPlayback().transform(input -> input.source),
 				playbacksToPlaySources());
 	}
 
 	private void currentPlayback(SearchResultListener<Playback> listener) {
-		if (this.currentPosition != null) {
-			listener.onFound(this.playbacks.get(this.currentPosition));
+		if (this.currentPosition.isPresent()) {
+			listener.onFound(this.currentPosition.transform(this.playbacks::get).get());
 		}
 	}
 
-	private Playback currentPlaybackOrNull() {
-		return this.currentPosition != null
-				? this.playbacks.get(this.currentPosition)
-				: null;
+	private Optional<Playback> currentPlayback() {
+		return this.currentPosition.transform(this.playbacks::get);
 	}
 
 	private List<PlayerSource> playbacksToPlaySources() {
@@ -139,7 +130,8 @@ public class MultiplePlayback {
 	}
 
 	private void initPlayback(Context context, Playback playback, boolean play) {
-		playback.setPlaybackListener(bundle -> {
+		playback.setPlaybackListener(() -> {
+			PlayerStateBundle bundle = playback.getPlayerStateBundle();
 			this.listener.onChange(getMultiplePlaybackBundle());
 			if (bundle.state == PlaybackState.COMPLETED
 					|| bundle.state == PlaybackState.ERROR
@@ -163,7 +155,7 @@ public class MultiplePlayback {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int nextPlaybackIndex = (currentPlaybackIndex + 1) % this.playbacks.size();
-			this.currentPosition = nextPlaybackIndex;
+			this.currentPosition = Optional.of(nextPlaybackIndex);
 			listener.onFound(this.playbacks.get(nextPlaybackIndex));
 		});
 	}
@@ -172,7 +164,7 @@ public class MultiplePlayback {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int previousPlaybackIndex = (currentPlaybackIndex - 1 + this.playbacks.size()) % this.playbacks.size();
-			this.currentPosition = previousPlaybackIndex;
+			this.currentPosition = Optional.of(previousPlaybackIndex);
 			listener.onFound(this.playbacks.get(previousPlaybackIndex));
 		});
 	}

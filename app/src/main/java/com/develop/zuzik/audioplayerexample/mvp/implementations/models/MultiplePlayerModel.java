@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
 
 import rx.Observable;
@@ -17,7 +17,7 @@ import rx.subjects.PublishSubject;
 public class MultiplePlayerModel implements MultiplePlayer.Model {
 
 	private final MultiplePlayback playback;
-	private final PublishSubject<MultiplePlaybackBundle> playbackStateChangedPublishSubject = PublishSubject.create();
+	private final PublishSubject<MultiplePlayerStateBundle> playbackStateChangedPublishSubject = PublishSubject.create();
 
 	public MultiplePlayerModel(MultiplePlayback playback) {
 		this.playback = playback;
@@ -36,12 +36,12 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public MultiplePlaybackBundle getPlaybackState() {
+	public MultiplePlayerStateBundle getPlaybackState() {
 		return this.playback.getMultiplePlaybackBundle();
 	}
 
 	@Override
-	public Observable<MultiplePlaybackBundle> onPlaybackStateChanged() {
+	public Observable<MultiplePlayerStateBundle> onPlaybackStateChanged() {
 		return this.playbackStateChangedPublishSubject.asObservable();
 	}
 

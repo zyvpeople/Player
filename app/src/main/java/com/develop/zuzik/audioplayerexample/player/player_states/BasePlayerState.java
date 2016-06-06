@@ -3,11 +3,11 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 /**
@@ -45,19 +45,8 @@ abstract class BasePlayerState implements PlayerState {
 		getStateContainer().setState(state);
 	}
 
-	protected final void onPlaybackStateChanged(PlaybackState state) {
-		this.playbackListener.onChange(createBundle(state));
-	}
-
-	protected final void onPlaybackStateChanged(PlaybackBundle bundle) {
-		this.playbackListener.onChange(bundle);
-	}
-
-	protected final PlaybackBundle createBundle(PlaybackState state) {
-		int currentPosition = getPlayer().getCurrentPosition();
-		int maxDuration = getPlayer().getDuration();
-		Integer maxDurationOrNull = maxDuration != -1 ? maxDuration : null;
-		return new PlaybackBundle(state, currentPosition, maxDurationOrNull, getPlayer().isLooping());
+	protected final void onPlaybackStateChanged() {
+		this.playbackListener.onChange();
 	}
 
 	protected void onSeekCompleted() {
@@ -94,7 +83,8 @@ abstract class BasePlayerState implements PlayerState {
 
 	protected final void handleError() {
 		getPlayer().reset();
-		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null, getPlayer().isLooping()));
+		//TODO: somehow notify about error
+//		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null, getPlayer().isLooping()));
 		setState(new IdlePlayerState(getPlayer(), getSource(), getStateContainer()));
 	}
 

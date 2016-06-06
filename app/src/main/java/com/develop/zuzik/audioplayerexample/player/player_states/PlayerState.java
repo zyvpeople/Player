@@ -3,7 +3,10 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -11,7 +14,7 @@ import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
  */
 public interface PlayerState {
 
-	PlaybackBundle getPlaybackBundle();
+	PlayerStateBundle getPlayerStateBundle();
 
 	void setPlaybackListener(PlaybackListener playbackListener);
 

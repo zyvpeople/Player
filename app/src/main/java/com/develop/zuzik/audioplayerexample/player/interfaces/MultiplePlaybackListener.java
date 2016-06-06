@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.interfaces;
 
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 
 /**
  * User: zuzik
@@ -8,5 +8,5 @@ import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackBundle;
  */
 public interface MultiplePlaybackListener {
 
-	void onChange(MultiplePlaybackBundle bundle);
+	void onChange(MultiplePlayerStateBundle bundle);
 }

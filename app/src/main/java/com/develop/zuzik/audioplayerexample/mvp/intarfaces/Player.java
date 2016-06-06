@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 
 import rx.Observable;
 
@@ -16,9 +17,9 @@ public interface Player {
 
 		void destroy();
 
-		PlaybackBundle getPlaybackState();
+		PlayerStateBundle getPlayerStateBundle();
 
-		Observable<PlaybackBundle> onPlaybackStateChanged();
+		Observable<Void> onPlayerStateChangedObservable();
 
 		void play(Context context);
 
@@ -36,7 +37,7 @@ public interface Player {
 	}
 
 	interface View {
-		void display(PlaybackBundle bundle, boolean repeat);
+		void display(PlayerStateBundle bundle, boolean repeat);
 	}
 
 	interface Presenter {
@@ -47,8 +48,6 @@ public interface Player {
 		void onAppear();
 
 		void onDisappear();
-
-		PlaybackBundle getPlaybackState();
 
 		void onPlay(Context context);
 

@@ -13,8 +13,8 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 
 import java.util.Arrays;
@@ -108,8 +108,9 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 
 	//region Player.View
 
+
 	@Override
-	public void display(PlaybackBundle bundle, boolean repeat) {
+	public void display(PlayerStateBundle bundle, boolean repeat) {
 		if (bundle.state == PlaybackState.ERROR) {
 			Toast.makeText(this, "Error playing song", Toast.LENGTH_SHORT).show();
 		}
@@ -118,20 +119,20 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 		setButtonEnabled(pause, bundle.state, enablePauseButtonStates);
 		setButtonEnabled(stop, bundle.state, enableStopButtonStates);
 
-		maxDuration.setText(bundle.maxDurationInMilliseconds != null
-				? String.valueOf(bundle.maxDurationInMilliseconds)
-				: "-");
-		currentPosition.setText(String.valueOf(bundle.currentPositionInMilliseconds));
-		seekBar.setEnabled(bundle.maxDurationInMilliseconds != null);
-		seekBar.setMax(bundle.maxDurationInMilliseconds != null
-				? bundle.maxDurationInMilliseconds
-				: 100);
-		seekBar.setProgress(bundle.maxDurationInMilliseconds != null
-				? bundle.currentPositionInMilliseconds
-				: 0);
+		if (bundle.maxTimeInMilliseconds.isPresent()) {
+			this.maxDuration.setText(bundle.maxTimeInMilliseconds.transform(String::valueOf).get());
+			this.seekBar.setEnabled(true);
+			this.seekBar.setMax(bundle.maxTimeInMilliseconds.get());
+			this.seekBar.setProgress(bundle.currentTimeInMilliseconds);
+		} else {
+			this.maxDuration.setText("-");
+			this.seekBar.setEnabled(false);
+			this.seekBar.setMax(100);
+			this.seekBar.setProgress(0);
+		}
+		this.currentPosition.setText(String.valueOf(bundle.currentTimeInMilliseconds));
 
 		this.repeat.setChecked(repeat);
-
 		loading.setVisibility(bundle.state == PlaybackState.PREPARING
 				? View.VISIBLE
 				: View.GONE);

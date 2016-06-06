@@ -3,10 +3,11 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -19,8 +20,15 @@ public class PausedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackBundle getPlaybackBundle() {
-		return createBundle(PlaybackState.PAUSED);
+	public PlayerStateBundle getPlayerStateBundle() {
+		int maxDuration = getPlayer().getDuration();
+		return new PlayerStateBundle(
+				PlaybackState.PAUSED,
+				getPlayer().getCurrentPosition(),
+				maxDuration != -1
+						? Optional.of(maxDuration)
+						: Optional.absent(),
+				getPlayer().isLooping());
 	}
 
 	@Override
@@ -32,7 +40,7 @@ public class PausedPlayerState extends BasePlayerState {
 	@Override
 	public void set() {
 		super.set();
-		onPlaybackStateChanged(PlaybackState.PAUSED);
+		onPlaybackStateChanged();
 	}
 
 	@Override
@@ -59,6 +67,6 @@ public class PausedPlayerState extends BasePlayerState {
 	@Override
 	protected void onSeekCompleted() {
 		super.onSeekCompleted();
-		onPlaybackStateChanged(PlaybackState.PAUSED);
+		onPlaybackStateChanged();
 	}
 }

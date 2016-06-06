@@ -4,11 +4,12 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -23,8 +24,12 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackBundle getPlaybackBundle() {
-		return createBundle();
+	public PlayerStateBundle getPlayerStateBundle() {
+		return new PlayerStateBundle(
+				this.preparing ? PlaybackState.PREPARING : PlaybackState.IDLE,
+				0,
+				Optional.absent(),
+				getPlayer().isLooping());
 	}
 
 	@Override
@@ -41,7 +46,7 @@ public class IdlePlayerState extends BasePlayerState {
 			player.start();
 			setState(new StartedPlayerState(player, getSource(), getStateContainer()));
 		});
-		onPlaybackStateChanged(createBundle());
+		onPlaybackStateChanged();
 	}
 
 	@Override
@@ -59,16 +64,12 @@ public class IdlePlayerState extends BasePlayerState {
 		this.preparing = true;
 		getPlayer().reset();
 		try {
-			onPlaybackStateChanged(createBundle());
+			onPlaybackStateChanged();
 			getSource().initialize(context, getPlayer());
 			getPlayer().prepareAsync();
 		} catch (PlayerInitializeException e) {
 			Log.e(getClass().getSimpleName(), e.getMessage());
 			handleError();
 		}
-	}
-
-	private PlaybackBundle createBundle() {
-		return new PlaybackBundle(this.preparing ? PlaybackState.PREPARING : PlaybackState.IDLE, 0, null, getPlayer().isLooping());
 	}
 }
