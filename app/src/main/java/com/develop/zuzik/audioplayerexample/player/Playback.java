@@ -40,12 +40,16 @@ public class Playback implements PlayerStateContainer {
 		return this.state.getPlayerStateBundle();
 	}
 
-	//TODO: create 2 methods
-	public void setRepeat(boolean repeat) {
-		this.repeat = repeat;
-		this.state.setRepeat(this.repeat);
+	public void repeat() {
+		this.repeat = true;
+		this.state.setRepeat(true);
 	}
 
+	public void doNotRepeat() {
+		this.repeat = false;
+		this.state.setRepeat(false);
+	}
+	
 	//endregion
 
 	//region Play

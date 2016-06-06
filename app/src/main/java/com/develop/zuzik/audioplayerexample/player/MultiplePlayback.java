@@ -68,11 +68,11 @@ public class MultiplePlayback {
 		currentPlayback(result -> {
 			switch (mode) {
 				case REPEAT_ONE:
-					result.setRepeat(true);
+					result.repeat();
 					break;
 				case REPEAT_ALL:
 				case DO_NOT_REPEAT:
-					result.setRepeat(false);
+					result.doNotRepeat();
 					break;
 			}
 		});

@@ -67,12 +67,12 @@ public class PlayerModel implements Player.Model {
 
 	@Override
 	public void repeat() {
-		this.playback.setRepeat(true);
+		this.playback.repeat();
 	}
 
 	@Override
 	public void doNotRepeat() {
-		this.playback.setRepeat(false);
+		this.playback.doNotRepeat();
 	}
 
 	@Override
