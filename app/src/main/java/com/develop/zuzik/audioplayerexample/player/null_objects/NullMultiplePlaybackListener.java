@@ -11,4 +11,8 @@ public class NullMultiplePlaybackListener implements MultiplePlaybackListener {
 	@Override
 	public void onChange(MultiplePlayerStateBundle bundle) {
 	}
+
+	@Override
+	public void onError() {
+	}
 }

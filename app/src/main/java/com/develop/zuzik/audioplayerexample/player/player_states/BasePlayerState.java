@@ -3,8 +3,6 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
@@ -83,8 +81,7 @@ abstract class BasePlayerState implements PlayerState {
 
 	protected final void handleError() {
 		getPlayer().reset();
-		//TODO: somehow notify about error
-//		onPlaybackStateChanged(new PlaybackBundle(PlaybackState.ERROR, 0, null, getPlayer().isLooping()));
+		this.playbackListener.onError();
 		setState(new IdlePlayerState(getPlayer(), getSource(), getStateContainer()));
 	}
 

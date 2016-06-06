@@ -19,7 +19,9 @@ public interface MultiplePlayer {
 
 		MultiplePlayerStateBundle getPlaybackState();
 
-		Observable<MultiplePlayerStateBundle> onPlaybackStateChanged();
+		Observable<MultiplePlayerStateBundle> onPlaybackStateChangedObservable();
+
+		Observable<Void> onErrorPlayingObservable();
 
 		void play(Context context);
 

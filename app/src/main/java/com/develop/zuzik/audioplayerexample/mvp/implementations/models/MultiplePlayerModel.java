@@ -4,8 +4,9 @@ import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackListener;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -18,6 +19,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 
 	private final MultiplePlayback playback;
 	private final PublishSubject<MultiplePlayerStateBundle> playbackStateChangedPublishSubject = PublishSubject.create();
+	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
 
 	public MultiplePlayerModel(MultiplePlayback playback) {
 		this.playback = playback;
@@ -26,7 +28,17 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	@Override
 	public void init(Context context) {
 		this.playback.init(context);
-		this.playback.setListener(bundle -> this.playbackStateChangedPublishSubject.onNext(bundle));
+		this.playback.setListener(new MultiplePlaybackListener() {
+			@Override
+			public void onChange(MultiplePlayerStateBundle bundle) {
+				playbackStateChangedPublishSubject.onNext(bundle);
+			}
+
+			@Override
+			public void onError() {
+				errorPlayingPublishSubject.onNext(null);
+			}
+		});
 	}
 
 	@Override
@@ -41,8 +53,13 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public Observable<MultiplePlayerStateBundle> onPlaybackStateChanged() {
+	public Observable<MultiplePlayerStateBundle> onPlaybackStateChangedObservable() {
 		return this.playbackStateChangedPublishSubject.asObservable();
+	}
+
+	@Override
+	public Observable<Void> onErrorPlayingObservable() {
+		return this.errorPlayingPublishSubject.asObservable();
 	}
 
 	@Override

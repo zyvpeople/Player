@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullMultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
@@ -130,14 +131,22 @@ public class MultiplePlayback {
 	}
 
 	private void initPlayback(Context context, Playback playback, boolean play) {
-		playback.setPlaybackListener(() -> {
-			PlayerStateBundle bundle = playback.getPlayerStateBundle();
-			this.listener.onChange(getMultiplePlaybackBundle());
-			if (bundle.state == PlaybackState.COMPLETED
-					|| bundle.state == PlaybackState.ERROR
-					|| bundle.state == PlaybackState.END) {
-				//TODO:also should use shuffle flag and repeat mode
-				skipNext(context);
+		playback.setPlaybackListener(new PlaybackListener() {
+			@Override
+			public void onChange() {
+				PlayerStateBundle bundle = playback.getPlayerStateBundle();
+				listener.onChange(getMultiplePlaybackBundle());
+				if (bundle.state == PlaybackState.COMPLETED
+						|| bundle.state == PlaybackState.ERROR
+						|| bundle.state == PlaybackState.END) {
+					//TODO:also should use shuffle flag and repeat mode
+					skipNext(context);
+				}
+			}
+
+			@Override
+			public void onError() {
+				listener.onError();
 			}
 		});
 		playback.init();

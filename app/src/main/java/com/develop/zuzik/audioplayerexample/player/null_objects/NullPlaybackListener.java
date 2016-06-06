@@ -11,4 +11,8 @@ public class NullPlaybackListener implements PlaybackListener {
 	@Override
 	public void onChange() {
 	}
+
+	@Override
+	public void onError() {
+	}
 }

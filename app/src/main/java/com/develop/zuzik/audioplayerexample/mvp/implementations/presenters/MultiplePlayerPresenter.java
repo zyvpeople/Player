@@ -3,8 +3,8 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
+import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 
 import rx.Subscription;
 
@@ -17,6 +17,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	private final MultiplePlayer.Model model;
 	private MultiplePlayer.View view;
 	private Subscription playbackStateChangedSubscription;
+	private Subscription errorPlayingSubscription;
 	private MultiplePlaybackRepeatMode repeatMode = MultiplePlaybackRepeatMode.DO_NOT_REPEAT;
 
 	public MultiplePlayerPresenter(MultiplePlayer.Model model) {
@@ -38,7 +39,9 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	@Override
 	public void onAppear() {
 		updateView();
-		this.playbackStateChangedSubscription = this.model.onPlaybackStateChanged().subscribe(this::updateView);
+		this.playbackStateChangedSubscription = this.model.onPlaybackStateChangedObservable().subscribe(this::updateView);
+		//TODO:
+		this.errorPlayingSubscription = this.model.onErrorPlayingObservable().subscribe();
 	}
 
 	private void updateView() {
@@ -52,6 +55,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	@Override
 	public void onDisappear() {
 		this.playbackStateChangedSubscription.unsubscribe();
+		this.errorPlayingSubscription.unsubscribe();
 	}
 
 	@Override

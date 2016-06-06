@@ -2,7 +2,6 @@ package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 
 import rx.Observable;
@@ -20,6 +19,8 @@ public interface Player {
 		PlayerStateBundle getPlayerStateBundle();
 
 		Observable<Void> onPlayerStateChangedObservable();
+
+		Observable<Void> onErrorPlayingObservable();
 
 		void play(Context context);
 

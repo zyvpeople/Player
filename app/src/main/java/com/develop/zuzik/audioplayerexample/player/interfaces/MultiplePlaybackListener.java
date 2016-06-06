@@ -9,4 +9,6 @@ import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 public interface MultiplePlaybackListener {
 
 	void onChange(MultiplePlayerStateBundle bundle);
+
+	void onError();
 }

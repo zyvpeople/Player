@@ -5,6 +5,7 @@ import android.content.Context;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.Playback;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import rx.Observable;
@@ -18,6 +19,7 @@ public class PlayerModel implements Player.Model {
 
 	private final Playback playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
+	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
 
 	public PlayerModel(PlayerSource source) {
 		this.playback = new Playback(source);
@@ -26,7 +28,17 @@ public class PlayerModel implements Player.Model {
 	@Override
 	public void init() {
 		this.playback.init();
-		this.playback.setPlaybackListener(() -> this.playbackStateChangedPublishSubject.onNext(null));
+		this.playback.setPlaybackListener(new PlaybackListener() {
+			@Override
+			public void onChange() {
+				playbackStateChangedPublishSubject.onNext(null);
+			}
+
+			@Override
+			public void onError() {
+				errorPlayingPublishSubject.onNext(null);
+			}
+		});
 	}
 
 	@Override
@@ -43,6 +55,11 @@ public class PlayerModel implements Player.Model {
 	@Override
 	public Observable<Void> onPlayerStateChangedObservable() {
 		return this.playbackStateChangedPublishSubject.asObservable();
+	}
+
+	@Override
+	public Observable<Void> onErrorPlayingObservable() {
+		return this.errorPlayingPublishSubject.asObservable();
 	}
 
 	@Override

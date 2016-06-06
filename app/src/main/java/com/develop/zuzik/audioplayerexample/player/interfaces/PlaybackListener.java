@@ -8,4 +8,5 @@ public interface PlaybackListener {
 
 	void onChange();
 
+	void onError();
 }
