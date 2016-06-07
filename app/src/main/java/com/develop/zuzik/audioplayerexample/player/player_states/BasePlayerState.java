@@ -3,9 +3,9 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 

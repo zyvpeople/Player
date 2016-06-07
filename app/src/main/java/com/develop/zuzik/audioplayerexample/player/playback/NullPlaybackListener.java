@@ -1,6 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.null_objects;
-
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
+package com.develop.zuzik.audioplayerexample.player.playback;
 
 /**
  * User: zuzik

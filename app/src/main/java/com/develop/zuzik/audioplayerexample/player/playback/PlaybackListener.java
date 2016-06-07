@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.interfaces;
+package com.develop.zuzik.audioplayerexample.player.playback;
 
 /**
  * User: zuzik

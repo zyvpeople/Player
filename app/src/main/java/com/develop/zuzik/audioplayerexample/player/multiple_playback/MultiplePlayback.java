@@ -3,9 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.null_objects.NullMultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;

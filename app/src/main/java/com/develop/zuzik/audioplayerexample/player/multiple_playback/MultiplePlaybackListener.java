@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.interfaces;
+package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayerStateBundle;
 

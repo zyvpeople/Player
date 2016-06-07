@@ -5,7 +5,7 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelSt
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.RepeatMode;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackListener;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;

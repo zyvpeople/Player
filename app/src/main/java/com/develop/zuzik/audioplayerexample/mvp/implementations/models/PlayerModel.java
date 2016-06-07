@@ -5,7 +5,7 @@ import android.content.Context;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 import rx.Observable;
