@@ -1,7 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
-import android.content.Context;
-
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
@@ -21,7 +20,6 @@ public class PlayerPresenter implements Player.Presenter {
 	private final Player.Model model;
 	private Player.View view;
 	private Subscription playbackStateChangedSubscription;
-	private boolean repeat;
 
 	List<PlaybackState> allowedPlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
 	List<PlaybackState> allowedPauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
@@ -46,7 +44,7 @@ public class PlayerPresenter implements Player.Presenter {
 	@Override
 	public void onAppear() {
 		updateView();
-		this.playbackStateChangedSubscription = this.model.onPlayerStateChangedObservable()
+		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
 				.subscribe(aVoid -> updateView());
 	}
 
@@ -78,14 +76,12 @@ public class PlayerPresenter implements Player.Presenter {
 	@Override
 	public void onRepeat() {
 		this.model.repeat();
-		this.repeat = true;
 		updateView();
 	}
 
 	@Override
 	public void onDoNotRepeat() {
 		this.model.doNotRepeat();
-		this.repeat = false;
 		updateView();
 	}
 
@@ -95,10 +91,11 @@ public class PlayerPresenter implements Player.Presenter {
 	}
 
 	private void updateView() {
-		updateView(this.model.getPlayerStateBundle());
+		updateView(this.model.getState());
 	}
 
-	private void updateView(PlayerStateBundle bundle) {
+	private void updateView(PlayerModelState state) {
+		PlayerStateBundle bundle = state.bundle;
 		this.view.enablePlayControls(
 				this.allowedPlayButtonStates.contains(bundle.state),
 				this.allowedPauseButtonStates.contains(bundle.state),
@@ -114,7 +111,7 @@ public class PlayerPresenter implements Player.Presenter {
 			this.view.setProgress(0, 100);
 		}
 
-		if (this.repeat) {
+		if (state.repeat) {
 			this.view.setRepeat();
 		} else {
 			this.view.setDoNotRepeat();

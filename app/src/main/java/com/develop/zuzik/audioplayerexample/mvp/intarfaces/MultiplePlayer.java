@@ -1,9 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
-import android.content.Context;
-
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 
 import rx.Observable;
 
@@ -17,9 +14,9 @@ public interface MultiplePlayer {
 
 		void destroy();
 
-		MultiplePlayerStateBundle getPlaybackState();
+		MultiplePlayerModelState getState();
 
-		Observable<MultiplePlayerStateBundle> onPlaybackStateChangedObservable();
+		Observable<Void> stateChangedObservable();
 
 		Observable<Void> onErrorPlayingObservable();
 
@@ -69,8 +66,6 @@ public interface MultiplePlayer {
 		void onAppear();
 
 		void onDisappear();
-
-		MultiplePlayerStateBundle getPlaybackState();
 
 		void onPlay();
 

@@ -1,8 +1,7 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
-import android.content.Context;
-
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
@@ -24,7 +23,6 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	private MultiplePlayer.View view;
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
-	private MultiplePlaybackRepeatMode repeatMode = MultiplePlaybackRepeatMode.DO_NOT_REPEAT;
 
 	List<PlaybackState> allowedPlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
 	List<PlaybackState> allowedPauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
@@ -49,7 +47,8 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	@Override
 	public void onAppear() {
 		updateView();
-		this.playbackStateChangedSubscription = this.model.onPlaybackStateChangedObservable().subscribe(this::updateView);
+		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
+				.subscribe(aVoid -> updateView());
 		//TODO:
 		this.errorPlayingSubscription = this.model.onErrorPlayingObservable().subscribe();
 	}
@@ -58,11 +57,6 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	public void onDisappear() {
 		this.playbackStateChangedSubscription.unsubscribe();
 		this.errorPlayingSubscription.unsubscribe();
-	}
-
-	@Override
-	public MultiplePlayerStateBundle getPlaybackState() {
-		return this.model.getPlaybackState();
 	}
 
 	@Override
@@ -98,7 +92,6 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	@Override
 	public void onRepeat(MultiplePlaybackRepeatMode repeatMode) {
 		this.model.repeat(repeatMode);
-		this.repeatMode = repeatMode;
 		updateView();
 	}
 
@@ -118,14 +111,17 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	private void updateView() {
-		updateView(this.model.getPlaybackState());
+		updateView(this.model.getState());
 	}
 
-	private void updateView(MultiplePlayerStateBundle bundle) {
+	private void updateView(MultiplePlayerModelState state) {
+		MultiplePlayerStateBundle bundle = state.bundle;
+		MultiplePlaybackRepeatMode repeatMode = state.repeat;
+
 		this.view.enableRepeatMode(
-				this.repeatMode == MultiplePlaybackRepeatMode.DO_NOT_REPEAT,
-				this.repeatMode == MultiplePlaybackRepeatMode.REPEAT_ONE,
-				this.repeatMode == MultiplePlaybackRepeatMode.REPEAT_ALL);
+				repeatMode == MultiplePlaybackRepeatMode.DO_NOT_REPEAT,
+				repeatMode == MultiplePlaybackRepeatMode.REPEAT_ONE,
+				repeatMode == MultiplePlaybackRepeatMode.REPEAT_ALL);
 
 		if (bundle.currentPlayerStateBundle.isPresent()) {
 			PlayerStateBundle playerStateBundle = bundle.currentPlayerStateBundle.get();

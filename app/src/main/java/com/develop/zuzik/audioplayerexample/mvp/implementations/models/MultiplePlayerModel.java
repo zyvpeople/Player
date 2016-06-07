@@ -1,6 +1,7 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
@@ -16,8 +17,9 @@ import rx.subjects.PublishSubject;
 public class MultiplePlayerModel implements MultiplePlayer.Model {
 
 	private final MultiplePlayback playback;
-	private final PublishSubject<MultiplePlayerStateBundle> playbackStateChangedPublishSubject = PublishSubject.create();
+	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
+	private MultiplePlaybackRepeatMode repeat = MultiplePlaybackRepeatMode.DO_NOT_REPEAT;
 
 	public MultiplePlayerModel(MultiplePlayback playback) {
 		this.playback = playback;
@@ -29,7 +31,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 		this.playback.setListener(new MultiplePlaybackListener() {
 			@Override
 			public void onChange(MultiplePlayerStateBundle bundle) {
-				playbackStateChangedPublishSubject.onNext(bundle);
+				playbackStateChangedPublishSubject.onNext(null);
 			}
 
 			@Override
@@ -46,12 +48,12 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public MultiplePlayerStateBundle getPlaybackState() {
-		return this.playback.getMultiplePlaybackBundle();
+	public MultiplePlayerModelState getState() {
+		return new MultiplePlayerModelState(this.playback.getMultiplePlaybackBundle(), this.repeat);
 	}
 
 	@Override
-	public Observable<MultiplePlayerStateBundle> onPlaybackStateChangedObservable() {
+	public Observable<Void> stateChangedObservable() {
 		return this.playbackStateChangedPublishSubject.asObservable();
 	}
 
@@ -93,6 +95,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	@Override
 	public void repeat(MultiplePlaybackRepeatMode repeatMode) {
 		this.playback.repeat(repeatMode);
+		this.repeat = repeatMode;
 	}
 
 	@Override

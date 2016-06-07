@@ -2,9 +2,9 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
 import android.content.Context;
 
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.Playback;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
@@ -20,6 +20,7 @@ public class PlayerModel implements Player.Model {
 	private final Playback playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
+	private boolean repeat;
 
 	public PlayerModel(Context context, PlayerSource source) {
 		this.playback = new Playback(context, source);
@@ -48,17 +49,17 @@ public class PlayerModel implements Player.Model {
 	}
 
 	@Override
-	public PlayerStateBundle getPlayerStateBundle() {
-		return this.playback.getPlayerStateBundle();
+	public PlayerModelState getState() {
+		return new PlayerModelState(this.playback.getPlayerStateBundle(), this.repeat);
 	}
 
 	@Override
-	public Observable<Void> onPlayerStateChangedObservable() {
+	public Observable<Void> stateChangedObservable() {
 		return this.playbackStateChangedPublishSubject.asObservable();
 	}
 
 	@Override
-	public Observable<Void> onErrorPlayingObservable() {
+	public Observable<Void> errorPlayingObservable() {
 		return this.errorPlayingPublishSubject.asObservable();
 	}
 
@@ -85,11 +86,13 @@ public class PlayerModel implements Player.Model {
 	@Override
 	public void repeat() {
 		this.playback.repeat();
+		this.repeat = true;
 	}
 
 	@Override
 	public void doNotRepeat() {
 		this.playback.doNotRepeat();
+		this.repeat = false;
 	}
 
 	@Override
