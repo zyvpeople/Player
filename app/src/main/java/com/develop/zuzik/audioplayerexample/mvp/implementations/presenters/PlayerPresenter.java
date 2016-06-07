@@ -2,8 +2,8 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 
 import java.util.Arrays;
 import java.util.List;
@@ -95,7 +95,7 @@ public class PlayerPresenter implements Player.Presenter {
 	}
 
 	private void updateView(PlayerModelState state) {
-		PlayerStateBundle bundle = state.bundle;
+		PlaybackState bundle = state.bundle;
 		this.view.enablePlayControls(
 				this.allowedPlayButtonStates.contains(bundle.state),
 				this.allowedPauseButtonStates.contains(bundle.state),

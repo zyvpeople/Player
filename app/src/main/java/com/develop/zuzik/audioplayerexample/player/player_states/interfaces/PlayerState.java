@@ -3,9 +3,9 @@ package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 /**
  * User: zuzik
@@ -15,11 +15,11 @@ public interface PlayerState {
 
 	void setPlayer(MediaPlayer player);
 
-	void setPlayerSource(PlayerSource playerSource);
+	void setPlayerInitializer(PlayerInitializer playerInitializer);
 
 	void setPlayerStateContainer(PlayerStateContainer playerStateContainer);
 
-	PlayerStateBundle getPlayerStateBundle();
+	PlaybackState getPlayerStateBundle();
 
 	void setPlaybackListener(PlaybackListener playbackListener);
 

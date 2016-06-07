@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.player_source;
+package com.develop.zuzik.audioplayerexample.player.player_initializer;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -11,6 +11,6 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeEx
  */
 //TODO: investigate where to put user data (info about song)
 //TODO: maybe rename it to initializer
-public interface PlayerSource {
+public interface PlayerInitializer {
 	void initialize(Context context, MediaPlayer player) throws PlayerInitializeException;
 }

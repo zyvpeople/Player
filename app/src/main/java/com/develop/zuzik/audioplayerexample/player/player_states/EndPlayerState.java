@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -15,8 +15,8 @@ public class EndPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlayerStateBundle getPlayerStateBundle() {
-		return new PlayerStateBundle(
+	public PlaybackState getPlayerStateBundle() {
+		return new PlaybackState(
 				State.END,
 				0,
 				Optional.absent(),

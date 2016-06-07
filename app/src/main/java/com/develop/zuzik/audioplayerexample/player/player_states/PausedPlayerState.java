@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -15,9 +15,9 @@ public class PausedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlayerStateBundle getPlayerStateBundle() {
+	public PlaybackState getPlayerStateBundle() {
 		int maxDuration = getPlayer().getDuration();
-		return new PlayerStateBundle(
+		return new PlaybackState(
 				State.PAUSED,
 				getPlayer().getCurrentPosition(),
 				maxDuration != -1

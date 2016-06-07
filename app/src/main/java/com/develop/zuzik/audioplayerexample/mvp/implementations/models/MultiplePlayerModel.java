@@ -2,9 +2,9 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.RepeatMode;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackListener;
 
 import rx.Observable;
@@ -19,7 +19,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	private final MultiplePlayback playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
-	private MultiplePlaybackRepeatMode repeat = MultiplePlaybackRepeatMode.DO_NOT_REPEAT;
+	private RepeatMode repeat = RepeatMode.NONE;
 
 	public MultiplePlayerModel(MultiplePlayback playback) {
 		this.playback = playback;
@@ -93,7 +93,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public void repeat(MultiplePlaybackRepeatMode repeatMode) {
+	public void repeat(RepeatMode repeatMode) {
 		this.playback.repeat(repeatMode);
 		this.repeat = repeatMode;
 	}

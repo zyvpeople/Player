@@ -2,8 +2,8 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.concurrent.TimeUnit;
@@ -28,9 +28,9 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlayerStateBundle getPlayerStateBundle() {
+	public PlaybackState getPlayerStateBundle() {
 		int maxDuration = getPlayer().getDuration();
-		return new PlayerStateBundle(
+		return new PlaybackState(
 				State.PLAYING,
 				getPlayer().getCurrentPosition(),
 				maxDuration != -1

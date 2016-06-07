@@ -19,9 +19,9 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
-import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.UriPlayerInitializer;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
 
 import java.util.Arrays;
@@ -66,9 +66,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 						new MultiplePlayback(
 								getContext(),
 								Arrays.asList(
-										new RawResourcePlayerSource(R.raw.song),
-										new RawResourcePlayerSource(R.raw.song_short),
-										new UriPlayerSource(Uri.parse("https://myzuka.fm/Song/Download/3651633?t=636008467740490540&s=0ebd8ff44dd75c2806598937d34ae320"))))));
+										new RawResourcePlayerInitializer(R.raw.song),
+										new RawResourcePlayerInitializer(R.raw.song_short),
+										new UriPlayerInitializer(Uri.parse("https://myzuka.fm/Song/Download/3651633?t=636008467740490540&s=0ebd8ff44dd75c2806598937d34ae320"))))));
 		this.presenter.onInit(this);
 	}
 
@@ -129,9 +129,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 			Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
 			//TODO: uncomment and test for multiple playback
 //			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
-//				this.presenter.onRepeat(MultiplePlaybackRepeatMode.DO_NOT_REPEAT);
+//				this.presenter.onRepeat(RepeatMode.DO_NOT_REPEAT);
 //			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
-//				this.presenter.onRepeat(MultiplePlaybackRepeatMode.REPEAT_ONE);
+//				this.presenter.onRepeat(RepeatMode.REPEAT_ONE);
 //			} else {
 //				Log.w(getClass().getSimpleName(), "Tag is not set");
 //			}

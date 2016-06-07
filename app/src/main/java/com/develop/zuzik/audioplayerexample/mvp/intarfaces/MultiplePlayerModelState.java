@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.RepeatMode;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayerStateBundle;
 
 /**
  * User: zuzik
@@ -9,9 +9,9 @@ import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
  */
 public class MultiplePlayerModelState {
 	public final MultiplePlayerStateBundle bundle;
-	public final MultiplePlaybackRepeatMode repeat;
+	public final RepeatMode repeat;
 
-	public MultiplePlayerModelState(MultiplePlayerStateBundle bundle, MultiplePlaybackRepeatMode repeat) {
+	public MultiplePlayerModelState(MultiplePlayerStateBundle bundle, RepeatMode repeat) {
 		this.bundle = bundle;
 		this.repeat = repeat;
 	}

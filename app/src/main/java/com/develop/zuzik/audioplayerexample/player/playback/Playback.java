@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player;
+package com.develop.zuzik.audioplayerexample.player.playback;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -6,13 +6,12 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
 
 /**
  * User: zuzik
@@ -22,12 +21,12 @@ public class Playback implements PlayerStateContainer {
 
 	private MediaPlayer mediaPlayer;
 	private PlayerState state = new NullPlayerState();
-	public final PlayerSource source;
+	public final PlayerInitializer source;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private boolean repeat;
 	private final Context context;
 
-	public Playback(Context context, PlayerSource source) {
+	public Playback(Context context, PlayerInitializer source) {
 		this.context = new ContextWrapper(context).getBaseContext();
 		this.source = source;
 	}
@@ -41,7 +40,7 @@ public class Playback implements PlayerStateContainer {
 		this.state.setPlaybackListener(this.playbackListener);
 	}
 
-	public PlayerStateBundle getPlayerStateBundle() {
+	public PlaybackState getPlayerStateBundle() {
 		return this.state.getPlayerStateBundle();
 	}
 
@@ -95,14 +94,14 @@ public class Playback implements PlayerStateContainer {
 
 		this.state.unset();
 		this.state.setPlayer(null);
-		this.state.setPlayerSource(null);
+		this.state.setPlayerInitializer(null);
 		this.state.setPlayerStateContainer(null);
 		this.state.setPlaybackListener(null);
 
 		this.state = state;
 
 		this.state.setPlayer(this.mediaPlayer);
-		this.state.setPlayerSource(this.source);
+		this.state.setPlayerInitializer(this.source);
 		this.state.setPlayerStateContainer(this);
 		this.state.setPlaybackListener(this.playbackListener);
 		this.state.setRepeat(this.repeat);

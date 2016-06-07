@@ -2,10 +2,10 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.RepeatMode;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 
 import java.util.Arrays;
 import java.util.List;
@@ -90,7 +90,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public void onRepeat(MultiplePlaybackRepeatMode repeatMode) {
+	public void onRepeat(RepeatMode repeatMode) {
 		this.model.repeat(repeatMode);
 		updateView();
 	}
@@ -116,24 +116,24 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 
 	private void updateView(MultiplePlayerModelState state) {
 		MultiplePlayerStateBundle bundle = state.bundle;
-		MultiplePlaybackRepeatMode repeatMode = state.repeat;
+		RepeatMode repeatMode = state.repeat;
 
 		this.view.enableRepeatMode(
-				repeatMode == MultiplePlaybackRepeatMode.DO_NOT_REPEAT,
-				repeatMode == MultiplePlaybackRepeatMode.REPEAT_ONE,
-				repeatMode == MultiplePlaybackRepeatMode.REPEAT_ALL);
+				repeatMode == RepeatMode.NONE,
+				repeatMode == RepeatMode.SINGLE,
+				repeatMode == RepeatMode.ALL);
 
 		if (bundle.currentPlayerStateBundle.isPresent()) {
-			PlayerStateBundle playerStateBundle = bundle.currentPlayerStateBundle.get();
+			PlaybackState playbackState = bundle.currentPlayerStateBundle.get();
 
 			this.view.enablePlayControls(
-					this.allowedPlayButtonStates.contains(playerStateBundle.state),
-					this.allowedPauseButtonStates.contains(playerStateBundle.state),
-					this.allowedStopButtonStates.contains(playerStateBundle.state));
+					this.allowedPlayButtonStates.contains(playbackState.state),
+					this.allowedPauseButtonStates.contains(playbackState.state),
+					this.allowedStopButtonStates.contains(playbackState.state));
 
-			if (playerStateBundle.maxTimeInMilliseconds.isPresent()) {
-				int currentTime = playerStateBundle.currentTimeInMilliseconds;
-				int maxTime = playerStateBundle.maxTimeInMilliseconds.get();
+			if (playbackState.maxTimeInMilliseconds.isPresent()) {
+				int currentTime = playbackState.currentTimeInMilliseconds;
+				int maxTime = playbackState.maxTimeInMilliseconds.get();
 				this.view.showTime(
 						timeToRepresentation(currentTime),
 						timeToRepresentation(maxTime));

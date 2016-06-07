@@ -13,7 +13,7 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
 
 public class ExampleActivity extends AppCompatActivity implements Player.View {
 
@@ -34,7 +34,7 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_example);
 
-		this.presenter = new PlayerPresenter(new PlayerModel(this, new RawResourcePlayerSource(R.raw.song)));
+		this.presenter = new PlayerPresenter(new PlayerModel(this, new RawResourcePlayerInitializer(R.raw.song)));
 
 		this.play = (Button) findViewById(R.id.play);
 		this.pause = (Button) findViewById(R.id.pause);

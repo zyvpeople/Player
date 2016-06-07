@@ -3,12 +3,12 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -18,8 +18,8 @@ import com.fernandocejas.arrow.optional.Optional;
 public class NullPlayerState implements PlayerState {
 
 	@Override
-	public PlayerStateBundle getPlayerStateBundle() {
-		return new PlayerStateBundle(
+	public PlaybackState getPlayerStateBundle() {
+		return new PlaybackState(
 				State.NONE,
 				0,
 				Optional.absent(),
@@ -31,8 +31,7 @@ public class NullPlayerState implements PlayerState {
 
 	}
 
-	@Override
-	public void setPlayerSource(PlayerSource playerSource) {
+	public void setPlayerInitializer(PlayerInitializer playerInitializer) {
 
 	}
 

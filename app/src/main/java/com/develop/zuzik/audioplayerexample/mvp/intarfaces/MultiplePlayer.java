@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
-import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.RepeatMode;
 
 import rx.Observable;
 
@@ -32,7 +32,7 @@ public interface MultiplePlayer {
 
 		void seekToPosition(int positionInMilliseconds);
 
-		void repeat(MultiplePlaybackRepeatMode repeatMode);
+		void repeat(RepeatMode repeatMode);
 
 		void shuffle();
 
@@ -79,7 +79,7 @@ public interface MultiplePlayer {
 
 		void onSeekToPosition(int positionInMilliseconds);
 
-		void onRepeat(MultiplePlaybackRepeatMode repeatMode);
+		void onRepeat(RepeatMode repeatMode);
 
 		void onShuffle();
 

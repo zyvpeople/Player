@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.interfaces;
 
-import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayerStateBundle;
 
 /**
  * User: zuzik

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 
 /**
@@ -18,7 +18,7 @@ abstract class BasePlayerState implements PlayerState {
 	private final boolean allowSetRepeat;
 	private final boolean allowSeekToPosition;
 	private MediaPlayer player;
-	private PlayerSource playerSource;
+	private PlayerInitializer playerInitializer;
 	private PlayerStateContainer playerStateContainer;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 
@@ -31,8 +31,8 @@ abstract class BasePlayerState implements PlayerState {
 		return this.player;
 	}
 
-	protected final PlayerSource getPlayerSource() {
-		return this.playerSource;
+	protected final PlayerInitializer getPlayerInitializer() {
+		return this.playerInitializer;
 	}
 
 	protected final void setState(PlayerState state) {
@@ -56,9 +56,8 @@ abstract class BasePlayerState implements PlayerState {
 		this.player = player;
 	}
 
-	@Override
-	public final void setPlayerSource(PlayerSource playerSource) {
-		this.playerSource = playerSource;
+	public final void setPlayerInitializer(PlayerInitializer playerInitializer) {
+		this.playerInitializer = playerInitializer;
 	}
 
 	@Override
