@@ -1,12 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
-import android.media.MediaPlayer;
-
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -15,34 +10,23 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class IdlePlayerState extends BasePlayerState {
 
-	public IdlePlayerState(MediaPlayer player, PlayerSource source, PlayerStateContainer stateContainer) {
-		super(player, source, stateContainer);
+	public IdlePlayerState() {
+		super(true, false);
 	}
 
 	@Override
 	public PlayerStateBundle getPlayerStateBundle() {
 		return new PlayerStateBundle(
-				PlaybackState.IDLE,
+				State.IDLE,
 				0,
 				Optional.absent(),
 				getPlayer().isLooping());
 	}
 
 	@Override
-	public void setRepeat(boolean repeat) {
-		getPlayer().setLooping(repeat);
-	}
-
-	@Override
-	public void set(Context context) {
-		super.set(context);
-		onPlaybackStateChanged();
-	}
-
-	@Override
 	public void play() {
 		super.play();
 		getPlayer().reset();
-		setState(new PreparingPlayerState(getPlayer(), getSource(), getStateContainer()));
+		setState(new PreparingPlayerState());
 	}
 }

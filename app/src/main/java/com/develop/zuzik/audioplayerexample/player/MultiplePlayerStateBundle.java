@@ -1,6 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player;
 
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;

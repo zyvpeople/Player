@@ -7,6 +7,8 @@ import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackLi
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullMultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
@@ -137,9 +139,9 @@ public class MultiplePlayback {
 			public void onChange() {
 				PlayerStateBundle bundle = playback.getPlayerStateBundle();
 				listener.onChange(getMultiplePlaybackBundle());
-				if (bundle.state == PlaybackState.COMPLETED
-						|| bundle.state == PlaybackState.ERROR
-						|| bundle.state == PlaybackState.END) {
+				if (bundle.state == State.COMPLETED
+						|| bundle.state == State.ERROR
+						|| bundle.state == State.END) {
 					//TODO:also should use shuffle flag and repeat mode
 					skipNext();
 				}

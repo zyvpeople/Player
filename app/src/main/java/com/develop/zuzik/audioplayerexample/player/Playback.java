@@ -11,7 +11,8 @@ import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackList
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
-import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 
 /**
  * User: zuzik
@@ -19,6 +20,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
  */
 public class Playback implements PlayerStateContainer {
 
+	private MediaPlayer mediaPlayer;
 	private PlayerState state = new NullPlayerState();
 	public final PlayerSource source;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
@@ -58,11 +60,13 @@ public class Playback implements PlayerStateContainer {
 	//region Play
 
 	public void init() {
-		setState(new IdlePlayerState(new MediaPlayer(), this.source, this));
+		this.mediaPlayer = new MediaPlayer();
+		setState(new IdlePlayerState());
 	}
 
 	public void release() {
 		this.state.release();
+		this.mediaPlayer = null;
 	}
 
 	public void play() {
@@ -88,16 +92,25 @@ public class Playback implements PlayerStateContainer {
 	@Override
 	public void setState(PlayerState state) {
 		logState(this.state, state);
+
 		this.state.unset();
+		this.state.setPlayer(null);
+		this.state.setPlayerSource(null);
+		this.state.setPlayerStateContainer(null);
 		this.state.setPlaybackListener(null);
+
 		this.state = state;
+
+		this.state.setPlayer(this.mediaPlayer);
+		this.state.setPlayerSource(this.source);
+		this.state.setPlayerStateContainer(this);
 		this.state.setPlaybackListener(this.playbackListener);
 		this.state.setRepeat(this.repeat);
 		this.state.set(this.context);
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {
-		Log.i(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
+		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
 	}
 
 	//endregion

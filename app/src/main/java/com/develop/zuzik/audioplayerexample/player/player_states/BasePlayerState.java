@@ -7,6 +7,7 @@ import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 
 /**
  * User: zuzik
@@ -14,53 +15,69 @@ import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
  */
 abstract class BasePlayerState implements PlayerState {
 
-	private final MediaPlayer player;
-	private final PlayerSource source;
-	private final PlayerStateContainer stateContainer;
+	private final boolean allowSetRepeat;
+	private final boolean allowSeekToPosition;
+	private MediaPlayer player;
+	private PlayerSource playerSource;
+	private PlayerStateContainer playerStateContainer;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 
-	protected BasePlayerState(MediaPlayer player,
-							  PlayerSource source,
-							  PlayerStateContainer stateContainer) {
-		this.player = player;
-		this.source = source;
-		this.stateContainer = stateContainer;
+	protected BasePlayerState(boolean allowSetRepeat, boolean allowSeekToPosition) {
+		this.allowSetRepeat = allowSetRepeat;
+		this.allowSeekToPosition = allowSeekToPosition;
 	}
 
 	protected final MediaPlayer getPlayer() {
 		return this.player;
 	}
 
-	protected final PlayerSource getSource() {
-		return this.source;
-	}
-
-	protected final PlayerStateContainer getStateContainer() {
-		return this.stateContainer;
+	protected final PlayerSource getPlayerSource() {
+		return this.playerSource;
 	}
 
 	protected final void setState(PlayerState state) {
-		getStateContainer().setState(state);
+		this.playerStateContainer.setState(state);
 	}
 
-	protected final void onPlaybackStateChanged() {
+	protected final void notifyAboutChanges() {
 		this.playbackListener.onChange();
 	}
 
-	protected void onSeekCompleted() {
+	protected final void handleError() {
+		getPlayer().reset();
+		this.playbackListener.onError();
+		setState(new IdlePlayerState());
 	}
 
 	//region PlayerState
 
 	@Override
-	public void setPlaybackListener(PlaybackListener playbackListener) {
+	public final void setPlayer(MediaPlayer player) {
+		this.player = player;
+	}
+
+	@Override
+	public final void setPlayerSource(PlayerSource playerSource) {
+		this.playerSource = playerSource;
+	}
+
+	@Override
+	public final void setPlayerStateContainer(PlayerStateContainer playerStateContainer) {
+		this.playerStateContainer = playerStateContainer;
+	}
+
+	@Override
+	public final void setPlaybackListener(PlaybackListener playbackListener) {
 		this.playbackListener = playbackListener != null
 				? playbackListener
 				: new NullPlaybackListener();
 	}
 
 	@Override
-	public void setRepeat(boolean repeat) {
+	public final void setRepeat(boolean repeat) {
+		if (this.allowSetRepeat) {
+			getPlayer().setLooping(repeat);
+		}
 	}
 
 	@Override
@@ -70,19 +87,12 @@ abstract class BasePlayerState implements PlayerState {
 			return true;
 		});
 		this.player.setOnCompletionListener(mp -> {
-			if (getPlayer().isLooping()) {
-				setState(new StartedPlayerState(getPlayer(), getSource(), getStateContainer()));
-			} else {
-				setState(new CompletedPlayerState(getPlayer(), getSource(), getStateContainer()));
-			}
+			setState(getPlayer().isLooping()
+					? new StartedPlayerState()
+					: new CompletedPlayerState());
 		});
-		this.player.setOnSeekCompleteListener(mp -> onSeekCompleted());
-	}
-
-	protected final void handleError() {
-		getPlayer().reset();
-		this.playbackListener.onError();
-		setState(new IdlePlayerState(getPlayer(), getSource(), getStateContainer()));
+		this.player.setOnSeekCompleteListener(mp -> notifyAboutChanges());
+		notifyAboutChanges();
 	}
 
 	@Override
@@ -104,22 +114,21 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void simulateError() {
+	public final void simulateError() {
 		handleError();
 	}
 
 	@Override
-	public void seekTo(int positionInMilliseconds) {
+	public final void seekTo(int positionInMilliseconds) {
+		if (this.allowSeekToPosition) {
+			getPlayer().seekTo(positionInMilliseconds);
+		}
 	}
 
 	@Override
-	public void release() {
+	public final void release() {
 		getPlayer().release();
 		setState(new EndPlayerState());
-	}
-
-	protected final void seekToPosition(int positionInMilliseconds) {
-		getPlayer().seekTo(positionInMilliseconds);
 	}
 
 	//endregion

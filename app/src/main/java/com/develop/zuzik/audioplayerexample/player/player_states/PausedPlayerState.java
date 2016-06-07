@@ -1,12 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
-import android.media.MediaPlayer;
-
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -15,15 +10,15 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class PausedPlayerState extends BasePlayerState {
 
-	public PausedPlayerState(MediaPlayer player, PlayerSource source, PlayerStateContainer stateContainer) {
-		super(player, source, stateContainer);
+	public PausedPlayerState() {
+		super(true, true);
 	}
 
 	@Override
 	public PlayerStateBundle getPlayerStateBundle() {
 		int maxDuration = getPlayer().getDuration();
 		return new PlayerStateBundle(
-				PlaybackState.PAUSED,
+				State.PAUSED,
 				getPlayer().getCurrentPosition(),
 				maxDuration != -1
 						? Optional.of(maxDuration)
@@ -32,22 +27,10 @@ public class PausedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void setRepeat(boolean repeat) {
-		super.setRepeat(repeat);
-		getPlayer().setLooping(repeat);
-	}
-
-	@Override
-	public void set(Context context) {
-		super.set(context);
-		onPlaybackStateChanged();
-	}
-
-	@Override
 	public void play() {
 		super.play();
 		getPlayer().start();
-		setState(new StartedPlayerState(getPlayer(), getSource(), getStateContainer()));
+		setState(new StartedPlayerState());
 	}
 
 	@Override
@@ -55,18 +38,6 @@ public class PausedPlayerState extends BasePlayerState {
 		super.stop();
 		getPlayer().stop();
 		getPlayer().reset();
-		setState(new IdlePlayerState(getPlayer(), getSource(), getStateContainer()));
-	}
-
-	@Override
-	public void seekTo(int positionInMilliseconds) {
-		super.seekTo(positionInMilliseconds);
-		seekToPosition(positionInMilliseconds);
-	}
-
-	@Override
-	protected void onSeekCompleted() {
-		super.onSeekCompleted();
-		onPlaybackStateChanged();
+		setState(new IdlePlayerState());
 	}
 }

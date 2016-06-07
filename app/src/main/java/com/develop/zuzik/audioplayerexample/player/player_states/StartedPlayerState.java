@@ -1,12 +1,9 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.concurrent.TimeUnit;
@@ -21,20 +18,20 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 public class StartedPlayerState extends BasePlayerState {
 
-	private final Observable<Long> playerProgressObservable = Observable
+	private final Observable<Long> checkPlayerProgressObservable = Observable
 			.interval(1, TimeUnit.SECONDS)
 			.observeOn(AndroidSchedulers.mainThread());
-	private Subscription playerProgressSubscription;
+	private Subscription checkPlayerProgressSubscription;
 
-	public StartedPlayerState(MediaPlayer player, PlayerSource source, PlayerStateContainer stateContainer) {
-		super(player, source, stateContainer);
+	public StartedPlayerState() {
+		super(true, true);
 	}
 
 	@Override
 	public PlayerStateBundle getPlayerStateBundle() {
 		int maxDuration = getPlayer().getDuration();
 		return new PlayerStateBundle(
-				PlaybackState.PLAYING,
+				State.PLAYING,
 				getPlayer().getCurrentPosition(),
 				maxDuration != -1
 						? Optional.of(maxDuration)
@@ -43,22 +40,15 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void setRepeat(boolean repeat) {
-		super.setRepeat(repeat);
-		getPlayer().setLooping(repeat);
-	}
-
-	@Override
 	public void set(Context context) {
 		super.set(context);
-		onPlaybackStateChanged();
-		this.playerProgressSubscription = this.playerProgressObservable.subscribe(aLong ->
-				onPlaybackStateChanged());
+		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
+				.subscribe(aLong -> notifyAboutChanges());
 	}
 
 	@Override
 	public void unset() {
-		this.playerProgressSubscription.unsubscribe();
+		this.checkPlayerProgressSubscription.unsubscribe();
 		super.unset();
 	}
 
@@ -66,7 +56,7 @@ public class StartedPlayerState extends BasePlayerState {
 	public void pause() {
 		super.pause();
 		getPlayer().pause();
-		setState(new PausedPlayerState(getPlayer(), getSource(), getStateContainer()));
+		setState(new PausedPlayerState());
 	}
 
 	@Override
@@ -74,18 +64,6 @@ public class StartedPlayerState extends BasePlayerState {
 		super.stop();
 		getPlayer().stop();
 		getPlayer().reset();
-		setState(new IdlePlayerState(getPlayer(), getSource(), getStateContainer()));
-	}
-
-	@Override
-	public void seekTo(int positionInMilliseconds) {
-		super.seekTo(positionInMilliseconds);
-		seekToPosition(positionInMilliseconds);
-	}
-
-	@Override
-	protected void onSeekCompleted() {
-		super.onSeekCompleted();
-		onPlaybackStateChanged();
+		setState(new IdlePlayerState());
 	}
 }

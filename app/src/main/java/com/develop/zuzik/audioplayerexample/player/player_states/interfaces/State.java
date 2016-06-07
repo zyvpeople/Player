@@ -1,10 +1,10 @@
-package com.develop.zuzik.audioplayerexample.player;
+package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
 
 /**
  * User: zuzik
  * Date: 6/3/16
  */
-public enum PlaybackState {
+public enum State {
 	IDLE,
 	PREPARING,
 	PLAYING,

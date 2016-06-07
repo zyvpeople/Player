@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 
 /**
  * User: zuzik

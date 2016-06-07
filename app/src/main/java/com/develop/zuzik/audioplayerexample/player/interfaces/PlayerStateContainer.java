@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.interfaces;
 
-import com.develop.zuzik.audioplayerexample.player.player_states.PlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 
 /**
  * User: zuzik

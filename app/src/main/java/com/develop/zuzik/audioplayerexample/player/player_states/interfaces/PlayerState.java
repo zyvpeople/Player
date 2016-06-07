@@ -1,18 +1,23 @@
-package com.develop.zuzik.audioplayerexample.player.player_states;
+package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackBundle;
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
-import com.fernandocejas.arrow.optional.Optional;
+import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 /**
  * User: zuzik
  * Date: 6/2/16
  */
 public interface PlayerState {
+
+	void setPlayer(MediaPlayer player);
+
+	void setPlayerSource(PlayerSource playerSource);
+
+	void setPlayerStateContainer(PlayerStateContainer playerStateContainer);
 
 	PlayerStateBundle getPlayerStateBundle();
 

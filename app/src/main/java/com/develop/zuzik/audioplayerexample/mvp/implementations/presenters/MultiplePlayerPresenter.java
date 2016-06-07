@@ -4,8 +4,8 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,9 +24,9 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
 
-	List<PlaybackState> allowedPlayButtonStates = Arrays.asList(PlaybackState.IDLE, PlaybackState.PAUSED, PlaybackState.COMPLETED);
-	List<PlaybackState> allowedPauseButtonStates = Arrays.asList(PlaybackState.PLAYING);
-	List<PlaybackState> allowedStopButtonStates = Arrays.asList(PlaybackState.PLAYING, PlaybackState.PAUSED, PlaybackState.COMPLETED);
+	List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
+	List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
+	List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
 	public MultiplePlayerPresenter(MultiplePlayer.Model model) {
 		this.model = model;

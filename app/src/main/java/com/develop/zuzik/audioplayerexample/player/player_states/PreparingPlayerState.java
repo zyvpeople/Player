@@ -1,14 +1,11 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.PlayerStateBundle;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -17,14 +14,14 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class PreparingPlayerState extends BasePlayerState {
 
-	public PreparingPlayerState(MediaPlayer player, PlayerSource source, PlayerStateContainer stateContainer) {
-		super(player, source, stateContainer);
+	public PreparingPlayerState() {
+		super(false, false);
 	}
 
 	@Override
 	public PlayerStateBundle getPlayerStateBundle() {
 		return new PlayerStateBundle(
-				PlaybackState.PREPARING,
+				State.PREPARING,
 				0,
 				Optional.absent(),
 				getPlayer().isLooping());
@@ -35,11 +32,10 @@ public class PreparingPlayerState extends BasePlayerState {
 		super.set(context);
 		getPlayer().setOnPreparedListener(player -> {
 			player.start();
-			setState(new StartedPlayerState(player, getSource(), getStateContainer()));
+			setState(new StartedPlayerState());
 		});
-		onPlaybackStateChanged();
 		try {
-			getSource().initialize(context, getPlayer());
+			getPlayerSource().initialize(context, getPlayer());
 			getPlayer().prepareAsync();
 		} catch (PlayerInitializeException e) {
 			Log.e(getClass().getSimpleName(), e.getMessage());
