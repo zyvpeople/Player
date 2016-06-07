@@ -56,18 +56,20 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 	private SongDetailViewPagerAdapter adapter;
 
-	private MultiplePlayer.Presenter presenter = new MultiplePlayerPresenter(
-			new MultiplePlayerModel(
-					new MultiplePlayback(
-							Arrays.asList(
-									new RawResourcePlayerSource(R.raw.song),
-									new RawResourcePlayerSource(R.raw.song_short),
-									new UriPlayerSource(Uri.parse("https://myzuka.fm/Song/Download/3651633?t=636008467740490540&s=0ebd8ff44dd75c2806598937d34ae320"))))));
+	private MultiplePlayer.Presenter presenter;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.presenter.onInit(getContext(), this);
+		this.presenter = new MultiplePlayerPresenter(
+				new MultiplePlayerModel(
+						new MultiplePlayback(
+								getContext(),
+								Arrays.asList(
+										new RawResourcePlayerSource(R.raw.song),
+										new RawResourcePlayerSource(R.raw.song_short),
+										new UriPlayerSource(Uri.parse("https://myzuka.fm/Song/Download/3651633?t=636008467740490540&s=0ebd8ff44dd75c2806598937d34ae320"))))));
+		this.presenter.onInit(this);
 	}
 
 	@Override
@@ -116,7 +118,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 		this.playPause.setOnClickListener(v -> {
 			if (TAG_STATE_PLAY.equals(v.getTag())) {
-				this.presenter.onPlay(getContext());
+				this.presenter.onPlay();
 			} else if (TAG_STATE_PAUSE.equals(v.getTag())) {
 				this.presenter.onPause();
 			} else {
@@ -134,8 +136,8 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 //				Log.w(getClass().getSimpleName(), "Tag is not set");
 //			}
 		});
-		this.skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious(getContext()));
-		this.skipNext.setOnClickListener(v -> this.presenter.onSkipNext(getContext()));
+		this.skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious());
+		this.skipNext.setOnClickListener(v -> this.presenter.onSkipNext());
 		this.shuffle.setOnClickListener(v -> Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show());
 		this.progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override

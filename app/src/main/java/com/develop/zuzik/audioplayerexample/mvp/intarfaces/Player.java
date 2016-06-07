@@ -22,7 +22,7 @@ public interface Player {
 
 		Observable<Void> onErrorPlayingObservable();
 
-		void play(Context context);
+		void play();
 
 		void pause();
 
@@ -68,7 +68,7 @@ public interface Player {
 
 		void onDisappear();
 
-		void onPlay(Context context);
+		void onPlay();
 
 		void onPause();
 

@@ -31,7 +31,7 @@ public class EndPlayerState implements PlayerState {
 	}
 
 	@Override
-	public void set() {
+	public void set(Context context) {
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class EndPlayerState implements PlayerState {
 	}
 
 	@Override
-	public void play(Context context) {
+	public void play() {
 	}
 
 	@Override

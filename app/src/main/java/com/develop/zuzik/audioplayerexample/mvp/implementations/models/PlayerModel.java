@@ -21,8 +21,8 @@ public class PlayerModel implements Player.Model {
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
 
-	public PlayerModel(PlayerSource source) {
-		this.playback = new Playback(source);
+	public PlayerModel(Context context, PlayerSource source) {
+		this.playback = new Playback(context, source);
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class PlayerModel implements Player.Model {
 	}
 
 	@Override
-	public void play(Context context) {
-		this.playback.play(context);
+	public void play() {
+		this.playback.play();
 	}
 
 	@Override

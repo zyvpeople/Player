@@ -13,7 +13,7 @@ import rx.Observable;
  */
 public interface MultiplePlayer {
 	interface Model {
-		void init(Context context);
+		void init();
 
 		void destroy();
 
@@ -23,15 +23,15 @@ public interface MultiplePlayer {
 
 		Observable<Void> onErrorPlayingObservable();
 
-		void play(Context context);
+		void play();
 
 		void pause();
 
 		void stop();
 
-		void skipNext(Context context);
+		void skipNext();
 
-		void skipPrevious(Context context);
+		void skipPrevious();
 
 		void seekToPosition(int positionInMilliseconds);
 
@@ -62,7 +62,7 @@ public interface MultiplePlayer {
 	}
 
 	interface Presenter {
-		void onInit(Context context, View view);
+		void onInit(View view);
 
 		void onDestroy();
 
@@ -72,15 +72,15 @@ public interface MultiplePlayer {
 
 		MultiplePlayerStateBundle getPlaybackState();
 
-		void onPlay(Context context);
+		void onPlay();
 
 		void onPause();
 
 		void onStop();
 
-		void onSkipNext(Context context);
+		void onSkipNext();
 
-		void onSkipPrevious(Context context);
+		void onSkipPrevious();
 
 		void onSeekToPosition(int positionInMilliseconds);
 

@@ -64,7 +64,7 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void set() {
+	public void set(Context context) {
 		this.player.setOnErrorListener((mp, what, extra) -> {
 			handleError();
 			return true;
@@ -92,7 +92,7 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void play(Context context) {
+	public void play() {
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.media.MediaPlayer;
 import android.util.Log;
 
@@ -22,8 +23,10 @@ public class Playback implements PlayerStateContainer {
 	public final PlayerSource source;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private boolean repeat;
+	private final Context context;
 
-	public Playback(PlayerSource source) {
+	public Playback(Context context, PlayerSource source) {
+		this.context = new ContextWrapper(context).getBaseContext();
 		this.source = source;
 	}
 
@@ -49,7 +52,7 @@ public class Playback implements PlayerStateContainer {
 		this.repeat = false;
 		this.state.setRepeat(false);
 	}
-	
+
 	//endregion
 
 	//region Play
@@ -62,8 +65,8 @@ public class Playback implements PlayerStateContainer {
 		this.state.release();
 	}
 
-	public void play(Context context) {
-		this.state.play(context);
+	public void play() {
+		this.state.play();
 	}
 
 	public void pause() {
@@ -90,7 +93,7 @@ public class Playback implements PlayerStateContainer {
 		this.state = state;
 		this.state.setPlaybackListener(this.playbackListener);
 		this.state.setRepeat(this.repeat);
-		this.state.set();
+		this.state.set(this.context);
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {

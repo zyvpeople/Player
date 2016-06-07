@@ -20,11 +20,11 @@ public interface PlayerState {
 
 	void setRepeat(boolean repeat);
 
-	void set();
+	void set(Context context);
 
 	void unset();
 
-	void play(Context context);
+	void play();
 
 	void pause();
 

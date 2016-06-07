@@ -36,14 +36,14 @@ public class CompletedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void set() {
-		super.set();
+	public void set(Context context) {
+		super.set(context);
 		onPlaybackStateChanged();
 	}
 
 	@Override
-	public void play(Context context) {
-		super.play(context);
+	public void play() {
+		super.play();
 		getPlayer().start();
 		setState(new StartedPlayerState(getPlayer(), getSource(), getStateContainer()));
 	}

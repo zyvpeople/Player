@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.PlaybackState;
@@ -48,8 +49,8 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void set() {
-		super.set();
+	public void set(Context context) {
+		super.set(context);
 		onPlaybackStateChanged();
 		this.playerProgressSubscription = this.playerProgressObservable.subscribe(aLong ->
 				onPlaybackStateChanged());

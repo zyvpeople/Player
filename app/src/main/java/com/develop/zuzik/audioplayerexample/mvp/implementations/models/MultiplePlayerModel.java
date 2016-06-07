@@ -1,7 +1,5 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
-import android.content.Context;
-
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.MultiplePlaybackRepeatMode;
@@ -26,8 +24,8 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public void init(Context context) {
-		this.playback.init(context);
+	public void init() {
+		this.playback.init();
 		this.playback.setListener(new MultiplePlaybackListener() {
 			@Override
 			public void onChange(MultiplePlayerStateBundle bundle) {
@@ -63,8 +61,8 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public void play(Context context) {
-		this.playback.play(context);
+	public void play() {
+		this.playback.play();
 	}
 
 	@Override
@@ -78,13 +76,13 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public void skipNext(Context context) {
-		this.playback.skipNext(context);
+	public void skipNext() {
+		this.playback.skipNext();
 	}
 
 	@Override
-	public void skipPrevious(Context context) {
-		this.playback.skipPrevious(context);
+	public void skipPrevious() {
+		this.playback.skipPrevious();
 	}
 
 	@Override

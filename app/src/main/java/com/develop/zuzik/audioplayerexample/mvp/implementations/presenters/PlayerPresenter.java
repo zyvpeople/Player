@@ -56,8 +56,8 @@ public class PlayerPresenter implements Player.Presenter {
 	}
 
 	@Override
-	public void onPlay(Context context) {
-		this.model.play(context);
+	public void onPlay() {
+		this.model.play();
 	}
 
 	@Override

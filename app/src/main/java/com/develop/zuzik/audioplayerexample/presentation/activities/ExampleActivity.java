@@ -27,12 +27,14 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 	private SwitchCompat repeat;
 	private View loading;
 
-	private Player.Presenter presenter = new PlayerPresenter(new PlayerModel(new RawResourcePlayerSource(R.raw.song)));
+	private Player.Presenter presenter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_example);
+
+		this.presenter = new PlayerPresenter(new PlayerModel(this, new RawResourcePlayerSource(R.raw.song)));
 
 		this.play = (Button) findViewById(R.id.play);
 		this.pause = (Button) findViewById(R.id.pause);
@@ -44,7 +46,7 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 		this.repeat = (SwitchCompat) findViewById(R.id.repeat);
 		this.loading = findViewById(R.id.loading);
 
-		this.play.setOnClickListener(v -> this.presenter.onPlay(this));
+		this.play.setOnClickListener(v -> this.presenter.onPlay());
 		this.pause.setOnClickListener(v -> this.presenter.onPause());
 		this.stop.setOnClickListener(v -> this.presenter.onStop());
 		this.fakeError.setOnClickListener(v -> this.presenter.simulateError());

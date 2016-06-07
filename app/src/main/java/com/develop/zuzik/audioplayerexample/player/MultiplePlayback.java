@@ -1,6 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.player.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.interfaces.PlaybackListener;
@@ -23,9 +24,9 @@ public class MultiplePlayback {
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
 	private MultiplePlaybackRepeatMode repeatMode = MultiplePlaybackRepeatMode.DO_NOT_REPEAT;
 
-	public MultiplePlayback(List<PlayerSource> sources) {
+	public MultiplePlayback(Context context, List<PlayerSource> sources) {
 		for (PlayerSource source : sources) {
-			this.playbacks.add(new Playback(source));
+			this.playbacks.add(new Playback(new ContextWrapper(context).getBaseContext(), source));
 		}
 		this.currentPosition = sources.isEmpty()
 				? Optional.absent()
@@ -89,16 +90,16 @@ public class MultiplePlayback {
 
 	//region Play
 
-	public void init(Context context) {
-		currentPlayback(result -> initPlayback(context, result, false));
+	public void init() {
+		currentPlayback(result -> initPlayback(result, false));
 	}
 
 	public void release() {
 		currentPlayback(this::releasePlayback);
 	}
 
-	public void play(Context context) {
-		currentPlayback(result -> result.play(context));
+	public void play() {
+		currentPlayback(result -> result.play());
 	}
 
 	public void pause() {
@@ -113,24 +114,24 @@ public class MultiplePlayback {
 		currentPlayback(result -> result.seekTo(positionInMilliseconds));
 	}
 
-	public void skipNext(Context context) {
+	public void skipNext() {
 		currentPlayback(currentPlayback ->
 				nextPlayback(nextPlayback ->
-						switchFromOldToNewPlayback(context, currentPlayback, nextPlayback)));
+						switchFromOldToNewPlayback(currentPlayback, nextPlayback)));
 	}
 
-	public void skipPrevious(Context context) {
+	public void skipPrevious() {
 		currentPlayback(currentPlayback ->
 				previousPlayback(previousPlayback ->
-						switchFromOldToNewPlayback(context, currentPlayback, previousPlayback)));
+						switchFromOldToNewPlayback(currentPlayback, previousPlayback)));
 	}
 
-	private void switchFromOldToNewPlayback(Context context, Playback oldPlayback, Playback newPlayback) {
+	private void switchFromOldToNewPlayback(Playback oldPlayback, Playback newPlayback) {
 		releasePlayback(oldPlayback);
-		initPlayback(context, newPlayback, true);
+		initPlayback(newPlayback, true);
 	}
 
-	private void initPlayback(Context context, Playback playback, boolean play) {
+	private void initPlayback(Playback playback, boolean play) {
 		playback.setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onChange() {
@@ -140,7 +141,7 @@ public class MultiplePlayback {
 						|| bundle.state == PlaybackState.ERROR
 						|| bundle.state == PlaybackState.END) {
 					//TODO:also should use shuffle flag and repeat mode
-					skipNext(context);
+					skipNext();
 				}
 			}
 
@@ -151,7 +152,7 @@ public class MultiplePlayback {
 		});
 		playback.init();
 		if (play) {
-			playback.play(context);
+			playback.play();
 		}
 	}
 

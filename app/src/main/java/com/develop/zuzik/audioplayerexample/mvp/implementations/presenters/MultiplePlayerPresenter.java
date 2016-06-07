@@ -35,9 +35,9 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public void onInit(Context context, MultiplePlayer.View view) {
+	public void onInit(MultiplePlayer.View view) {
 		this.view = view;
-		this.model.init(context);
+		this.model.init();
 	}
 
 	@Override
@@ -66,8 +66,8 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public void onPlay(Context context) {
-		this.model.play(context);
+	public void onPlay() {
+		this.model.play();
 	}
 
 	@Override
@@ -81,13 +81,13 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public void onSkipNext(Context context) {
-		this.model.skipNext(context);
+	public void onSkipNext() {
+		this.model.skipNext();
 	}
 
 	@Override
-	public void onSkipPrevious(Context context) {
-		this.model.skipPrevious(context);
+	public void onSkipPrevious() {
+		this.model.skipPrevious();
 	}
 
 	@Override
