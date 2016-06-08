@@ -38,8 +38,8 @@ public class Playback implements PlayerStateContainer {
 		this.state.setPlaybackListener(this.playbackListener);
 	}
 
-	public PlaybackState getPlayerStateBundle() {
-		return this.state.getPlayerStateBundle();
+	public PlaybackState getState() {
+		return this.state.getPlaybackState();
 	}
 
 	public void repeat() {

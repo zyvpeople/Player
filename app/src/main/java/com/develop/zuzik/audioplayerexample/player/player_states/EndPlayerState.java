@@ -15,7 +15,7 @@ public class EndPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackState getPlayerStateBundle() {
+	public PlaybackState getPlaybackState() {
 		return new PlaybackState(
 				State.END,
 				0,

@@ -3,8 +3,8 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -17,19 +17,18 @@ import java.util.List;
  * User: zuzik
  * Date: 6/4/16
  */
-//TODO: handle repeat manually
 public class MultiplePlayback {
 
 	private final List<Playback> playbacks = new ArrayList<>();
 	private Optional<Integer> currentPosition;
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
-	private RepeatMode repeatMode = RepeatMode.NONE;
+	private boolean repeat;
 
-	public MultiplePlayback(Context context, List<PlayerInitializer> sources) {
-		for (PlayerInitializer source : sources) {
+	public MultiplePlayback(Context context, List<PlayerInitializer> initializers) {
+		for (PlayerInitializer source : initializers) {
 			this.playbacks.add(new Playback(new ContextWrapper(context).getBaseContext(), source));
 		}
-		this.currentPosition = sources.isEmpty()
+		this.currentPosition = initializers.isEmpty()
 				? Optional.absent()
 				: Optional.of(0);
 	}
@@ -40,12 +39,8 @@ public class MultiplePlayback {
 				: new NullMultiplePlaybackListener();
 	}
 
-	public MultiplePlayerStateBundle getMultiplePlaybackBundle() {
-		return new MultiplePlayerStateBundle(
-				this.repeatMode,
-				currentPlayback().transform(Playback::getPlayerStateBundle),
-				currentPlayback().transform(input -> input.source),
-				playbacksToPlaySources());
+	public MultiplePlaybackState getMultiplePlaybackState() {
+		return new MultiplePlaybackState(currentPlayback().transform(Playback::getState), this.repeat);
 	}
 
 	private void currentPlayback(SearchResultListener<Playback> listener) {
@@ -58,27 +53,14 @@ public class MultiplePlayback {
 		return this.currentPosition.transform(this.playbacks::get);
 	}
 
-	private List<PlayerInitializer> playbacksToPlaySources() {
-		List<PlayerInitializer> sources = new ArrayList<>();
-		for (Playback playback : this.playbacks) {
-			sources.add(playback.source);
-		}
-		return sources;
+	public void repeat() {
+		this.repeat = true;
+		currentPlayback(result -> result.repeat());
 	}
 
-	public void repeat(RepeatMode mode) {
-		this.repeatMode = mode;
-		currentPlayback(result -> {
-			switch (mode) {
-				case SINGLE:
-					result.repeat();
-					break;
-				case ALL:
-				case NONE:
-					result.doNotRepeat();
-					break;
-			}
-		});
+	public void doNotRepeat() {
+		this.repeat = false;
+		currentPlayback(result -> result.doNotRepeat());
 	}
 
 	public void shuffle() {
@@ -136,8 +118,8 @@ public class MultiplePlayback {
 		playback.setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onChange() {
-				PlaybackState bundle = playback.getPlayerStateBundle();
-				listener.onChange(getMultiplePlaybackBundle());
+				PlaybackState bundle = playback.getState();
+				listener.onChange();
 				if (bundle.state == State.COMPLETED
 						|| bundle.state == State.ERROR
 						|| bundle.state == State.END) {

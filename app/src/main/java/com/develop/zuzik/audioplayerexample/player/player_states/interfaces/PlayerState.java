@@ -19,7 +19,7 @@ public interface PlayerState {
 
 	void setPlayerStateContainer(PlayerStateContainer playerStateContainer);
 
-	PlaybackState getPlayerStateBundle();
+	PlaybackState getPlaybackState();
 
 	void setPlaybackListener(PlaybackListener playbackListener);
 

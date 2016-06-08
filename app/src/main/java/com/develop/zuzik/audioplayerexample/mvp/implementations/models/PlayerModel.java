@@ -50,7 +50,7 @@ public class PlayerModel implements Player.Model {
 
 	@Override
 	public PlayerModelState getState() {
-		return new PlayerModelState(this.playback.getPlayerStateBundle(), this.repeat);
+		return new PlayerModelState(this.playback.getState(), this.repeat);
 	}
 
 	@Override

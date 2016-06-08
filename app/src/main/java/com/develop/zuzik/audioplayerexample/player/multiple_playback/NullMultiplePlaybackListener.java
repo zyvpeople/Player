@@ -6,7 +6,7 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
  */
 public class NullMultiplePlaybackListener implements MultiplePlaybackListener {
 	@Override
-	public void onChange(MultiplePlayerStateBundle bundle) {
+	public void onChange() {
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackState getPlayerStateBundle() {
+	public PlaybackState getPlaybackState() {
 		return new PlaybackState(
 				State.IDLE,
 				0,

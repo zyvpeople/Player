@@ -15,7 +15,7 @@ public class PausedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackState getPlayerStateBundle() {
+	public PlaybackState getPlaybackState() {
 		int maxDuration = getPlayer().getDuration();
 		return new PlaybackState(
 				State.PAUSED,

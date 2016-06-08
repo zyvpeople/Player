@@ -2,10 +2,9 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.RepeatMode;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayerStateBundle;
-import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 
 import java.util.Arrays;
 import java.util.List;
@@ -90,8 +89,14 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public void onRepeat(RepeatMode repeatMode) {
-		this.model.repeat(repeatMode);
+	public void onRepeat() {
+		this.model.repeat();
+		updateView();
+	}
+
+	@Override
+	public void onDoNotRepeat() {
+		this.model.doNotRepeat();
 		updateView();
 	}
 
@@ -115,16 +120,15 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	private void updateView(MultiplePlayerModelState state) {
-		MultiplePlayerStateBundle bundle = state.bundle;
-		RepeatMode repeatMode = state.repeat;
+		if (state.repeat) {
+			this.view.repeat();
+		} else {
+			this.view.doNotRepeat();
+		}
 
-		this.view.enableRepeatMode(
-				repeatMode == RepeatMode.NONE,
-				repeatMode == RepeatMode.SINGLE,
-				repeatMode == RepeatMode.ALL);
-
-		if (bundle.currentPlayerStateBundle.isPresent()) {
-			PlaybackState playbackState = bundle.currentPlayerStateBundle.get();
+		MultiplePlaybackState bundle = state.bundle;
+		if (bundle.playerState.isPresent()) {
+			PlaybackState playbackState = bundle.playerState.get();
 
 			this.view.enablePlayControls(
 					this.allowedPlayButtonStates.contains(playbackState.state),

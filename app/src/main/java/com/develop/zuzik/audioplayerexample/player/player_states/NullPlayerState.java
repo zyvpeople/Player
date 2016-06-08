@@ -18,7 +18,7 @@ import com.fernandocejas.arrow.optional.Optional;
 public class NullPlayerState implements PlayerState {
 
 	@Override
-	public PlaybackState getPlayerStateBundle() {
+	public PlaybackState getPlaybackState() {
 		return new PlaybackState(
 				State.NONE,
 				0,

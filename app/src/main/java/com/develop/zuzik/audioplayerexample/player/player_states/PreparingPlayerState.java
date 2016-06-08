@@ -19,7 +19,7 @@ public class PreparingPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public PlaybackState getPlayerStateBundle() {
+	public PlaybackState getPlaybackState() {
 		return new PlaybackState(
 				State.PREPARING,
 				0,

@@ -129,9 +129,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 			Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
 			//TODO: uncomment and test for multiple playback
 //			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
-//				this.presenter.onRepeat(RepeatMode.DO_NOT_REPEAT);
+//				this.presenter.onRepeat(Repeat.DO_NOT_REPEAT);
 //			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
-//				this.presenter.onRepeat(RepeatMode.REPEAT_ONE);
+//				this.presenter.onRepeat(Repeat.REPEAT_ONE);
 //			} else {
 //				Log.w(getClass().getSimpleName(), "Tag is not set");
 //			}
@@ -169,17 +169,14 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 	//region Player.View
 
+	@Override
+	public void repeat() {
+		showRepeatButtonAsOn();
+	}
 
 	@Override
-	public void enableRepeatMode(boolean doNotRepeat, boolean repeatOne, boolean repeatAll) {
-		if (doNotRepeat) {
-			showRepeatButtonAsOff();
-		} else if (repeatOne) {
-			showRepeatButtonAsOn();
-		} else if (repeatAll) {
-			//TODO: handle
-		} else {
-		}
+	public void doNotRepeat() {
+		showRepeatButtonAsOff();
 	}
 
 	@Override
