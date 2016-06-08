@@ -10,6 +10,5 @@ public enum State {
 	PLAYING,
 	PAUSED,
 	COMPLETED,
-	END,
 	NONE
 }

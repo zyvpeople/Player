@@ -116,7 +116,6 @@ abstract class BasePlayerState implements PlayerState {
 	@Override
 	public final void release() {
 		getPlayer().release();
-		setState(new EndPlayerState());
 	}
 
 	//endregion
