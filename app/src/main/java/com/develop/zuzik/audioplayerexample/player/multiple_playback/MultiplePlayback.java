@@ -21,8 +21,8 @@ public class MultiplePlayback {
 
 	private final List<Playback> playbacks = new ArrayList<>();
 	private Optional<Integer> currentPosition;
-	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
 	private boolean repeat;
+	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
 
 	public MultiplePlayback(Context context, List<PlayerInitializer> initializers) {
 		for (PlayerInitializer source : initializers) {
@@ -44,7 +44,8 @@ public class MultiplePlayback {
 	}
 
 	private void currentPlayback(SearchResultListener<Playback> listener) {
-		if (this.currentPosition.isPresent()) {
+		Optional<Playback> currentPlayback = currentPlayback();
+		if (currentPlayback.isPresent()) {
 			listener.onFound(this.currentPosition.transform(this.playbacks::get).get());
 		}
 	}
@@ -55,12 +56,12 @@ public class MultiplePlayback {
 
 	public void repeat() {
 		this.repeat = true;
-		currentPlayback(result -> result.repeat());
+		currentPlayback(playback -> playback.repeat());
 	}
 
 	public void doNotRepeat() {
 		this.repeat = false;
-		currentPlayback(result -> result.doNotRepeat());
+		currentPlayback(playback -> playback.doNotRepeat());
 	}
 
 	public void shuffle() {
@@ -82,7 +83,7 @@ public class MultiplePlayback {
 	}
 
 	public void play() {
-		currentPlayback(result -> result.play());
+		currentPlayback(Playback::play);
 	}
 
 	public void pause() {
@@ -110,20 +111,27 @@ public class MultiplePlayback {
 	}
 
 	private void switchFromOldToNewPlayback(Playback oldPlayback, Playback newPlayback) {
+		updateCurrentPositionForPlayback(newPlayback);
 		releasePlayback(oldPlayback);
 		initPlayback(newPlayback, true);
+	}
+
+	private void updateCurrentPositionForPlayback(Playback playback) {
+		int indexOfPlayback = this.playbacks.indexOf(playback);
+		this.currentPosition = indexOfPlayback != -1
+				? Optional.of(indexOfPlayback)
+				: Optional.absent();
 	}
 
 	private void initPlayback(Playback playback, boolean play) {
 		playback.setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onChange() {
-				PlaybackState bundle = playback.getState();
 				listener.onChange();
+				PlaybackState bundle = playback.getState();
 				if (bundle.state == State.COMPLETED
 						|| bundle.state == State.ERROR
 						|| bundle.state == State.END) {
-					//TODO:also should use shuffle flag and repeat mode
 					skipNext();
 				}
 			}
@@ -134,6 +142,13 @@ public class MultiplePlayback {
 			}
 		});
 		playback.init();
+
+		if (this.repeat) {
+			playback.repeat();
+		} else {
+			playback.doNotRepeat();
+		}
+
 		if (play) {
 			playback.play();
 		}
@@ -148,7 +163,6 @@ public class MultiplePlayback {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int nextPlaybackIndex = (currentPlaybackIndex + 1) % this.playbacks.size();
-			this.currentPosition = Optional.of(nextPlaybackIndex);
 			listener.onFound(this.playbacks.get(nextPlaybackIndex));
 		});
 	}
@@ -157,7 +171,6 @@ public class MultiplePlayback {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int previousPlaybackIndex = (currentPlaybackIndex - 1 + this.playbacks.size()) % this.playbacks.size();
-			this.currentPosition = Optional.of(previousPlaybackIndex);
 			listener.onFound(this.playbacks.get(previousPlaybackIndex));
 		});
 	}
