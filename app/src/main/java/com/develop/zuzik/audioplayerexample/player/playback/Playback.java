@@ -15,6 +15,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Play
  * User: zuzik
  * Date: 5/29/16
  */
+//TODO:investigate logic of changing state and all outer listener, because there was few bugs with null pointer
 public class Playback implements PlayerStateContainer {
 
 	private MediaPlayer mediaPlayer;
