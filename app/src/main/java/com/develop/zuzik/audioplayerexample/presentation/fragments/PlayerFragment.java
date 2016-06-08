@@ -15,6 +15,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
@@ -68,7 +69,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 								Arrays.asList(
 										new RawResourcePlayerInitializer(R.raw.song),
 										new RawResourcePlayerInitializer(R.raw.song_short),
-										new UriPlayerInitializer(Uri.parse("https://myzuka.fm/Song/Download/3651633?t=636008467740490540&s=0ebd8ff44dd75c2806598937d34ae320"))))));
+										new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/b35a6e80603ecef2f6560cb0349e4129.mp3"))))));
 		this.presenter.onInit(this);
 	}
 
@@ -153,6 +154,13 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
+
+		if (BuildConfig.DEBUG == true) {
+			this.playPause.setOnLongClickListener(v -> {
+				this.presenter.simulateError();
+				return true;
+			});
+		}
 
 		this.presenter.onAppear();
 

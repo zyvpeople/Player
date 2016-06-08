@@ -43,7 +43,6 @@ abstract class BasePlayerState implements PlayerState {
 	protected final void handleError() {
 		getPlayer().reset();
 		this.playerStateContainer.onError();
-		setState(new IdlePlayerState());
 	}
 
 	//region PlayerState

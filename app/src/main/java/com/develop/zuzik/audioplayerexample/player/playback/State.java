@@ -9,7 +9,6 @@ public enum State {
 	PREPARING,
 	PLAYING,
 	PAUSED,
-	ERROR,//TODO:remove Error state
 	COMPLETED,
 	END,
 	NONE

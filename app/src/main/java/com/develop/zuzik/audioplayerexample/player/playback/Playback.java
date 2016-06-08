@@ -110,6 +110,7 @@ public class Playback implements PlayerStateContainer {
 
 	@Override
 	public void onError() {
+		setState(new IdlePlayerState());
 		this.playbackListener.onError();
 	}
 

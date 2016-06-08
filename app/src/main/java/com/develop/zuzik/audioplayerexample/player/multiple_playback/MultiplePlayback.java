@@ -129,9 +129,7 @@ public class MultiplePlayback {
 			public void onUpdate() {
 				listener.onUpdate();
 				PlaybackState bundle = playback.getState();
-				if (bundle.state == State.COMPLETED
-						|| bundle.state == State.ERROR
-						|| bundle.state == State.END) {
+				if (bundle.state == State.COMPLETED) {
 					skipNext();
 				}
 			}
@@ -139,6 +137,7 @@ public class MultiplePlayback {
 			@Override
 			public void onError() {
 				listener.onError();
+				skipNext();
 			}
 		});
 		playback.init();
@@ -155,8 +154,8 @@ public class MultiplePlayback {
 	}
 
 	private void releasePlayback(Playback playback) {
-		playback.setPlaybackListener(null);
 		playback.release();
+		playback.setPlaybackListener(null);
 	}
 
 	private void nextPlayback(SearchResultListener<Playback> listener) {
