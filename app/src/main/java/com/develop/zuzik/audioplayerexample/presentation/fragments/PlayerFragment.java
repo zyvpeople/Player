@@ -126,15 +126,13 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 			}
 		});
 		this.repeat.setOnClickListener(v -> {
-			Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
-			//TODO: uncomment and test for multiple playback
-//			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
-//				this.presenter.onRepeat(Repeat.DO_NOT_REPEAT);
-//			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
-//				this.presenter.onRepeat(Repeat.REPEAT_ONE);
-//			} else {
-//				Log.w(getClass().getSimpleName(), "Tag is not set");
-//			}
+			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
+				this.presenter.onDoNotRepeat();
+			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
+				this.presenter.onRepeat();
+			} else {
+				Log.w(getClass().getSimpleName(), "Tag is not set");
+			}
 		});
 		this.skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious());
 		this.skipNext.setOnClickListener(v -> this.presenter.onSkipNext());

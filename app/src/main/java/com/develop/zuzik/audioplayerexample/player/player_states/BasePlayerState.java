@@ -66,6 +66,7 @@ abstract class BasePlayerState implements PlayerState {
 	public final void setRepeat(boolean repeat) {
 		if (this.allowSetRepeat) {
 			getPlayer().setLooping(repeat);
+			notifyAboutChanges();
 		}
 	}
 
