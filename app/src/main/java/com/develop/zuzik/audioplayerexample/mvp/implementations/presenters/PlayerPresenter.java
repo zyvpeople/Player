@@ -1,9 +1,9 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +20,7 @@ public class PlayerPresenter implements Player.Presenter {
 	private final Player.Model model;
 	private Player.View view;
 	private Subscription playbackStateChangedSubscription;
+	private Subscription errorPlayingSubscription;
 
 	List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
 	List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
@@ -46,11 +47,14 @@ public class PlayerPresenter implements Player.Presenter {
 		updateView();
 		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
 				.subscribe(aVoid -> updateView());
+		this.errorPlayingSubscription = this.model.errorPlayingObservable()
+				.subscribe(aVoid -> this.view.showError("Error playing song"));
 	}
 
 	@Override
 	public void onDisappear() {
 		this.playbackStateChangedSubscription.unsubscribe();
+		this.errorPlayingSubscription.unsubscribe();
 	}
 
 	@Override
@@ -76,13 +80,11 @@ public class PlayerPresenter implements Player.Presenter {
 	@Override
 	public void onRepeat() {
 		this.model.repeat();
-		updateView();
 	}
 
 	@Override
 	public void onDoNotRepeat() {
 		this.model.doNotRepeat();
-		updateView();
 	}
 
 	@Override

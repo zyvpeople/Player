@@ -48,8 +48,8 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 		updateView();
 		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
 				.subscribe(aVoid -> updateView());
-		//TODO:
-		this.errorPlayingSubscription = this.model.onErrorPlayingObservable().subscribe();
+		this.errorPlayingSubscription = this.model.errorPlayingObservable()
+				.subscribe(aVoid -> this.view.showError("Error playing song"));
 	}
 
 	@Override
@@ -91,13 +91,11 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	@Override
 	public void onRepeat() {
 		this.model.repeat();
-		updateView();
 	}
 
 	@Override
 	public void onDoNotRepeat() {
 		this.model.doNotRepeat();
-		updateView();
 	}
 
 	@Override

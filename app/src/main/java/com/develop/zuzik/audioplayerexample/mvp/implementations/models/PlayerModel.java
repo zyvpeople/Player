@@ -2,8 +2,8 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -85,14 +85,14 @@ public class PlayerModel implements Player.Model {
 
 	@Override
 	public void repeat() {
-		this.playback.repeat();
 		this.repeat = true;
+		this.playback.repeat();
 	}
 
 	@Override
 	public void doNotRepeat() {
-		this.playback.doNotRepeat();
 		this.repeat = false;
+		this.playback.doNotRepeat();
 	}
 
 	@Override

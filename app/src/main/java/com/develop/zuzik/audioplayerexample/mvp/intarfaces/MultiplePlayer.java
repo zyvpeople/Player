@@ -16,7 +16,7 @@ public interface MultiplePlayer {
 
 		Observable<Void> stateChangedObservable();
 
-		Observable<Void> onErrorPlayingObservable();
+		Observable<Void> errorPlayingObservable();
 
 		void play();
 

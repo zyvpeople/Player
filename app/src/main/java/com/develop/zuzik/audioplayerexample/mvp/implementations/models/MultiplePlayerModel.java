@@ -56,7 +56,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public Observable<Void> onErrorPlayingObservable() {
+	public Observable<Void> errorPlayingObservable() {
 		return this.errorPlayingPublishSubject.asObservable();
 	}
 
