@@ -4,7 +4,6 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 /**
@@ -20,8 +19,6 @@ public interface PlayerState {
 	void setPlayerStateContainer(PlayerStateContainer playerStateContainer);
 
 	PlaybackState getPlaybackState();
-
-	void setPlaybackListener(PlaybackListener playbackListener);
 
 	void setRepeat(boolean repeat);
 

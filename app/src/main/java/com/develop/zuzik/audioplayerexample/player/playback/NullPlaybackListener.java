@@ -7,7 +7,7 @@ package com.develop.zuzik.audioplayerexample.player.playback;
 public class NullPlaybackListener implements PlaybackListener {
 
 	@Override
-	public void onChange() {
+	public void onUpdate() {
 	}
 
 	@Override

@@ -6,7 +6,7 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
  */
 public interface MultiplePlaybackListener {
 
-	void onChange();
+	void onUpdate();
 
 	void onError();
 }

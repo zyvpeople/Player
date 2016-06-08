@@ -35,7 +35,6 @@ public class Playback implements PlayerStateContainer {
 		this.playbackListener = playbackListener != null
 				? playbackListener
 				: new NullPlaybackListener();
-		this.state.setPlaybackListener(this.playbackListener);
 	}
 
 	public PlaybackState getState() {
@@ -94,22 +93,29 @@ public class Playback implements PlayerStateContainer {
 		this.state.setPlayer(null);
 		this.state.setPlayerInitializer(null);
 		this.state.setPlayerStateContainer(null);
-		this.state.setPlaybackListener(null);
 
 		this.state = state;
 
 		this.state.setPlayer(this.mediaPlayer);
 		this.state.setPlayerInitializer(this.source);
 		this.state.setPlayerStateContainer(this);
-		this.state.setPlaybackListener(this.playbackListener);
 		this.state.setRepeat(this.repeat);
 		this.state.set(this.context);
+	}
+
+	@Override
+	public void onUpdate() {
+		this.playbackListener.onUpdate();
+	}
+
+	@Override
+	public void onError() {
+		this.playbackListener.onError();
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {
 		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
 	}
-
 	//endregion
 
 	//region Fake

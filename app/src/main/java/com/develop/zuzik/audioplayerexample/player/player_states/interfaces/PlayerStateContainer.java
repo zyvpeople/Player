@@ -8,4 +8,8 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Play
  */
 public interface PlayerStateContainer {
 	void setState(PlayerState state);
+
+	void onUpdate();
+
+	void onError();
 }

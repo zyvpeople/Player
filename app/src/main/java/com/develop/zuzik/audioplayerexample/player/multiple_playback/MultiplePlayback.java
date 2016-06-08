@@ -126,8 +126,8 @@ public class MultiplePlayback {
 	private void initPlayback(Playback playback, boolean play) {
 		playback.setPlaybackListener(new PlaybackListener() {
 			@Override
-			public void onChange() {
-				listener.onChange();
+			public void onUpdate() {
+				listener.onUpdate();
 				PlaybackState bundle = playback.getState();
 				if (bundle.state == State.COMPLETED
 						|| bundle.state == State.ERROR

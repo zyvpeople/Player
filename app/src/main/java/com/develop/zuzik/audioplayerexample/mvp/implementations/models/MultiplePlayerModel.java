@@ -28,7 +28,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 		this.playback.init();
 		this.playback.setListener(new MultiplePlaybackListener() {
 			@Override
-			public void onChange() {
+			public void onUpdate() {
 				playbackStateChangedPublishSubject.onNext(null);
 			}
 

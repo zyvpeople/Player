@@ -31,7 +31,7 @@ public class PlayerModel implements Player.Model {
 		this.playback.init();
 		this.playback.setPlaybackListener(new PlaybackListener() {
 			@Override
-			public void onChange() {
+			public void onUpdate() {
 				playbackStateChangedPublishSubject.onNext(null);
 			}
 

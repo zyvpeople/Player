@@ -3,11 +3,9 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.playback.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
 
 /**
  * User: zuzik
@@ -20,7 +18,6 @@ abstract class BasePlayerState implements PlayerState {
 	private MediaPlayer player;
 	private PlayerInitializer playerInitializer;
 	private PlayerStateContainer playerStateContainer;
-	private PlaybackListener playbackListener = new NullPlaybackListener();
 
 	protected BasePlayerState(boolean allowSetRepeat, boolean allowSeekToPosition) {
 		this.allowSetRepeat = allowSetRepeat;
@@ -40,12 +37,12 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	protected final void notifyAboutChanges() {
-		this.playbackListener.onChange();
+		this.playerStateContainer.onUpdate();
 	}
 
 	protected final void handleError() {
 		getPlayer().reset();
-		this.playbackListener.onError();
+		this.playerStateContainer.onError();
 		setState(new IdlePlayerState());
 	}
 
@@ -66,13 +63,6 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public final void setPlaybackListener(PlaybackListener playbackListener) {
-		this.playbackListener = playbackListener != null
-				? playbackListener
-				: new NullPlaybackListener();
-	}
-
-	@Override
 	public final void setRepeat(boolean repeat) {
 		if (this.allowSetRepeat) {
 			getPlayer().setLooping(repeat);
@@ -85,11 +75,10 @@ abstract class BasePlayerState implements PlayerState {
 			handleError();
 			return true;
 		});
-		this.player.setOnCompletionListener(mp -> {
-			setState(getPlayer().isLooping()
-					? new StartedPlayerState()
-					: new CompletedPlayerState());
-		});
+		this.player.setOnCompletionListener(mp ->
+				setState(getPlayer().isLooping()
+						? new StartedPlayerState()
+						: new CompletedPlayerState()));
 		this.player.setOnSeekCompleteListener(mp -> notifyAboutChanges());
 		notifyAboutChanges();
 	}
