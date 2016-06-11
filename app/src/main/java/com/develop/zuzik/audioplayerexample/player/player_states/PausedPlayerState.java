@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -29,8 +29,7 @@ public class PausedPlayerState extends BasePlayerState {
 	@Override
 	public void play() {
 		super.play();
-		getPlayer().start();
-		setState(new StartedPlayerState());
+		startPlayer();
 	}
 
 	@Override

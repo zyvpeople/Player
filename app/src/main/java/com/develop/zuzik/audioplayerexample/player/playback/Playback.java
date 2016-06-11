@@ -2,6 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.playback;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
@@ -10,12 +11,14 @@ import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
 
 /**
  * User: zuzik
  * Date: 5/29/16
  */
 //TODO:investigate logic of changing state and all outer listener, because there was few bugs with null pointer
+//TODO:audiomanager can be null
 public class Playback implements PlayerStateContainer {
 
 	private MediaPlayer mediaPlayer;
@@ -24,10 +27,12 @@ public class Playback implements PlayerStateContainer {
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private boolean repeat;
 	private final Context context;
+	private final AudioManager audioManager;
 
 	public Playback(Context context, PlayerInitializer source) {
-		this.context = new ContextWrapper(context).getBaseContext();
+		this.context = new ContextWrapper(context).getApplicationContext();
 		this.source = source;
+		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 	}
 
 	//region Getters/Setters
@@ -63,6 +68,7 @@ public class Playback implements PlayerStateContainer {
 
 	public void release() {
 		this.state.release();
+		this.audioManager.abandonAudioFocus(this.onAudioFocusChangeListener);
 		this.mediaPlayer = null;
 	}
 
@@ -94,6 +100,10 @@ public class Playback implements PlayerStateContainer {
 		this.state.apply(this.context, this.mediaPlayer, this.source, this, this.repeat);
 	}
 
+	private void logState(PlayerState oldState, PlayerState newState) {
+		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
+	}
+
 	@Override
 	public void onUpdate() {
 		this.playbackListener.onUpdate();
@@ -105,9 +115,25 @@ public class Playback implements PlayerStateContainer {
 		this.playbackListener.onError();
 	}
 
-	private void logState(PlayerState oldState, PlayerState newState) {
-		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
+	@Override
+	public void requestFocus(Action success, Action fail) {
+		int result = this.audioManager
+				.requestAudioFocus(
+						this.onAudioFocusChangeListener,
+						AudioManager.STREAM_MUSIC,
+						AudioManager.AUDIOFOCUS_GAIN);
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+			success.execute();
+		} else {
+			fail.execute();
+		}
 	}
+
+	@Override
+	public void abandonAudioFocus() {
+		this.audioManager.abandonAudioFocus(this.onAudioFocusChangeListener);
+	}
+
 	//endregion
 
 	//region Fake
@@ -117,4 +143,18 @@ public class Playback implements PlayerStateContainer {
 	}
 
 	//endregion
+
+	//FIXME: when playback on pause and user has end his call so playback begin to play but must be in pause
+	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = focusChange -> {
+		if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+			state.pause();
+		} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+			state.play();
+			//TODO: in this place we should restore volume to previous normal state
+		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+			state.stop();
+		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+			//TODO: in this place we should made volume level lower
+		}
+	};
 }

@@ -40,9 +40,22 @@ abstract class BasePlayerState implements PlayerState {
 		this.playerStateContainer.onUpdate();
 	}
 
+	//TODO: send concrete throwable
 	protected final void handleError() {
+		abandonAudioFocus();
 		getPlayer().reset();
 		this.playerStateContainer.onError();
+	}
+
+	protected final void abandonAudioFocus() {
+		this.playerStateContainer.abandonAudioFocus();
+	}
+
+	protected final void startPlayer() {
+		this.playerStateContainer.requestFocus(() -> {
+			getPlayer().start();
+			setState(new StartedPlayerState());
+		}, () -> handleError());
 	}
 
 	//region PlayerState
