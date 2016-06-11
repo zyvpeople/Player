@@ -12,19 +12,14 @@ import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInit
  */
 public interface PlayerState {
 
-	void setPlayer(MediaPlayer player);
-
-	void setPlayerInitializer(PlayerInitializer playerInitializer);
-
-	void setPlayerStateContainer(PlayerStateContainer playerStateContainer);
-
 	PlaybackState getPlaybackState();
 
 	void setRepeat(boolean repeat);
 
-	void set(Context context);
+	//TODO: rename to apply unapply
+	void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat);
 
-	void unset();
+	void unapply();
 
 	void play();
 

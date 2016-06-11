@@ -26,31 +26,17 @@ public class NullPlayerState implements PlayerState {
 	}
 
 	@Override
-	public void setPlayer(MediaPlayer player) {
-
-	}
-
-	public void setPlayerInitializer(PlayerInitializer playerInitializer) {
-
-	}
-
-	@Override
-	public void setPlayerStateContainer(PlayerStateContainer playerStateContainer) {
-
-	}
-
-	@Override
 	public void setRepeat(boolean repeat) {
 
 	}
 
 	@Override
-	public void set(Context context) {
+	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
 
 	}
 
 	@Override
-	public void unset() {
+	public void unapply() {
 
 	}
 

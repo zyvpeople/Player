@@ -69,7 +69,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 								Arrays.asList(
 										new RawResourcePlayerInitializer(R.raw.song),
 										new RawResourcePlayerInitializer(R.raw.song_short),
-										new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/b35a6e80603ecef2f6560cb0349e4129.mp3"))))));
+										new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/3ff662084ab8939a8c392c14ed0f7ce1.mp3"))))));
 		this.presenter.onInit(this);
 	}
 

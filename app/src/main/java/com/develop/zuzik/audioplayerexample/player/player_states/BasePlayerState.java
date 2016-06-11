@@ -48,20 +48,6 @@ abstract class BasePlayerState implements PlayerState {
 	//region PlayerState
 
 	@Override
-	public final void setPlayer(MediaPlayer player) {
-		this.player = player;
-	}
-
-	public final void setPlayerInitializer(PlayerInitializer playerInitializer) {
-		this.playerInitializer = playerInitializer;
-	}
-
-	@Override
-	public final void setPlayerStateContainer(PlayerStateContainer playerStateContainer) {
-		this.playerStateContainer = playerStateContainer;
-	}
-
-	@Override
 	public final void setRepeat(boolean repeat) {
 		if (this.allowSetRepeat) {
 			getPlayer().setLooping(repeat);
@@ -70,7 +56,12 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void set(Context context) {
+	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
+		this.player = player;
+		this.playerInitializer = playerInitializer;
+		this.playerStateContainer = playerStateContainer;
+		setRepeat(repeat);
+
 		this.player.setOnErrorListener((mp, what, extra) -> {
 			handleError();
 			return true;
@@ -84,9 +75,12 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void unset() {
+	public void unapply() {
 		this.player.setOnErrorListener(null);
 		this.player.setOnCompletionListener(null);
+		this.player = null;
+		this.playerInitializer = null;
+		this.playerStateContainer = null;
 	}
 
 	@Override

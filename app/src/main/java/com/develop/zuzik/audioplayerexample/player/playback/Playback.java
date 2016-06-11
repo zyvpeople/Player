@@ -89,19 +89,9 @@ public class Playback implements PlayerStateContainer {
 	@Override
 	public void setState(PlayerState state) {
 		logState(this.state, state);
-
-		this.state.unset();
-		this.state.setPlayer(null);
-		this.state.setPlayerInitializer(null);
-		this.state.setPlayerStateContainer(null);
-
+		this.state.unapply();
 		this.state = state;
-
-		this.state.setPlayer(this.mediaPlayer);
-		this.state.setPlayerInitializer(this.source);
-		this.state.setPlayerStateContainer(this);
-		this.state.setRepeat(this.repeat);
-		this.state.set(this.context);
+		this.state.apply(this.context, this.mediaPlayer, this.source, this, this.repeat);
 	}
 
 	@Override
