@@ -35,8 +35,6 @@ public class PausedPlayerState extends BasePlayerState {
 	@Override
 	public void stop() {
 		super.stop();
-		getPlayer().stop();
-		getPlayer().reset();
-		setState(new IdlePlayerState());
+		stopPlayer();
 	}
 }

@@ -58,6 +58,11 @@ abstract class BasePlayerState implements PlayerState {
 		}, () -> handleError());
 	}
 
+	protected final void stopPlayer() {
+		getPlayer().stop();
+		setState(new IdlePlayerState());
+	}
+
 	//region PlayerState
 
 	@Override

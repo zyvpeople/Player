@@ -3,8 +3,8 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
 import com.fernandocejas.arrow.optional.Optional;
@@ -65,8 +65,6 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void stop() {
 		super.stop();
-		getPlayer().stop();
-		getPlayer().reset();
-		setState(new IdlePlayerState());
+		stopPlayer();
 	}
 }
