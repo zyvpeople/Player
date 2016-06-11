@@ -16,7 +16,6 @@ public interface PlayerState {
 
 	void setRepeat(boolean repeat);
 
-	//TODO: rename to apply unapply
 	void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat);
 
 	void unapply();
