@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.AudioFocusLostException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
@@ -75,7 +76,6 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void audioFocusLoss() {
 		super.audioFocusLoss();
-		//TODO: maybe send error or warning because song are stopped not by user
-		stopPlayer();
+		handleError(new AudioFocusLostException());
 	}
 }
