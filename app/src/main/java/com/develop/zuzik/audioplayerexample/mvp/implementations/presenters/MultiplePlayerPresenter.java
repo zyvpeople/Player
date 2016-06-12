@@ -2,10 +2,7 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
-import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
-import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
-import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateException;
-import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
@@ -24,6 +21,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 
 	private final MultiplePlayer.Model model;
 	private MultiplePlayer.View view;
+	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
 
@@ -31,8 +29,9 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
 	List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
-	public MultiplePlayerPresenter(MultiplePlayer.Model model) {
+	public MultiplePlayerPresenter(MultiplePlayer.Model model, PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;
+		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
 	}
 
 	@Override
@@ -53,20 +52,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
 				.subscribe(aVoid -> updateView());
 		this.errorPlayingSubscription = this.model.errorPlayingObservable()
-				.map(throwable -> {
-					//TODO: create message provider
-					if (throwable instanceof PlayerInitializeException) {
-						return "Error initialize player";
-					} else if (throwable instanceof FailRequestAudioFocusException) {
-						return "Error request audio focus";
-					} else if (throwable instanceof MediaPlayerStateException) {
-						return "Error usage media player";
-					} else if (throwable instanceof FakeMediaPlayerException) {
-						return "Fake error";
-					} else {
-						return "Unknown error";
-					}
-				})
+				.map(this.exceptionToMessageTransformation::transform)
 				.subscribe(this.view::showError);
 	}
 

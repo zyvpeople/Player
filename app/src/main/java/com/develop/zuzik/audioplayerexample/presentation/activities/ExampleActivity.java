@@ -14,6 +14,7 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerMod
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
+import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
 public class ExampleActivity extends AppCompatActivity implements Player.View {
 
@@ -34,7 +35,9 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_example);
 
-		this.presenter = new PlayerPresenter(new PlayerModel(this, new RawResourcePlayerInitializer(R.raw.song)));
+		this.presenter = new PlayerPresenter(
+				new PlayerModel(this, new RawResourcePlayerInitializer(R.raw.song)),
+				new ExamplePlayerExceptionMessageProvider());
 
 		this.play = (Button) findViewById(R.id.play);
 		this.pause = (Button) findViewById(R.id.pause);

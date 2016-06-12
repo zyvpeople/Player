@@ -24,6 +24,7 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePla
 import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.UriPlayerInitializer;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
+import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
 import java.util.Arrays;
 
@@ -69,7 +70,8 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 								Arrays.asList(
 										new RawResourcePlayerInitializer(R.raw.song),
 										new RawResourcePlayerInitializer(R.raw.song_short),
-										new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3"))))));
+										new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3"))))),
+				new ExamplePlayerExceptionMessageProvider());
 		this.presenter.onInit(this);
 	}
 
