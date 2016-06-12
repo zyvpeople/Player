@@ -27,19 +27,16 @@ public class StartedPlayerState extends BasePlayerState {
 	private Subscription checkPlayerProgressSubscription;
 
 	public StartedPlayerState() {
-		super(true, true);
-	}
-
-	@Override
-	public PlaybackState getPlaybackState() {
-		int maxDuration = getPlayer().getDuration();
-		return new PlaybackState(
-				State.PLAYING,
-				getPlayer().getCurrentPosition(),
-				maxDuration != -1
-						? Optional.of(maxDuration)
-						: Optional.absent(),
-				getPlayer().isLooping());
+		super(true, true, player -> {
+			int maxDuration = player.getDuration();
+			return new PlaybackState(
+					State.PLAYING,
+					player.getCurrentPosition(),
+					maxDuration != -1
+							? Optional.of(maxDuration)
+							: Optional.absent(),
+					player.isLooping());
+		});
 	}
 
 	@Override

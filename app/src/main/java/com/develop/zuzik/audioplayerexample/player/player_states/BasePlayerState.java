@@ -2,10 +2,16 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Transformation;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -18,14 +24,21 @@ abstract class BasePlayerState implements PlayerState {
 	private MediaPlayer player;
 	private PlayerInitializer playerInitializer;
 	private PlayerStateContainer playerStateContainer;
+	private final Transformation<MediaPlayer, PlaybackState> transformation;
 
-	protected BasePlayerState(boolean allowSetRepeat, boolean allowSeekToPosition) {
+	protected BasePlayerState(boolean allowSetRepeat, boolean allowSeekToPosition, Transformation<MediaPlayer, PlaybackState> transformation) {
 		this.allowSetRepeat = allowSetRepeat;
 		this.allowSeekToPosition = allowSeekToPosition;
+		this.transformation = transformation;
 	}
 
-	protected final MediaPlayer getPlayer() {
-		return this.player;
+	protected final void getPlayer(ResultAction<MediaPlayer> resultAction) {
+		try {
+			resultAction.execute(this.player);
+		} catch (IllegalStateException e) {
+			Log.e(getClass().getSimpleName(), e.toString());
+			handleError();
+		}
 	}
 
 	protected final PlayerInitializer getPlayerInitializer() {
@@ -43,7 +56,7 @@ abstract class BasePlayerState implements PlayerState {
 	//TODO: send concrete throwable
 	protected final void handleError() {
 		abandonAudioFocus();
-		getPlayer().reset();
+		this.player.reset();
 		this.playerStateContainer.onError();
 	}
 
@@ -52,24 +65,47 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	protected final void startPlayer() {
-		this.playerStateContainer.requestFocus(() -> {
-			getPlayer().start();
-			setState(new StartedPlayerState());
-		}, () -> handleError());
+		this.playerStateContainer.requestFocus(() ->
+				getPlayer(value -> {
+					//TODO: call in apply method of started state
+					value.start();
+					setState(new StartedPlayerState());
+				}), () -> handleError());
 	}
 
 	protected final void stopPlayer() {
-		getPlayer().stop();
-		setState(new IdlePlayerState());
+		getPlayer(value -> {
+			value.stop();
+			setState(new IdlePlayerState());
+		});
 	}
 
 	//region PlayerState
 
+	//FIXME: error is handled by new error appear outside of this code
+	@Override
+	public final PlaybackState getPlaybackState() {
+		try {
+			return this.transformation.transform(this.player);
+		} catch (IllegalStateException e) {
+			Log.e(getClass().getSimpleName(), e.toString());
+			handleError();
+			//TODO: idle?
+			return new PlaybackState(
+					State.IDLE,
+					0,
+					Optional.absent(),
+					this.player.isLooping());
+		}
+	}
+
 	@Override
 	public final void setRepeat(boolean repeat) {
 		if (this.allowSetRepeat) {
-			getPlayer().setLooping(repeat);
-			notifyAboutChanges();
+			getPlayer(value -> {
+				value.setLooping(repeat);
+				notifyAboutChanges();
+			});
 		}
 	}
 
@@ -85,9 +121,10 @@ abstract class BasePlayerState implements PlayerState {
 			return true;
 		});
 		this.player.setOnCompletionListener(mp ->
-				setState(getPlayer().isLooping()
-						? new StartedPlayerState()
-						: new CompletedPlayerState()));
+				getPlayer(value ->
+						setState(value.isLooping()
+								? new StartedPlayerState()
+								: new CompletedPlayerState())));
 		this.player.setOnSeekCompleteListener(mp -> notifyAboutChanges());
 		notifyAboutChanges();
 	}
@@ -133,13 +170,13 @@ abstract class BasePlayerState implements PlayerState {
 	@Override
 	public final void seekTo(int positionInMilliseconds) {
 		if (this.allowSeekToPosition) {
-			getPlayer().seekTo(positionInMilliseconds);
+			getPlayer(value -> value.seekTo(positionInMilliseconds));
 		}
 	}
 
 	@Override
 	public final void release() {
-		getPlayer().release();
+		this.player.release();
 	}
 
 	//endregion

@@ -16,17 +16,14 @@ import com.fernandocejas.arrow.optional.Optional;
 public class CompletedPlayerState extends BasePlayerState {
 
 	public CompletedPlayerState() {
-		super(true, true);
-	}
-
-	@Override
-	public PlaybackState getPlaybackState() {
-		int maxDuration = getPlayer().getDuration();
-		return new PlaybackState(
-				State.COMPLETED,
-				maxDuration,
-				Optional.of(maxDuration),
-				getPlayer().isLooping());
+		super(true, true, player -> {
+			int maxDuration = player.getDuration();
+			return new PlaybackState(
+					State.COMPLETED,
+					maxDuration,
+					Optional.of(maxDuration),
+					player.isLooping());
+		});
 	}
 
 	@Override

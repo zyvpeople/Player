@@ -16,25 +16,22 @@ import com.fernandocejas.arrow.optional.Optional;
 abstract class PausedPlayerState extends BasePlayerState {
 
 	protected PausedPlayerState() {
-		super(true, true);
+		super(true, true, player -> {
+			int maxDuration = player.getDuration();
+			return new PlaybackState(
+					State.PAUSED,
+					player.getCurrentPosition(),
+					maxDuration != -1
+							? Optional.of(maxDuration)
+							: Optional.absent(),
+					player.isLooping());
+		});
 	}
 
 	@Override
 	public final void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
 		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
-		getPlayer().pause();
-	}
-
-	@Override
-	public final PlaybackState getPlaybackState() {
-		int maxDuration = getPlayer().getDuration();
-		return new PlaybackState(
-				State.PAUSED,
-				getPlayer().getCurrentPosition(),
-				maxDuration != -1
-						? Optional.of(maxDuration)
-						: Optional.absent(),
-				getPlayer().isLooping());
+		getPlayer(MediaPlayer::pause);
 	}
 
 	@Override

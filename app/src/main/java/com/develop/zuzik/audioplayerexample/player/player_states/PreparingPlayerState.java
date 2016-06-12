@@ -18,34 +18,31 @@ import com.fernandocejas.arrow.optional.Optional;
 public class PreparingPlayerState extends BasePlayerState {
 
 	public PreparingPlayerState() {
-		super(false, false);
-	}
-
-	@Override
-	public PlaybackState getPlaybackState() {
-		return new PlaybackState(
+		super(false, false, player -> new PlaybackState(
 				State.PREPARING,
 				0,
 				Optional.absent(),
-				getPlayer().isLooping());
+				player.isLooping()));
 	}
 
 	@Override
 	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
 		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
-		getPlayer().setOnPreparedListener(preparedPlayer -> startPlayer());
-		try {
-			getPlayerInitializer().initialize(context, getPlayer());
-			getPlayer().prepareAsync();
-		} catch (PlayerInitializeException e) {
-			Log.e(getClass().getSimpleName(), e.getMessage());
-			handleError();
-		}
+		getPlayer(value -> {
+			value.setOnPreparedListener(preparedPlayer -> startPlayer());
+			try {
+				getPlayerInitializer().initialize(context, value);
+				value.prepareAsync();
+			} catch (PlayerInitializeException e) {
+				Log.e(getClass().getSimpleName(), e.getMessage());
+				handleError();
+			}
+		});
 	}
 
 	@Override
 	public void unapply() {
-		getPlayer().setOnPreparedListener(null);
+		getPlayer(value -> value.setOnPreparedListener(null));
 		super.unapply();
 	}
 }

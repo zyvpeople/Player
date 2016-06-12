@@ -16,22 +16,17 @@ import com.fernandocejas.arrow.optional.Optional;
 public class IdlePlayerState extends BasePlayerState {
 
 	public IdlePlayerState() {
-		super(true, false);
+		super(true, false, player -> new PlaybackState(
+				State.IDLE,
+				0,
+				Optional.absent(),
+				player.isLooping()));
 	}
 
 	@Override
 	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
 		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
-		getPlayer().reset();
-	}
-
-	@Override
-	public PlaybackState getPlaybackState() {
-		return new PlaybackState(
-				State.IDLE,
-				0,
-				Optional.absent(),
-				getPlayer().isLooping());
+		getPlayer(MediaPlayer::reset);
 	}
 
 	@Override
