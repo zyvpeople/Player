@@ -13,6 +13,6 @@ public class AudioFocusLostTransientPausedPlayerState extends PausedPlayerState 
 	@Override
 	public void audioFocusGain() {
 		super.audioFocusGain();
-		startPlayer();
+		setState(new StartedPlayerState());
 	}
 }

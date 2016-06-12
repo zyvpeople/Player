@@ -64,15 +64,6 @@ abstract class BasePlayerState implements PlayerState {
 		this.playerStateContainer.abandonAudioFocus();
 	}
 
-	protected final void startPlayer() {
-		this.playerStateContainer.requestFocus(() ->
-				getPlayer(value -> {
-					//TODO: call in apply method of started state
-					value.start();
-					setState(new StartedPlayerState());
-				}), () -> handleError());
-	}
-
 	protected final void stopPlayer() {
 		getPlayer(value -> {
 			value.stop();

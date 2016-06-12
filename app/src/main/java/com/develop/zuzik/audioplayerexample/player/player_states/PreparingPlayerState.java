@@ -29,7 +29,7 @@ public class PreparingPlayerState extends BasePlayerState {
 	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
 		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
 		getPlayer(value -> {
-			value.setOnPreparedListener(preparedPlayer -> startPlayer());
+			value.setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState()));
 			try {
 				getPlayerInitializer().initialize(context, value);
 				value.prepareAsync();

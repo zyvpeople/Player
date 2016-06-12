@@ -35,7 +35,7 @@ public class CompletedPlayerState extends BasePlayerState {
 	@Override
 	public void play() {
 		super.play();
-		startPlayer();
+		setState(new StartedPlayerState());
 	}
 
 	@Override

@@ -44,6 +44,7 @@ public class StartedPlayerState extends BasePlayerState {
 		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
 				.subscribe(aLong -> notifyAboutChanges());
+		playerStateContainer.requestFocus(() -> getPlayer(MediaPlayer::start), this::handleError);
 	}
 
 	@Override
