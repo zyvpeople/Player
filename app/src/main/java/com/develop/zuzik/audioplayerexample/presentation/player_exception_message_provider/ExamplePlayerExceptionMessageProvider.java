@@ -25,7 +25,7 @@ public class ExamplePlayerExceptionMessageProvider implements PlayerExceptionMes
 
 	@Override
 	public String mediaPlayerStateExceptionMessage() {
-		return "Error usage media player";
+		return "Error playing song";
 	}
 
 	@Override
