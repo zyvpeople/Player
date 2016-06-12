@@ -58,7 +58,6 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void pause() {
 		super.pause();
-		getPlayer().pause();
 		setState(new ManualPausedPlayerState());
 	}
 
@@ -71,8 +70,6 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void audioFocusLossTransient() {
 		super.audioFocusLossTransient();
-		//TODO: move '.pause()' to 'apply' method of PausedPlayerState
-		getPlayer().pause();
 		setState(new AudioFocusLostTransientPausedPlayerState());
 	}
 
