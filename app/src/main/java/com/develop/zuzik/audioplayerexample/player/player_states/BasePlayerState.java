@@ -54,7 +54,6 @@ abstract class BasePlayerState implements PlayerState {
 		this.playerStateContainer.onUpdate();
 	}
 
-	//TODO: send concrete throwable
 	protected final void handleError(Throwable throwable) {
 		abandonAudioFocus();
 		this.player.reset();
