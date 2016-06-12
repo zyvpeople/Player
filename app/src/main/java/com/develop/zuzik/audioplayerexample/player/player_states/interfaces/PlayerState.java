@@ -32,7 +32,7 @@ public interface PlayerState {
 
 	void audioFocusLoss();
 
-	void simulateError();
+	void simulateError(Throwable throwable);
 
 	void seekTo(int positionInMilliseconds);
 

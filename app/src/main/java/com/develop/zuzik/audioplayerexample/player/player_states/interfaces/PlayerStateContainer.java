@@ -9,7 +9,7 @@ public interface PlayerStateContainer {
 
 	void onUpdate();
 
-	void onError();
+	void onError(Throwable throwable);
 
 	void requestFocus(Action success, Action fail);
 

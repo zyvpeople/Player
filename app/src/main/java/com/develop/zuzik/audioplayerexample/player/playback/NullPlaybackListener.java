@@ -11,6 +11,6 @@ public class NullPlaybackListener implements PlaybackListener {
 	}
 
 	@Override
-	public void onError() {
+	public void onError(Throwable throwable) {
 	}
 }

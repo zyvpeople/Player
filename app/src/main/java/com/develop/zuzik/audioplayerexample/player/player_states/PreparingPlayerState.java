@@ -35,7 +35,7 @@ public class PreparingPlayerState extends BasePlayerState {
 				value.prepareAsync();
 			} catch (PlayerInitializeException e) {
 				Log.e(getClass().getSimpleName(), e.getMessage());
-				handleError();
+				handleError(e);
 			}
 		});
 	}

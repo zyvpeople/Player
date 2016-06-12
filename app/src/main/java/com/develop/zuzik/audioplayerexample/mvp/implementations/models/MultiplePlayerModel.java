@@ -16,7 +16,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 
 	private final MultiplePlayback playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
-	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
+	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
 
 	public MultiplePlayerModel(MultiplePlayback playback) {
@@ -33,8 +33,8 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 			}
 
 			@Override
-			public void onError() {
-				errorPlayingPublishSubject.onNext(null);
+			public void onError(Throwable throwable) {
+				errorPlayingPublishSubject.onNext(throwable);
 			}
 		});
 	}
@@ -56,7 +56,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public Observable<Void> errorPlayingObservable() {
+	public Observable<Throwable> errorPlayingObservable() {
 		return this.errorPlayingPublishSubject.asObservable();
 	}
 

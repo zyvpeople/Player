@@ -19,7 +19,7 @@ public class PlayerModel implements Player.Model {
 
 	private final Playback playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
-	private final PublishSubject<Void> errorPlayingPublishSubject = PublishSubject.create();
+	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
 
 	public PlayerModel(Context context, PlayerInitializer source) {
@@ -36,8 +36,8 @@ public class PlayerModel implements Player.Model {
 			}
 
 			@Override
-			public void onError() {
-				errorPlayingPublishSubject.onNext(null);
+			public void onError(Throwable throwable) {
+				errorPlayingPublishSubject.onNext(throwable);
 			}
 		});
 	}
@@ -59,7 +59,7 @@ public class PlayerModel implements Player.Model {
 	}
 
 	@Override
-	public Observable<Void> errorPlayingObservable() {
+	public Observable<Throwable> errorPlayingObservable() {
 		return this.errorPlayingPublishSubject.asObservable();
 	}
 

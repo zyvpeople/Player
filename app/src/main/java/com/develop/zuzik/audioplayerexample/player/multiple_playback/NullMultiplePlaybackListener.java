@@ -10,6 +10,6 @@ public class NullMultiplePlaybackListener implements MultiplePlaybackListener {
 	}
 
 	@Override
-	public void onError() {
+	public void onError(Throwable throwable) {
 	}
 }

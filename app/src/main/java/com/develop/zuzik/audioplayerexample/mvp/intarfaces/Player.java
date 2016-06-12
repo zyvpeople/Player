@@ -16,7 +16,7 @@ public interface Player {
 
 		Observable<Void> stateChangedObservable();
 
-		Observable<Void> errorPlayingObservable();
+		Observable<Throwable> errorPlayingObservable();
 
 		void play();
 

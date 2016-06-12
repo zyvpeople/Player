@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -44,7 +45,7 @@ public class StartedPlayerState extends BasePlayerState {
 		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
 				.subscribe(aLong -> notifyAboutChanges());
-		playerStateContainer.requestFocus(() -> getPlayer(MediaPlayer::start), this::handleError);
+		playerStateContainer.requestFocus(() -> getPlayer(MediaPlayer::start), () -> handleError(new FailRequestAudioFocusException()));
 	}
 
 	@Override

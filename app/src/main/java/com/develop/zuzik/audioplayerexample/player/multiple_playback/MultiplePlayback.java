@@ -135,8 +135,8 @@ public class MultiplePlayback {
 			}
 
 			@Override
-			public void onError() {
-				listener.onError();
+			public void onError(Throwable throwable) {
+				listener.onError(throwable);
 				skipNext();
 			}
 		});
@@ -179,7 +179,7 @@ public class MultiplePlayback {
 	//region Fake
 
 	public void simulateError() {
-		currentPlayback(Playback::simulateError);
+		currentPlayback(playback -> playback.simulateError());
 	}
 
 	//endregion

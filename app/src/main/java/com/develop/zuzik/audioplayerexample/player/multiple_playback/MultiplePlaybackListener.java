@@ -8,5 +8,5 @@ public interface MultiplePlaybackListener {
 
 	void onUpdate();
 
-	void onError();
+	void onError(Throwable throwable);
 }

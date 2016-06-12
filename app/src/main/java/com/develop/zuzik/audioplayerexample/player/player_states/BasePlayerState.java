@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateException;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -37,7 +38,7 @@ abstract class BasePlayerState implements PlayerState {
 			resultAction.execute(this.player);
 		} catch (IllegalStateException e) {
 			Log.e(getClass().getSimpleName(), e.toString());
-			handleError();
+			handleError(e);
 		}
 	}
 
@@ -54,10 +55,10 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	//TODO: send concrete throwable
-	protected final void handleError() {
+	protected final void handleError(Throwable throwable) {
 		abandonAudioFocus();
 		this.player.reset();
-		this.playerStateContainer.onError();
+		this.playerStateContainer.onError(throwable);
 	}
 
 	protected final void abandonAudioFocus() {
@@ -80,7 +81,7 @@ abstract class BasePlayerState implements PlayerState {
 			return this.transformation.transform(this.player);
 		} catch (IllegalStateException e) {
 			Log.e(getClass().getSimpleName(), e.toString());
-			handleError();
+			handleError(e);
 			//TODO: idle?
 			return new PlaybackState(
 					State.IDLE,
@@ -108,7 +109,7 @@ abstract class BasePlayerState implements PlayerState {
 		setRepeat(repeat);
 
 		this.player.setOnErrorListener((mp, what, extra) -> {
-			handleError();
+			handleError(new MediaPlayerStateException());
 			return true;
 		});
 		this.player.setOnCompletionListener(mp ->
@@ -154,8 +155,8 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public final void simulateError() {
-		handleError();
+	public final void simulateError(Throwable throwable) {
+		handleError(throwable);
 	}
 
 	@Override

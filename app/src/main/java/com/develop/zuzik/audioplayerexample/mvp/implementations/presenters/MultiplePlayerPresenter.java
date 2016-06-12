@@ -2,6 +2,10 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
+import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
@@ -49,7 +53,21 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
 				.subscribe(aVoid -> updateView());
 		this.errorPlayingSubscription = this.model.errorPlayingObservable()
-				.subscribe(aVoid -> this.view.showError("Error playing song"));
+				.map(throwable -> {
+					//TODO: create message provider
+					if (throwable instanceof PlayerInitializeException) {
+						return "Error initialize player";
+					} else if (throwable instanceof FailRequestAudioFocusException) {
+						return "Error request audio focus";
+					} else if (throwable instanceof MediaPlayerStateException) {
+						return "Error usage media player";
+					} else if (throwable instanceof FakeMediaPlayerException) {
+						return "Fake error";
+					} else {
+						return "Unknown error";
+					}
+				})
+				.subscribe(this.view::showError);
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public class NullPlayerState implements PlayerState {
 	}
 
 	@Override
-	public void simulateError() {
+	public void simulateError(Throwable throwable) {
 
 	}
 

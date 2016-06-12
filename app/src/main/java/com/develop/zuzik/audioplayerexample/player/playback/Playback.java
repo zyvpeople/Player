@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
@@ -110,9 +111,9 @@ public class Playback implements PlayerStateContainer {
 	}
 
 	@Override
-	public void onError() {
+	public void onError(Throwable throwable) {
 		setState(new IdlePlayerState());
-		this.playbackListener.onError();
+		this.playbackListener.onError(throwable);
 	}
 
 	@Override
@@ -139,7 +140,7 @@ public class Playback implements PlayerStateContainer {
 	//region Fake
 
 	public void simulateError() {
-		this.state.simulateError();
+		this.state.simulateError(new FakeMediaPlayerException());
 	}
 
 	//endregion
