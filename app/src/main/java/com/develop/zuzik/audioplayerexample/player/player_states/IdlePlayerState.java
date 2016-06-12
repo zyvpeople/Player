@@ -37,7 +37,6 @@ public class IdlePlayerState extends BasePlayerState {
 	@Override
 	public void play() {
 		super.play();
-		getPlayer().reset();
 		setState(new PreparingPlayerState());
 	}
 }

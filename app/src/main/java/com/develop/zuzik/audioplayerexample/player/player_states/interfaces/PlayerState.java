@@ -26,10 +26,15 @@ public interface PlayerState {
 
 	void stop();
 
+	void audioFocusLossTransient();
+
+	void audioFocusGain();
+
+	void audioFocusLoss();
+
 	void simulateError();
 
 	void seekTo(int positionInMilliseconds);
 
 	void release();
-
 }

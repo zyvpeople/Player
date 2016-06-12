@@ -8,14 +8,14 @@ import com.fernandocejas.arrow.optional.Optional;
  * User: zuzik
  * Date: 5/29/16
  */
-public class PausedPlayerState extends BasePlayerState {
+abstract class PausedPlayerState extends BasePlayerState {
 
-	public PausedPlayerState() {
+	protected PausedPlayerState() {
 		super(true, true);
 	}
 
 	@Override
-	public PlaybackState getPlaybackState() {
+	public final PlaybackState getPlaybackState() {
 		int maxDuration = getPlayer().getDuration();
 		return new PlaybackState(
 				State.PAUSED,
@@ -27,13 +27,13 @@ public class PausedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void play() {
+	public final void play() {
 		super.play();
 		startPlayer();
 	}
 
 	@Override
-	public void stop() {
+	public final void stop() {
 		super.stop();
 		stopPlayer();
 	}

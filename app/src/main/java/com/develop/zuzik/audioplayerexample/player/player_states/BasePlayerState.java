@@ -114,6 +114,18 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
+	public void audioFocusLossTransient() {
+	}
+
+	@Override
+	public void audioFocusGain() {
+	}
+
+	@Override
+	public void audioFocusLoss() {
+	}
+
+	@Override
 	public final void simulateError() {
 		handleError();
 	}

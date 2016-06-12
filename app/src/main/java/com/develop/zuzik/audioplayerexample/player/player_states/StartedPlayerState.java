@@ -59,12 +59,27 @@ public class StartedPlayerState extends BasePlayerState {
 	public void pause() {
 		super.pause();
 		getPlayer().pause();
-		setState(new PausedPlayerState());
+		setState(new ManualPausedPlayerState());
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
+		stopPlayer();
+	}
+
+	@Override
+	public void audioFocusLossTransient() {
+		super.audioFocusLossTransient();
+		//TODO: move '.pause()' to 'apply' method of PausedPlayerState
+		getPlayer().pause();
+		setState(new AudioFocusLostTransientPausedPlayerState());
+	}
+
+	@Override
+	public void audioFocusLoss() {
+		super.audioFocusLoss();
+		//TODO: maybe send error or warning because song are stopped not by user
 		stopPlayer();
 	}
 }

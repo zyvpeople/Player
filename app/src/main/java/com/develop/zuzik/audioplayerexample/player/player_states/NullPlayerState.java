@@ -56,6 +56,21 @@ public class NullPlayerState implements PlayerState {
 	}
 
 	@Override
+	public void audioFocusLossTransient() {
+
+	}
+
+	@Override
+	public void audioFocusGain() {
+
+	}
+
+	@Override
+	public void audioFocusLoss() {
+
+	}
+
+	@Override
 	public void simulateError() {
 
 	}

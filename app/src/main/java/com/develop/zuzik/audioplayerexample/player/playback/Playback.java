@@ -9,9 +9,9 @@ import android.util.Log;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
 
 /**
  * User: zuzik
@@ -144,15 +144,14 @@ public class Playback implements PlayerStateContainer {
 
 	//endregion
 
-	//FIXME: when playback on pause and user has end his call so playback begin to play but must be in pause
 	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = focusChange -> {
 		if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-			state.pause();
+			this.state.audioFocusLossTransient();
 		} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-			state.play();
+			this.state.audioFocusGain();
 			//TODO: in this place we should restore volume to previous normal state
 		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-			state.stop();
+			this.state.audioFocusLoss();
 		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 			//TODO: in this place we should made volume level lower
 		}
