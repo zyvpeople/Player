@@ -99,6 +99,7 @@ public class Playback implements PlayerStateContainer {
 		this.state.unapply();
 		this.state = state;
 		this.state.apply(this.context, this.mediaPlayer, this.source, this, this.repeat);
+		onUpdate();
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {

@@ -79,10 +79,16 @@ abstract class BasePlayerState implements PlayerState {
 
 	@Override
 	public final void setRepeat(boolean repeat) {
+		setRepeat(repeat, true);
+	}
+
+	private void setRepeat(boolean repeat, boolean notifyAboutChanges) {
 		if (this.allowSetRepeat) {
 			getPlayer(value -> {
 				value.setLooping(repeat);
-				notifyAboutChanges();
+				if (notifyAboutChanges) {
+					notifyAboutChanges();
+				}
 			});
 		}
 	}
@@ -92,7 +98,7 @@ abstract class BasePlayerState implements PlayerState {
 		this.player = player;
 		this.playerInitializer = playerInitializer;
 		this.playerStateContainer = playerStateContainer;
-		setRepeat(repeat);
+		setRepeat(repeat, false);
 
 		this.player.setOnErrorListener((mp, what, extra) -> {
 			handleError(new MediaPlayerStateException());
@@ -104,7 +110,6 @@ abstract class BasePlayerState implements PlayerState {
 								? new StartedPlayerState()
 								: new CompletedPlayerState())));
 		this.player.setOnSeekCompleteListener(mp -> notifyAboutChanges());
-		notifyAboutChanges();
 	}
 
 	@Override
