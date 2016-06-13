@@ -20,6 +20,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Play
  */
 //TODO:investigate logic of changing state and all outer listener, because there was few bugs with null pointer
 //TODO:audiomanager can be null
+//TODO:call onUpdate only when user do smth or only after state changed and not inside of state initialization
 public class Playback implements PlayerStateContainer {
 
 	private MediaPlayer mediaPlayer;
