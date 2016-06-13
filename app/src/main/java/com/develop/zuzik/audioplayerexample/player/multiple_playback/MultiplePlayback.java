@@ -3,6 +3,8 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 import android.content.Context;
 import android.content.ContextWrapper;
 
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.PlaybackStrategy;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.ShufflePlaybackStrategy;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
@@ -111,10 +113,12 @@ public class MultiplePlayback {
 						switchFromOldToNewPlayback(currentPlayback, previousPlayback)));
 	}
 
-	private void switchFromOldToNewPlayback(Playback oldPlayback, Playback newPlayback) {
-		updateCurrentPositionForPlayback(newPlayback);
-		releasePlayback(oldPlayback);
-		initPlayback(newPlayback, true);
+	private void switchFromOldToNewPlayback(Playback oldPlayback, Optional<Playback> newPlayback) {
+		if (newPlayback.isPresent()) {
+			releasePlayback(oldPlayback);
+			updateCurrentPositionForPlayback(newPlayback.get());
+			initPlayback(newPlayback.get(), true);
+		}
 	}
 
 	private void updateCurrentPositionForPlayback(Playback playback) {
@@ -159,20 +163,26 @@ public class MultiplePlayback {
 		playback.setPlaybackListener(null);
 	}
 
-	private void nextPlayback(ResultAction<Playback> action) {
-		currentPlayback(currentPlayback -> {
-			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
-			int nextPlaybackIndex = (currentPlaybackIndex + 1) % this.playbacks.size();
-			action.execute(this.playbacks.get(nextPlaybackIndex));
-		});
+	private void nextPlayback(ResultAction<Optional<Playback>> action) {
+		currentPlayback(currentPlayback ->
+				action.execute(getNextPlaybackStrategy().determine(this.playbacks, currentPlayback)));
 	}
 
-	private void previousPlayback(ResultAction<Playback> action) {
-		currentPlayback(currentPlayback -> {
-			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
-			int previousPlaybackIndex = (currentPlaybackIndex - 1 + this.playbacks.size()) % this.playbacks.size();
-			action.execute(this.playbacks.get(previousPlaybackIndex));
-		});
+	private void previousPlayback(ResultAction<Optional<Playback>> action) {
+		currentPlayback(currentPlayback ->
+				action.execute(getPreviousPlaybackStrategy().determine(this.playbacks, currentPlayback)));
+	}
+
+	private PlaybackStrategy getNextPlaybackStrategy() {
+		return new ShufflePlaybackStrategy();
+//		return new CyclicNextPlaybackStrategy();
+//		return new NextPlaybackStrategy();
+	}
+
+	private PlaybackStrategy getPreviousPlaybackStrategy() {
+		return new ShufflePlaybackStrategy();
+//		return new CyclicPreviousPlaybackStrategy();
+//		return new PreviousPlaybackStrategy();
 	}
 
 	//endregion
