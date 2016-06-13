@@ -8,6 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
@@ -43,10 +44,10 @@ public class MultiplePlayback {
 		return new MultiplePlaybackState(currentPlayback().transform(Playback::getState), this.repeat);
 	}
 
-	private void currentPlayback(SearchResultListener<Playback> listener) {
+	private void currentPlayback(ResultAction<Playback> action) {
 		Optional<Playback> currentPlayback = currentPlayback();
 		if (currentPlayback.isPresent()) {
-			listener.onFound(this.currentPosition.transform(this.playbacks::get).get());
+			action.execute(this.currentPosition.transform(this.playbacks::get).get());
 		}
 	}
 
@@ -56,12 +57,12 @@ public class MultiplePlayback {
 
 	public void repeat() {
 		this.repeat = true;
-		currentPlayback(playback -> playback.repeat());
+		currentPlayback(Playback::repeat);
 	}
 
 	public void doNotRepeat() {
 		this.repeat = false;
-		currentPlayback(playback -> playback.doNotRepeat());
+		currentPlayback(Playback::doNotRepeat);
 	}
 
 	public void shuffle() {
@@ -158,19 +159,19 @@ public class MultiplePlayback {
 		playback.setPlaybackListener(null);
 	}
 
-	private void nextPlayback(SearchResultListener<Playback> listener) {
+	private void nextPlayback(ResultAction<Playback> action) {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int nextPlaybackIndex = (currentPlaybackIndex + 1) % this.playbacks.size();
-			listener.onFound(this.playbacks.get(nextPlaybackIndex));
+			action.execute(this.playbacks.get(nextPlaybackIndex));
 		});
 	}
 
-	private void previousPlayback(SearchResultListener<Playback> listener) {
+	private void previousPlayback(ResultAction<Playback> action) {
 		currentPlayback(currentPlayback -> {
 			int currentPlaybackIndex = this.playbacks.indexOf(currentPlayback);
 			int previousPlaybackIndex = (currentPlaybackIndex - 1 + this.playbacks.size()) % this.playbacks.size();
-			listener.onFound(this.playbacks.get(previousPlaybackIndex));
+			action.execute(this.playbacks.get(previousPlaybackIndex));
 		});
 	}
 
@@ -179,12 +180,8 @@ public class MultiplePlayback {
 	//region Fake
 
 	public void simulateError() {
-		currentPlayback(playback -> playback.simulateError());
+		currentPlayback(Playback::simulateError);
 	}
 
 	//endregion
-
-	private interface SearchResultListener<T> {
-		void onFound(T result);
-	}
 }
