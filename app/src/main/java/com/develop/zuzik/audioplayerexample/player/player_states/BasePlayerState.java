@@ -6,13 +6,11 @@ import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateException;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Transformation;
-import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -76,18 +74,7 @@ abstract class BasePlayerState implements PlayerState {
 	//FIXME: error is handled by new error appear outside of this code
 	@Override
 	public final PlaybackState getPlaybackState() {
-		try {
-			return this.transformation.transform(this.player);
-		} catch (IllegalStateException e) {
-			Log.e(getClass().getSimpleName(), e.toString());
-			handleError(e);
-			//TODO: idle?
-			return new PlaybackState(
-					State.IDLE,
-					0,
-					Optional.absent(),
-					this.player.isLooping());
-		}
+		return this.transformation.transform(this.player);
 	}
 
 	@Override
