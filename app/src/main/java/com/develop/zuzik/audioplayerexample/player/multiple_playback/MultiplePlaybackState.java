@@ -10,10 +10,12 @@ import com.fernandocejas.arrow.optional.Optional;
 public class MultiplePlaybackState {
 
 	public final Optional<PlaybackState> playerState;
-	public final boolean repeat;
+	public final boolean repeatSingle;
+	public final boolean shuffle;
 
-	public MultiplePlaybackState(Optional<PlaybackState> playerState, boolean repeat) {
+	public MultiplePlaybackState(Optional<PlaybackState> playerState, boolean repeatSingle, boolean shuffle) {
 		this.playerState = playerState;
-		this.repeat = repeat;
+		this.repeatSingle = repeatSingle;
+		this.shuffle = shuffle;
 	}
 }

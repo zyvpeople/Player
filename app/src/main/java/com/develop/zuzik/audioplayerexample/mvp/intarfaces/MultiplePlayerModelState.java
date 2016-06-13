@@ -9,9 +9,11 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePla
 public class MultiplePlayerModelState {
 	public final MultiplePlaybackState bundle;
 	public final boolean repeat;
+	public final boolean shuffle;
 
-	public MultiplePlayerModelState(MultiplePlaybackState bundle, boolean repeat) {
+	public MultiplePlayerModelState(MultiplePlaybackState bundle, boolean repeat, boolean shuffle) {
 		this.bundle = bundle;
 		this.repeat = repeat;
+		this.shuffle = shuffle;
 	}
 }

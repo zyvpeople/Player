@@ -18,6 +18,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
+	private boolean shuffle;
 
 	public MultiplePlayerModel(MultiplePlayback playback) {
 		this.playback = playback;
@@ -47,7 +48,7 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 
 	@Override
 	public MultiplePlayerModelState getState() {
-		return new MultiplePlayerModelState(this.playback.getMultiplePlaybackState(), this.repeat);
+		return new MultiplePlayerModelState(this.playback.getMultiplePlaybackState(), this.repeat, this.shuffle);
 	}
 
 	@Override
@@ -91,24 +92,26 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public void repeat() {
+	public void repeatSingle() {
 		this.repeat = true;
-		this.playback.repeat();
+		this.playback.repeatSingle();
 	}
 
 	@Override
-	public void doNotRepeat() {
+	public void doNotRepeatSingle() {
 		this.repeat = false;
-		this.playback.doNotRepeat();
+		this.playback.doNotRepeatSingle();
 	}
 
 	@Override
 	public void shuffle() {
+		this.shuffle = true;
 		this.playback.shuffle();
 	}
 
 	@Override
 	public void doNotShuffle() {
+		this.shuffle = false;
 		this.playback.doNotShuffle();
 	}
 

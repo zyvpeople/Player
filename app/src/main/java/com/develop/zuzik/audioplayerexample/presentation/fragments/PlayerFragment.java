@@ -40,6 +40,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 	private static final String TAG_STATE_REPEAT_ON = "TAG_STATE_REPEAT_ON";
 	private static final String TAG_STATE_REPEAT_OFF = "TAG_STATE_REPEAT_OFF";
 
+	private static final String TAG_STATE_SHUFFLE_ON = "TAG_STATE_SHUFFLE_ON";
+	private static final String TAG_STATE_SHUFFLE_OFF = "TAG_STATE_SHUFFLE_OFF";
+
 	private ViewPager viewPager;
 
 	private TextView currentTime;
@@ -130,16 +133,24 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 		});
 		this.repeat.setOnClickListener(v -> {
 			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
-				this.presenter.onDoNotRepeat();
+				this.presenter.onDoNotRepeatSingle();
 			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
-				this.presenter.onRepeat();
+				this.presenter.onRepeatSingle();
 			} else {
 				Log.w(getClass().getSimpleName(), "Tag is not set");
 			}
 		});
 		this.skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious());
 		this.skipNext.setOnClickListener(v -> this.presenter.onSkipNext());
-		this.shuffle.setOnClickListener(v -> Toast.makeText(getContext(), "Not implemented yet", Toast.LENGTH_SHORT).show());
+		this.shuffle.setOnClickListener(v -> {
+			if (TAG_STATE_SHUFFLE_ON.equals(v.getTag())) {
+				this.presenter.onDoNotShuffle();
+			} else if (TAG_STATE_SHUFFLE_OFF.equals(v.getTag())) {
+				this.presenter.onShuffle();
+			} else {
+				Log.w(getClass().getSimpleName(), "Tag is not set");
+			}
+		});
 		this.progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -185,6 +196,16 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 	@Override
 	public void doNotRepeat() {
 		showRepeatButtonAsOff();
+	}
+
+	@Override
+	public void shuffle() {
+		showShuffleButtonAsOn();
+	}
+
+	@Override
+	public void doNotShuffle() {
+		showShuffleButtonAsOff();
 	}
 
 	@Override
@@ -250,5 +271,18 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 	private void applyStateToRepeatButton(String tag, @DrawableRes int imageResId) {
 		this.repeat.setTag(tag);
 		this.repeat.setImageResource(imageResId);
+	}
+
+	private void showShuffleButtonAsOn() {
+		applyStateToShuffleButton(TAG_STATE_SHUFFLE_ON, R.drawable.ic_shuffle_on);
+	}
+
+	private void showShuffleButtonAsOff() {
+		applyStateToShuffleButton(TAG_STATE_SHUFFLE_OFF, R.drawable.ic_shuffle_off);
+	}
+
+	private void applyStateToShuffleButton(String tag, @DrawableRes int imageResId) {
+		this.shuffle.setTag(tag);
+		this.shuffle.setImageResource(imageResId);
 	}
 }

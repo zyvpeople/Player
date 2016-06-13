@@ -3,6 +3,8 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 import android.content.Context;
 import android.content.ContextWrapper;
 
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.EndedNextPlaybackStrategy;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.EndedPreviousPlaybackStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.PlaybackStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.ShufflePlaybackStrategy;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
@@ -20,11 +22,13 @@ import java.util.List;
  * User: zuzik
  * Date: 6/4/16
  */
+//TODO: create strategyDeterminer to determine strategy because there can be a lot of variation or customer requirements. Also determine strategy when press next or song completed automatically
 public class MultiplePlayback {
 
 	private final List<Playback> playbacks = new ArrayList<>();
 	private Optional<Integer> currentPosition;
-	private boolean repeat;
+	private boolean repeatSingle;
+	private boolean shuffle;
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
 
 	public MultiplePlayback(Context context, List<PlayerInitializer> initializers) {
@@ -43,7 +47,7 @@ public class MultiplePlayback {
 	}
 
 	public MultiplePlaybackState getMultiplePlaybackState() {
-		return new MultiplePlaybackState(currentPlayback().transform(Playback::getState), this.repeat);
+		return new MultiplePlaybackState(currentPlayback().transform(Playback::getState), this.repeatSingle, this.shuffle);
 	}
 
 	private void currentPlayback(ResultAction<Playback> action) {
@@ -57,22 +61,24 @@ public class MultiplePlayback {
 		return this.currentPosition.transform(this.playbacks::get);
 	}
 
-	public void repeat() {
-		this.repeat = true;
+	public void repeatSingle() {
+		this.repeatSingle = true;
 		currentPlayback(Playback::repeat);
 	}
 
-	public void doNotRepeat() {
-		this.repeat = false;
+	public void doNotRepeatSingle() {
+		this.repeatSingle = false;
 		currentPlayback(Playback::doNotRepeat);
 	}
 
 	public void shuffle() {
-		//TODO:
+		this.shuffle = true;
+		this.listener.onUpdate();
 	}
 
 	public void doNotShuffle() {
-		//TODO:
+		this.shuffle = false;
+		this.listener.onUpdate();
 	}
 
 	//region Play
@@ -147,7 +153,7 @@ public class MultiplePlayback {
 		});
 		playback.init();
 
-		if (this.repeat) {
+		if (this.repeatSingle) {
 			playback.repeat();
 		} else {
 			playback.doNotRepeat();
@@ -174,15 +180,22 @@ public class MultiplePlayback {
 	}
 
 	private PlaybackStrategy getNextPlaybackStrategy() {
-		return new ShufflePlaybackStrategy();
-//		return new CyclicNextPlaybackStrategy();
-//		return new NextPlaybackStrategy();
+		return determineStrategy(
+				new EndedNextPlaybackStrategy(),
+				new ShufflePlaybackStrategy());
 	}
 
 	private PlaybackStrategy getPreviousPlaybackStrategy() {
-		return new ShufflePlaybackStrategy();
-//		return new CyclicPreviousPlaybackStrategy();
-//		return new PreviousPlaybackStrategy();
+		return determineStrategy(
+				new EndedPreviousPlaybackStrategy(),
+				new ShufflePlaybackStrategy());
+	}
+
+	private PlaybackStrategy determineStrategy(PlaybackStrategy defaultStrategy,
+											   PlaybackStrategy shuffleStrategy) {
+		return this.shuffle
+				? shuffleStrategy
+				: defaultStrategy;
 	}
 
 	//endregion

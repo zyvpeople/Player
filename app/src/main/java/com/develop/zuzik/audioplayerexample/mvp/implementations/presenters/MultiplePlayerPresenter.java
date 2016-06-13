@@ -93,13 +93,13 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	@Override
-	public void onRepeat() {
-		this.model.repeat();
+	public void onRepeatSingle() {
+		this.model.repeatSingle();
 	}
 
 	@Override
-	public void onDoNotRepeat() {
-		this.model.doNotRepeat();
+	public void onDoNotRepeatSingle() {
+		this.model.doNotRepeatSingle();
 	}
 
 	@Override
@@ -110,6 +110,16 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	@Override
 	public void onDoNotShuffle() {
 		this.model.doNotShuffle();
+	}
+
+	@Override
+	public void onRepeatAll() {
+
+	}
+
+	@Override
+	public void onDoNotRepeatAll() {
+
 	}
 
 	@Override
@@ -126,6 +136,12 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 			this.view.repeat();
 		} else {
 			this.view.doNotRepeat();
+		}
+
+		if (state.shuffle) {
+			this.view.shuffle();
+		} else {
+			this.view.doNotShuffle();
 		}
 
 		MultiplePlaybackState bundle = state.bundle;

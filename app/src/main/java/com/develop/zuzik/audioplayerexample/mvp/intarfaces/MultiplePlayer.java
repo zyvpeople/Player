@@ -30,9 +30,9 @@ public interface MultiplePlayer {
 
 		void seekToPosition(int positionInMilliseconds);
 
-		void repeat();
+		void repeatSingle();
 
-		void doNotRepeat();
+		void doNotRepeatSingle();
 
 		void shuffle();
 
@@ -45,6 +45,10 @@ public interface MultiplePlayer {
 		void repeat();
 
 		void doNotRepeat();
+
+		void shuffle();
+
+		void doNotShuffle();
 
 		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
 
@@ -80,13 +84,17 @@ public interface MultiplePlayer {
 
 		void onSeekToPosition(int positionInMilliseconds);
 
-		void onRepeat();
+		void onRepeatSingle();
 
-		void onDoNotRepeat();
+		void onDoNotRepeatSingle();
 
 		void onShuffle();
 
 		void onDoNotShuffle();
+
+		void onRepeatAll();
+
+		void onDoNotRepeatAll();
 
 		void simulateError();
 	}

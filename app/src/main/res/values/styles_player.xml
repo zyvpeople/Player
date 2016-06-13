@@ -110,7 +110,7 @@
     </style>
 
     <style name="SecondaryButtonViewStyle.Shuffle">
-        <item name="srcCompat">@drawable/ic_shuffle</item>
+        <item name="srcCompat">@drawable/ic_shuffle_on</item>
     </style>
 
     <style name="SecondaryButtonContainerViewStyle">
