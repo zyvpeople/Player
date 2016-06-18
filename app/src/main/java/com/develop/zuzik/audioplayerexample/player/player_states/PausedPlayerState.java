@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
@@ -14,8 +13,8 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 abstract class PausedPlayerState extends BasePlayerState {
 
-	protected PausedPlayerState() {
-		super(true, true, player -> {
+	protected PausedPlayerState(PlayerStateContext playerStateContext) {
+		super(playerStateContext, true, true, player -> {
 			int maxDuration = player.getDuration();
 			return new PlaybackState(
 					State.PAUSED,
@@ -28,15 +27,15 @@ abstract class PausedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public final void apply(Context context, PlayerStateContext playerStateContext) {
-		super.apply(context, playerStateContext);
+	public final void apply() {
+		super.apply();
 		getPlayer(MediaPlayer::pause);
 	}
 
 	@Override
 	public final void play() {
 		super.play();
-		setState(new StartedPlayerState());
+		setState(new StartedPlayerState(this.playerStateContext));
 	}
 
 	@Override

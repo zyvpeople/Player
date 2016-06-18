@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
@@ -15,8 +14,8 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class PreparingPlayerState extends BasePlayerState {
 
-	public PreparingPlayerState() {
-		super(false, false, player -> new PlaybackState(
+	public PreparingPlayerState(PlayerStateContext playerStateContext) {
+		super(playerStateContext, false, false, player -> new PlaybackState(
 				State.PREPARING,
 				0,
 				Optional.absent(),
@@ -24,12 +23,12 @@ public class PreparingPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply(Context context, PlayerStateContext playerStateContext) {
-		super.apply(context, playerStateContext);
+	public void apply() {
+		super.apply();
 		getPlayer(value -> {
-			value.setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState()));
+			value.setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState(this.playerStateContext)));
 			try {
-				getPlayerInitializer().initialize(context, value);
+				getPlayerInitializer().initialize(this.playerStateContext.context(), value);
 				value.prepareAsync();
 			} catch (PlayerInitializeException e) {
 				Log.e(getClass().getSimpleName(), e.getMessage());

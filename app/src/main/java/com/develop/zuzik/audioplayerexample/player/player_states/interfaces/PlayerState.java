@@ -14,7 +14,7 @@ public interface PlayerState {
 
 	void setRepeat(boolean repeat);
 
-	void apply(Context context, PlayerStateContext playerStateContext);
+	void apply();
 
 	void unapply();
 

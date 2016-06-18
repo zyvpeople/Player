@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
@@ -14,8 +13,8 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class IdlePlayerState extends BasePlayerState {
 
-	public IdlePlayerState() {
-		super(true, false, player -> new PlaybackState(
+	public IdlePlayerState(PlayerStateContext playerStateContext) {
+		super(playerStateContext, true, false, player -> new PlaybackState(
 				State.IDLE,
 				0,
 				Optional.absent(),
@@ -23,14 +22,14 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply(Context context, PlayerStateContext playerStateContext) {
-		super.apply(context, playerStateContext);
+	public void apply() {
+		super.apply();
 		getPlayer(MediaPlayer::reset);
 	}
 
 	@Override
 	public void play() {
 		super.play();
-		setState(new PreparingPlayerState());
+		setState(new PreparingPlayerState(this.playerStateContext));
 	}
 }

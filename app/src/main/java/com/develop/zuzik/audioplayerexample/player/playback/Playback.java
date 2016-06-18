@@ -66,7 +66,7 @@ public class Playback implements PlayerStateContext {
 
 	public void init() {
 		this.mediaPlayer = new MediaPlayer();
-		setState(new IdlePlayerState());
+		setState(new IdlePlayerState(this));
 	}
 
 	public void release() {
@@ -101,7 +101,7 @@ public class Playback implements PlayerStateContext {
 		logState(this.state, state);
 		this.state.unapply();
 		this.state = state;
-		this.state.apply(this.context, this);
+		this.state.apply();
 		onUpdate();
 	}
 
@@ -116,7 +116,7 @@ public class Playback implements PlayerStateContext {
 
 	@Override
 	public void onError(Throwable throwable) {
-		setState(new IdlePlayerState());
+		setState(new IdlePlayerState(this));
 		this.playbackListener.onError(throwable);
 	}
 
@@ -152,6 +152,11 @@ public class Playback implements PlayerStateContext {
 	@Override
 	public boolean isRepeat() {
 		return this.repeat;
+	}
+
+	@Override
+	public Context context() {
+		return this.context;
 	}
 
 	//endregion

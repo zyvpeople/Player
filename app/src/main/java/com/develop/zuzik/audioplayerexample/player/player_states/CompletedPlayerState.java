@@ -1,7 +1,5 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
-
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
@@ -13,8 +11,8 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class CompletedPlayerState extends BasePlayerState {
 
-	public CompletedPlayerState() {
-		super(true, true, player -> {
+	public CompletedPlayerState(PlayerStateContext playerStateContext) {
+		super(playerStateContext, true, true, player -> {
 			int maxDuration = player.getDuration();
 			return new PlaybackState(
 					State.COMPLETED,
@@ -25,15 +23,15 @@ public class CompletedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply(Context context, PlayerStateContext playerStateContext) {
-		super.apply(context, playerStateContext);
+	public void apply() {
+		super.apply();
 		abandonAudioFocus();
 	}
 
 	@Override
 	public void play() {
 		super.play();
-		setState(new StartedPlayerState());
+		setState(new StartedPlayerState(this.playerStateContext));
 	}
 
 	@Override

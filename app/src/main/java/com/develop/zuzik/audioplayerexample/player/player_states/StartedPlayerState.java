@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioFocusLostException;
@@ -27,8 +26,8 @@ public class StartedPlayerState extends BasePlayerState {
 			.observeOn(AndroidSchedulers.mainThread());
 	private Subscription checkPlayerProgressSubscription;
 
-	public StartedPlayerState() {
-		super(true, true, player -> {
+	public StartedPlayerState(PlayerStateContext playerStateContext) {
+		super(playerStateContext, true, true, player -> {
 			int maxDuration = player.getDuration();
 			return new PlaybackState(
 					State.PLAYING,
@@ -41,11 +40,11 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply(Context context, PlayerStateContext playerStateContext) {
-		super.apply(context, playerStateContext);
+	public void apply() {
+		super.apply();
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
 				.subscribe(aLong -> notifyAboutChanges());
-		playerStateContext.requestFocus(() -> getPlayer(MediaPlayer::start), () -> handleError(new FailRequestAudioFocusException()));
+		this.playerStateContext.requestFocus(() -> getPlayer(MediaPlayer::start), () -> handleError(new FailRequestAudioFocusException()));
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void pause() {
 		super.pause();
-		setState(new ManualPausedPlayerState());
+		setState(new ManualPausedPlayerState(this.playerStateContext));
 	}
 
 	@Override
@@ -69,7 +68,7 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void audioFocusLossTransient() {
 		super.audioFocusLossTransient();
-		setState(new AudioFocusLostTransientPausedPlayerState());
+		setState(new AudioFocusLostTransientPausedPlayerState(this.playerStateContext));
 	}
 
 	@Override
