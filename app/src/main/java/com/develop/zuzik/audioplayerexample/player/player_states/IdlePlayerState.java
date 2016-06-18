@@ -2,7 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.fernandocejas.arrow.optional.Optional;
@@ -14,17 +14,22 @@ import com.fernandocejas.arrow.optional.Optional;
 public class IdlePlayerState extends BasePlayerState {
 
 	public IdlePlayerState(PlayerStateContext playerStateContext) {
-		super(playerStateContext, true, false, player -> new PlaybackState(
+		super(playerStateContext, true, false);
+	}
+
+	@Override
+	protected MediaPlayerState playerToState(MediaPlayer player) {
+		return new MediaPlayerState(
 				State.IDLE,
 				0,
-				Optional.absent(),
-				player.isLooping()));
+				Optional.absent());
 	}
 
 	@Override
 	public void apply() {
 		super.apply();
 		getPlayer(MediaPlayer::reset);
+		getPlayer(value -> setMediaPlayerState(playerToState(value)));
 	}
 
 	@Override

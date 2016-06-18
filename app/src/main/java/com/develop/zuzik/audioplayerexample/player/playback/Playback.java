@@ -47,7 +47,12 @@ public class Playback implements PlayerStateContext {
 	}
 
 	public PlaybackState getState() {
-		return this.state.getPlaybackState();
+		MediaPlayerState mediaPlayerState = this.state.getMediaPlayerState();
+		return new PlaybackState(
+				mediaPlayerState.state,
+				mediaPlayerState.currentTimeInMilliseconds,
+				mediaPlayerState.maxTimeInMilliseconds,
+				isRepeat());
 	}
 
 	public void repeat() {
@@ -70,7 +75,7 @@ public class Playback implements PlayerStateContext {
 	}
 
 	public void release() {
-		//TODO: unapply current state
+		this.state.unapply();
 		this.state.release();
 		this.audioManager.abandonAudioFocus(this.onAudioFocusChangeListener);
 		this.mediaPlayer = null;

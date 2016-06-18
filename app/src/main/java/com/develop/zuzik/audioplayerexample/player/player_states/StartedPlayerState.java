@@ -4,7 +4,7 @@ import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioFocusLostException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.fernandocejas.arrow.optional.Optional;
@@ -27,24 +27,29 @@ public class StartedPlayerState extends BasePlayerState {
 	private Subscription checkPlayerProgressSubscription;
 
 	public StartedPlayerState(PlayerStateContext playerStateContext) {
-		super(playerStateContext, true, true, player -> {
-			int maxDuration = player.getDuration();
-			return new PlaybackState(
-					State.PLAYING,
-					player.getCurrentPosition(),
-					maxDuration != -1
-							? Optional.of(maxDuration)
-							: Optional.absent(),
-					player.isLooping());
-		});
+		super(playerStateContext, true, true);
+	}
+
+	@Override
+	protected MediaPlayerState playerToState(MediaPlayer player) {
+		int maxDuration = player.getDuration();
+		return new MediaPlayerState(
+				State.PLAYING,
+				player.getCurrentPosition(),
+				maxDuration != -1
+						? Optional.of(maxDuration)
+						: Optional.absent());
 	}
 
 	@Override
 	public void apply() {
 		super.apply();
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
-				.subscribe(aLong -> notifyAboutChanges());
+				.subscribe(aLong ->
+						getPlayer(value ->
+								setMediaPlayerStateAndNotify(playerToState(value))));
 		this.playerStateContext.requestFocus(() -> getPlayer(MediaPlayer::start), () -> handleError(new FailRequestAudioFocusException()));
+		getPlayer(value -> setMediaPlayerState(playerToState(value)));
 	}
 
 	@Override

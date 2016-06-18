@@ -4,12 +4,13 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateException;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Transformation;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -20,13 +21,17 @@ abstract class BasePlayerState implements PlayerState {
 	protected final PlayerStateContext playerStateContext;
 	private final boolean allowSetRepeat;
 	private final boolean allowSeekToPosition;
-	private final Transformation<MediaPlayer, PlaybackState> transformation;
+	private MediaPlayerState mediaPlayerState = new MediaPlayerState(State.NONE, 0, Optional.absent());
 
-	protected BasePlayerState(PlayerStateContext playerStateContext, boolean allowSetRepeat, boolean allowSeekToPosition, Transformation<MediaPlayer, PlaybackState> transformation) {
+	protected abstract MediaPlayerState playerToState(MediaPlayer player);
+
+	protected BasePlayerState(
+			PlayerStateContext playerStateContext,
+			boolean allowSetRepeat,
+			boolean allowSeekToPosition) {
 		this.playerStateContext = playerStateContext;
 		this.allowSetRepeat = allowSetRepeat;
 		this.allowSeekToPosition = allowSeekToPosition;
-		this.transformation = transformation;
 	}
 
 	protected final MediaPlayer getMediaPlayer() {
@@ -37,9 +42,9 @@ abstract class BasePlayerState implements PlayerState {
 		return this.playerStateContext.getPlayerInitializer();
 	}
 
-	protected final void getPlayer(ResultAction<MediaPlayer> resultAction) {
+	protected final void getPlayer(ResultAction<MediaPlayer> action) {
 		try {
-			resultAction.execute(getMediaPlayer());
+			action.execute(getMediaPlayer());
 		} catch (IllegalStateException e) {
 			Log.e(getClass().getSimpleName(), e.toString());
 			handleError(e);
@@ -50,7 +55,12 @@ abstract class BasePlayerState implements PlayerState {
 		this.playerStateContext.setState(state);
 	}
 
-	protected final void notifyAboutChanges() {
+	protected final void setMediaPlayerState(MediaPlayerState mediaPlayerState) {
+		this.mediaPlayerState = mediaPlayerState;
+	}
+
+	protected final void setMediaPlayerStateAndNotify(MediaPlayerState mediaPlayerState) {
+		setMediaPlayerState(mediaPlayerState);
 		this.playerStateContext.onUpdate();
 	}
 
@@ -74,8 +84,8 @@ abstract class BasePlayerState implements PlayerState {
 	//region PlayerState
 
 	@Override
-	public final PlaybackState getPlaybackState() {
-		return this.transformation.transform(getMediaPlayer());
+	public MediaPlayerState getMediaPlayerState() {
+		return this.mediaPlayerState;
 	}
 
 	@Override
@@ -88,7 +98,7 @@ abstract class BasePlayerState implements PlayerState {
 			getPlayer(value -> {
 				value.setLooping(repeat);
 				if (notifyAboutChanges) {
-					notifyAboutChanges();
+					setMediaPlayerStateAndNotify(playerToState(value));
 				}
 			});
 		}
@@ -107,13 +117,16 @@ abstract class BasePlayerState implements PlayerState {
 						setState(value.isLooping()
 								? new StartedPlayerState(this.playerStateContext)
 								: new CompletedPlayerState(this.playerStateContext))));
-		getMediaPlayer().setOnSeekCompleteListener(mp -> notifyAboutChanges());
+		getMediaPlayer().setOnSeekCompleteListener(mp ->
+				getPlayer(value ->
+						setMediaPlayerStateAndNotify(playerToState(value))));
 	}
 
 	@Override
 	public void unapply() {
 		getMediaPlayer().setOnErrorListener(null);
 		getMediaPlayer().setOnCompletionListener(null);
+		getMediaPlayer().setOnSeekCompleteListener(null);
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.fernandocejas.arrow.optional.Optional;
@@ -14,22 +14,25 @@ import com.fernandocejas.arrow.optional.Optional;
 abstract class PausedPlayerState extends BasePlayerState {
 
 	protected PausedPlayerState(PlayerStateContext playerStateContext) {
-		super(playerStateContext, true, true, player -> {
-			int maxDuration = player.getDuration();
-			return new PlaybackState(
-					State.PAUSED,
-					player.getCurrentPosition(),
-					maxDuration != -1
-							? Optional.of(maxDuration)
-							: Optional.absent(),
-					player.isLooping());
-		});
+		super(playerStateContext, true, true);
+	}
+
+	@Override
+	protected final MediaPlayerState playerToState(MediaPlayer player) {
+		int maxDuration = player.getDuration();
+		return new MediaPlayerState(
+				State.PAUSED,
+				player.getCurrentPosition(),
+				maxDuration != -1
+						? Optional.of(maxDuration)
+						: Optional.absent());
 	}
 
 	@Override
 	public final void apply() {
 		super.apply();
 		getPlayer(MediaPlayer::pause);
+		getPlayer(value -> setMediaPlayerState(playerToState(value)));
 	}
 
 	@Override

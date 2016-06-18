@@ -1,9 +1,10 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.fernandocejas.arrow.optional.Optional;
@@ -15,11 +16,15 @@ import com.fernandocejas.arrow.optional.Optional;
 public class PreparingPlayerState extends BasePlayerState {
 
 	public PreparingPlayerState(PlayerStateContext playerStateContext) {
-		super(playerStateContext, false, false, player -> new PlaybackState(
+		super(playerStateContext, false, false);
+	}
+
+	@Override
+	protected MediaPlayerState playerToState(MediaPlayer player) {
+		return new MediaPlayerState(
 				State.PREPARING,
 				0,
-				Optional.absent(),
-				player.isLooping()));
+				Optional.absent());
 	}
 
 	@Override
@@ -35,6 +40,7 @@ public class PreparingPlayerState extends BasePlayerState {
 				handleError(e);
 			}
 		});
+		getPlayer(value -> setMediaPlayerState(playerToState(value)));
 	}
 
 	@Override
