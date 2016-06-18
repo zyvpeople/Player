@@ -1,10 +1,8 @@
 package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 /**
  * User: zuzik
@@ -16,7 +14,7 @@ public interface PlayerState {
 
 	void setRepeat(boolean repeat);
 
-	void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat);
+	void apply(Context context, PlayerStateContext playerStateContext);
 
 	void unapply();
 

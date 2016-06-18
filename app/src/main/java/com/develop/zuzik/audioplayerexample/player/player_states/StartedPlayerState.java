@@ -7,8 +7,7 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.AudioFocusLostExce
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.concurrent.TimeUnit;
@@ -42,11 +41,11 @@ public class StartedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
-		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
+	public void apply(Context context, PlayerStateContext playerStateContext) {
+		super.apply(context, playerStateContext);
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
 				.subscribe(aLong -> notifyAboutChanges());
-		playerStateContainer.requestFocus(() -> getPlayer(MediaPlayer::start), () -> handleError(new FailRequestAudioFocusException()));
+		playerStateContext.requestFocus(() -> getPlayer(MediaPlayer::start), () -> handleError(new FailRequestAudioFocusException()));
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateEx
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Transformation;
 
@@ -20,9 +20,7 @@ abstract class BasePlayerState implements PlayerState {
 
 	private final boolean allowSetRepeat;
 	private final boolean allowSeekToPosition;
-	private MediaPlayer player;
-	private PlayerInitializer playerInitializer;
-	private PlayerStateContainer playerStateContainer;
+	private PlayerStateContext playerStateContext;
 	private final Transformation<MediaPlayer, PlaybackState> transformation;
 
 	protected BasePlayerState(boolean allowSetRepeat, boolean allowSeekToPosition, Transformation<MediaPlayer, PlaybackState> transformation) {
@@ -31,35 +29,39 @@ abstract class BasePlayerState implements PlayerState {
 		this.transformation = transformation;
 	}
 
+	protected final MediaPlayer getMediaPlayer() {
+		return this.playerStateContext.getMediaPlayer();
+	}
+
+	protected final PlayerInitializer getPlayerInitializer() {
+		return this.playerStateContext.getPlayerInitializer();
+	}
+
 	protected final void getPlayer(ResultAction<MediaPlayer> resultAction) {
 		try {
-			resultAction.execute(this.player);
+			resultAction.execute(getMediaPlayer());
 		} catch (IllegalStateException e) {
 			Log.e(getClass().getSimpleName(), e.toString());
 			handleError(e);
 		}
 	}
 
-	protected final PlayerInitializer getPlayerInitializer() {
-		return this.playerInitializer;
-	}
-
 	protected final void setState(PlayerState state) {
-		this.playerStateContainer.setState(state);
+		this.playerStateContext.setState(state);
 	}
 
 	protected final void notifyAboutChanges() {
-		this.playerStateContainer.onUpdate();
+		this.playerStateContext.onUpdate();
 	}
 
 	protected final void handleError(Throwable throwable) {
 		abandonAudioFocus();
-		this.player.reset();
-		this.playerStateContainer.onError(throwable);
+		getMediaPlayer().reset();
+		this.playerStateContext.onError(throwable);
 	}
 
 	protected final void abandonAudioFocus() {
-		this.playerStateContainer.abandonAudioFocus();
+		this.playerStateContext.abandonAudioFocus();
 	}
 
 	protected final void stopPlayer() {
@@ -73,7 +75,7 @@ abstract class BasePlayerState implements PlayerState {
 
 	@Override
 	public final PlaybackState getPlaybackState() {
-		return this.transformation.transform(this.player);
+		return this.transformation.transform(getMediaPlayer());
 	}
 
 	@Override
@@ -93,31 +95,27 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
-		this.player = player;
-		this.playerInitializer = playerInitializer;
-		this.playerStateContainer = playerStateContainer;
-		setRepeat(repeat, false);
+	public void apply(Context context, PlayerStateContext playerStateContext) {
+		this.playerStateContext = playerStateContext;
+		setRepeat(playerStateContext.isRepeat(), false);
 
-		this.player.setOnErrorListener((mp, what, extra) -> {
+		getMediaPlayer().setOnErrorListener((mp, what, extra) -> {
 			handleError(new MediaPlayerStateException());
 			return true;
 		});
-		this.player.setOnCompletionListener(mp ->
+		getMediaPlayer().setOnCompletionListener(mp ->
 				getPlayer(value ->
 						setState(value.isLooping()
 								? new StartedPlayerState()
 								: new CompletedPlayerState())));
-		this.player.setOnSeekCompleteListener(mp -> notifyAboutChanges());
+		getMediaPlayer().setOnSeekCompleteListener(mp -> notifyAboutChanges());
 	}
 
 	@Override
 	public void unapply() {
-		this.player.setOnErrorListener(null);
-		this.player.setOnCompletionListener(null);
-		this.player = null;
-		this.playerInitializer = null;
-		this.playerStateContainer = null;
+		getMediaPlayer().setOnErrorListener(null);
+		getMediaPlayer().setOnCompletionListener(null);
+		this.playerStateContext = null;
 	}
 
 	@Override
@@ -158,7 +156,7 @@ abstract class BasePlayerState implements PlayerState {
 
 	@Override
 	public final void release() {
-		this.player.release();
+		getMediaPlayer().release();
 	}
 
 	//endregion

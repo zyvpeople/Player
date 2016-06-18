@@ -13,29 +13,29 @@ import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 
 /**
  * User: zuzik
  * Date: 5/29/16
  */
-public class Playback implements PlayerStateContainer {
+public class Playback implements PlayerStateContext {
 
 	private MediaPlayer mediaPlayer;
 	private PlayerState state = new NullPlayerState();
-	public final PlayerInitializer source;
+	public final PlayerInitializer playerInitializer;
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private boolean repeat;
 	private final Context context;
 	private final AudioManager audioManager;
 
-	public Playback(Context context, PlayerInitializer source) throws AudioServiceNotSupportException {
+	public Playback(Context context, PlayerInitializer playerInitializer) throws AudioServiceNotSupportException {
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		if (this.audioManager == null) {
 			throw new AudioServiceNotSupportException();
 		}
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.source = source;
+		this.playerInitializer = playerInitializer;
 	}
 
 	//region Getters/Setters
@@ -70,6 +70,7 @@ public class Playback implements PlayerStateContainer {
 	}
 
 	public void release() {
+		//TODO: unapply current state
 		this.state.release();
 		this.audioManager.abandonAudioFocus(this.onAudioFocusChangeListener);
 		this.mediaPlayer = null;
@@ -100,7 +101,7 @@ public class Playback implements PlayerStateContainer {
 		logState(this.state, state);
 		this.state.unapply();
 		this.state = state;
-		this.state.apply(this.context, this.mediaPlayer, this.source, this, this.repeat);
+		this.state.apply(this.context, this);
 		onUpdate();
 	}
 
@@ -136,6 +137,21 @@ public class Playback implements PlayerStateContainer {
 	@Override
 	public void abandonAudioFocus() {
 		this.audioManager.abandonAudioFocus(this.onAudioFocusChangeListener);
+	}
+
+	@Override
+	public MediaPlayer getMediaPlayer() {
+		return this.mediaPlayer;
+	}
+
+	@Override
+	public PlayerInitializer getPlayerInitializer() {
+		return this.playerInitializer;
+	}
+
+	@Override
+	public boolean isRepeat() {
+		return this.repeat;
 	}
 
 	//endregion

@@ -1,14 +1,12 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContainer;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -26,8 +24,8 @@ public class PreparingPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply(Context context, MediaPlayer player, PlayerInitializer playerInitializer, PlayerStateContainer playerStateContainer, boolean repeat) {
-		super.apply(context, player, playerInitializer, playerStateContainer, repeat);
+	public void apply(Context context, PlayerStateContext playerStateContext) {
+		super.apply(context, playerStateContext);
 		getPlayer(value -> {
 			value.setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState()));
 			try {
