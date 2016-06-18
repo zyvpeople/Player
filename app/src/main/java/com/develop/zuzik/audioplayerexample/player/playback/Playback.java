@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
@@ -18,9 +19,6 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Play
  * User: zuzik
  * Date: 5/29/16
  */
-//TODO:investigate logic of changing state and all outer listener, because there was few bugs with null pointer
-//TODO:audiomanager can be null
-//TODO:call onUpdate only when user do smth or only after state changed and not inside of state initialization
 public class Playback implements PlayerStateContainer {
 
 	private MediaPlayer mediaPlayer;
@@ -31,10 +29,13 @@ public class Playback implements PlayerStateContainer {
 	private final Context context;
 	private final AudioManager audioManager;
 
-	public Playback(Context context, PlayerInitializer source) {
+	public Playback(Context context, PlayerInitializer source) throws AudioServiceNotSupportException {
+		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		if (this.audioManager == null) {
+			throw new AudioServiceNotSupportException();
+		}
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.source = source;
-		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 	}
 
 	//region Getters/Setters

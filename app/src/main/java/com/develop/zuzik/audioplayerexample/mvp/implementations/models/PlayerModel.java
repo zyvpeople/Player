@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
+import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -22,7 +23,7 @@ public class PlayerModel implements Player.Model {
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
 
-	public PlayerModel(Context context, PlayerInitializer source) {
+	public PlayerModel(Context context, PlayerInitializer source) throws AudioServiceNotSupportException {
 		this.playback = new Playback(context, source);
 	}
 

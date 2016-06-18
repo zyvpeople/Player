@@ -20,7 +20,9 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExampleNextPlaybackStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExamplePreviousPlaybackStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.UriPlayerInitializer;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
@@ -66,15 +68,20 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.presenter = new MultiplePlayerPresenter(
-				new MultiplePlayerModel(
-						new MultiplePlayback(
-								getContext(),
-								Arrays.asList(
-										new RawResourcePlayerInitializer(R.raw.song),
-										new RawResourcePlayerInitializer(R.raw.song_short),
-										new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3"))))),
-				new ExamplePlayerExceptionMessageProvider());
+		try {
+			this.presenter = new MultiplePlayerPresenter(
+					new MultiplePlayerModel(
+							getContext(),
+							Arrays.asList(
+									new RawResourcePlayerInitializer(R.raw.song),
+									new RawResourcePlayerInitializer(R.raw.song_short),
+									new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3"))),
+							new ExampleNextPlaybackStrategyFactory(),
+							new ExamplePreviousPlaybackStrategyFactory()),
+					new ExamplePlayerExceptionMessageProvider());
+		} catch (AudioServiceNotSupportException e) {
+			throw new RuntimeException(e);
+		}
 		this.presenter.onInit(this);
 	}
 

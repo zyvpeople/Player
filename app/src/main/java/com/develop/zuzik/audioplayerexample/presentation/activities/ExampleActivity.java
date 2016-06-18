@@ -13,6 +13,7 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
@@ -35,9 +36,13 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_example);
 
-		this.presenter = new PlayerPresenter(
-				new PlayerModel(this, new RawResourcePlayerInitializer(R.raw.song)),
-				new ExamplePlayerExceptionMessageProvider());
+		try {
+			this.presenter = new PlayerPresenter(
+					new PlayerModel(this, new RawResourcePlayerInitializer(R.raw.song)),
+					new ExamplePlayerExceptionMessageProvider());
+		} catch (AudioServiceNotSupportException e) {
+			throw new RuntimeException(e);
+		}
 
 		this.play = (Button) findViewById(R.id.play);
 		this.pause = (Button) findViewById(R.id.pause);

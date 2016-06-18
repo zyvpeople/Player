@@ -71,7 +71,6 @@ abstract class BasePlayerState implements PlayerState {
 
 	//region PlayerState
 
-	//FIXME: error is handled by new error appear outside of this code
 	@Override
 	public final PlaybackState getPlaybackState() {
 		return this.transformation.transform(this.player);

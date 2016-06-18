@@ -3,10 +3,8 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.EndedNextPlaybackStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.EndedPreviousPlaybackStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.PlaybackStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.ShufflePlaybackStrategy;
+import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlaybackStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
@@ -22,7 +20,7 @@ import java.util.List;
  * User: zuzik
  * Date: 6/4/16
  */
-//TODO: create strategyDeterminer to determine strategy because there can be a lot of variation or customer requirements. Also determine strategy when press next or song completed automatically
+//TODO: add logic for add and remove songs from list
 public class MultiplePlayback {
 
 	private final List<Playback> playbacks = new ArrayList<>();
@@ -30,11 +28,19 @@ public class MultiplePlayback {
 	private boolean repeatSingle;
 	private boolean shuffle;
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
+	private final PlaybackStrategyFactory nextPlaybackStrategyFactory;
+	private final PlaybackStrategyFactory previousPlaybackStrategyFactory;
 
-	public MultiplePlayback(Context context, List<PlayerInitializer> initializers) {
+	public MultiplePlayback(
+			Context context,
+			List<PlayerInitializer> initializers,
+			PlaybackStrategyFactory nextPlaybackStrategyFactory,
+			PlaybackStrategyFactory previousPlaybackStrategyFactory) throws AudioServiceNotSupportException {
 		for (PlayerInitializer source : initializers) {
 			this.playbacks.add(new Playback(new ContextWrapper(context).getBaseContext(), source));
 		}
+		this.nextPlaybackStrategyFactory = nextPlaybackStrategyFactory;
+		this.previousPlaybackStrategyFactory = previousPlaybackStrategyFactory;
 		this.currentPosition = initializers.isEmpty()
 				? Optional.absent()
 				: Optional.of(0);
@@ -171,31 +177,12 @@ public class MultiplePlayback {
 
 	private void nextPlayback(ResultAction<Optional<Playback>> action) {
 		currentPlayback(currentPlayback ->
-				action.execute(getNextPlaybackStrategy().determine(this.playbacks, currentPlayback)));
+				action.execute(this.nextPlaybackStrategyFactory.create(this.shuffle).determine(this.playbacks, currentPlayback)));
 	}
 
 	private void previousPlayback(ResultAction<Optional<Playback>> action) {
 		currentPlayback(currentPlayback ->
-				action.execute(getPreviousPlaybackStrategy().determine(this.playbacks, currentPlayback)));
-	}
-
-	private PlaybackStrategy getNextPlaybackStrategy() {
-		return determineStrategy(
-				new EndedNextPlaybackStrategy(),
-				new ShufflePlaybackStrategy());
-	}
-
-	private PlaybackStrategy getPreviousPlaybackStrategy() {
-		return determineStrategy(
-				new EndedPreviousPlaybackStrategy(),
-				new ShufflePlaybackStrategy());
-	}
-
-	private PlaybackStrategy determineStrategy(PlaybackStrategy defaultStrategy,
-											   PlaybackStrategy shuffleStrategy) {
-		return this.shuffle
-				? shuffleStrategy
-				: defaultStrategy;
+				action.execute(this.previousPlaybackStrategyFactory.create(this.shuffle).determine(this.playbacks, currentPlayback)));
 	}
 
 	//endregion

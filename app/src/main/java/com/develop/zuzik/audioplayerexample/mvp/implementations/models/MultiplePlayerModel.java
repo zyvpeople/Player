@@ -1,9 +1,16 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
+import android.content.Context;
+
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
+import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlaybackStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -20,8 +27,11 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	private boolean repeat;
 	private boolean shuffle;
 
-	public MultiplePlayerModel(MultiplePlayback playback) {
-		this.playback = playback;
+	public MultiplePlayerModel(Context context,
+							   List<PlayerInitializer> initializers,
+							   PlaybackStrategyFactory nextPlaybackStrategyFactory,
+							   PlaybackStrategyFactory previousPlaybackStrategyFactory) throws AudioServiceNotSupportException {
+		this.playback = new MultiplePlayback(context, initializers, nextPlaybackStrategyFactory, previousPlaybackStrategyFactory);
 	}
 
 	@Override
