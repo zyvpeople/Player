@@ -33,7 +33,6 @@ abstract class PausedPlayerState extends BasePlayerState {
 	@Override
 	public final void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		super.apply();
-		if (true) throw new IllegalStateException("pause error");
 		getMediaPlayer().pause();
 		setMediaPlayerState(playerToState(getMediaPlayer()));
 	}
