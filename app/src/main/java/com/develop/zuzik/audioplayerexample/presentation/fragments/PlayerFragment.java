@@ -77,10 +77,10 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 					new MultiplePlayerModel<>(
 							getContext(),
 							Arrays.asList(
-									new RawResourcePlayerSource<>(new Song("Crystal (long)"), R.raw.song),
-									new RawResourcePlayerSource<>(new Song("Crystal (short)"), R.raw.song_short),
-									new UriPlayerSource<>(new Song("Enter shikary (network)"), Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
-									new RawResourcePlayerSource<>(new Song("Take it back"), R.raw.song_take_it_back)),
+									new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
+									new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
+									new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
+									new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)),
 							new ExampleNextPlayerSourceStrategyFactory<>(),
 							new ExamplePreviousPlayerSourceStrategyFactory<>()),
 					new ExamplePlayerExceptionMessageProvider());
@@ -257,7 +257,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 
 	@Override
 	public void displayCurrentSource(PlayerSource<Song> song) {
-		this.singer.setText("Not set yet");
+		this.singer.setText(song.getSourceInfo().artist);
 		this.song.setText(song.getSourceInfo().name);
 		int songIndex = this.adapter.getSongs().indexOf(song);
 		if (songIndex != -1 && this.viewPager.getCurrentItem() != songIndex) {

@@ -5,10 +5,7 @@
              tools:context=".presentation.fragments.SongFragment">
 
     <android.support.v7.widget.AppCompatImageView
-        style="@style/SongImageViewStyle"/>
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/song"
-        style="@style/SongTextViewStyle"/>
+        style="@style/SongImageViewStyle"
+        android:id="@+id/image"/>
 
 </FrameLayout>

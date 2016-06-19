@@ -1,15 +1,22 @@
 package com.develop.zuzik.audioplayerexample.entities;
 
+import android.support.annotation.DrawableRes;
+
 import java.io.Serializable;
 
 /**
  * User: zuzik
  * Date: 6/19/16
  */
-public class Song implements Serializable{
+public class Song implements Serializable {
+	public final String artist;
 	public final String name;
+	@DrawableRes
+	public final int image;
 
-	public Song(String name) {
+	public Song(String artist, String name, @DrawableRes int image) {
+		this.artist = artist;
+		this.image = image;
 		this.name = name;
 	}
 
@@ -18,7 +25,10 @@ public class Song implements Serializable{
 		if (o == this) {
 			return true;
 		} else if (o instanceof Song) {
-			return this.name.equals(((Song) o).name);
+			Song song = (Song) o;
+			return this.artist.equals(song.artist)
+					&& this.name.equals(song.name)
+					&& this.image == song.image;
 		} else {
 			return false;
 		}

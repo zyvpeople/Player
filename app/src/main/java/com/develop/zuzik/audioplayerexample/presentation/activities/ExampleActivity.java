@@ -40,7 +40,7 @@ public class ExampleActivity extends AppCompatActivity implements Player.View<So
 
 		try {
 			this.presenter = new PlayerPresenter<Song>(
-					new PlayerModel<>(this, new RawResourcePlayerSource<>(new Song("Crystal (long)"), R.raw.song)),
+					new PlayerModel<>(this, new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song)),
 					new ExamplePlayerExceptionMessageProvider());
 		} catch (AudioServiceNotSupportException e) {
 			throw new RuntimeException(e);
