@@ -1,7 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.media.MediaPlayer;
-import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
@@ -29,12 +28,10 @@ public class PreparingPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
-		super.apply();
-		getMediaPlayer().setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState(this.playerStateContext)));
-		getPlayerInitializer().initialize(this.playerStateContext.context(), getMediaPlayer());
+	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
+		player.setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState(this.playerStateContext)));
+		getPlayerInitializer().initialize(this.playerStateContext.context(), player);
 		getMediaPlayer().prepareAsync();
-		setMediaPlayerState(playerToState(getMediaPlayer()));
 	}
 
 	@Override

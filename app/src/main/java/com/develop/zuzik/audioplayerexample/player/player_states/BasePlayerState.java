@@ -27,6 +27,8 @@ abstract class BasePlayerState implements PlayerState {
 
 	protected abstract MediaPlayerState playerToState(MediaPlayer player);
 
+	protected abstract void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException;
+
 	protected BasePlayerState(
 			PlayerStateContext playerStateContext,
 			boolean allowSetRepeat,
@@ -102,7 +104,7 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
+	public final void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		if (this.allowSetRepeat) {
 			getMediaPlayer().setLooping(this.playerStateContext.isRepeat());
 		}
@@ -118,6 +120,8 @@ abstract class BasePlayerState implements PlayerState {
 		getMediaPlayer().setOnSeekCompleteListener(mp ->
 				getPlayer(value ->
 						setMediaPlayerStateAndNotify(playerToState(value))));
+		doOnApply(getMediaPlayer());
+		setMediaPlayerState(playerToState(getMediaPlayer()));
 	}
 
 	@Override

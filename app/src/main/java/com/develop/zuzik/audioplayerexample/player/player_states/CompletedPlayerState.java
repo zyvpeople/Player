@@ -29,10 +29,8 @@ public class CompletedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
-		super.apply();
+	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		abandonAudioFocus();
-		setMediaPlayerState(playerToState(getMediaPlayer()));
 	}
 
 	@Override

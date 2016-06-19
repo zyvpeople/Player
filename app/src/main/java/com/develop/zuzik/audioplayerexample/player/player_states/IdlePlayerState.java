@@ -28,10 +28,8 @@ public class IdlePlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
-		super.apply();
-		getMediaPlayer().reset();
-		setMediaPlayerState(playerToState(getMediaPlayer()));
+	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
+		player.reset();
 	}
 
 	@Override
