@@ -61,6 +61,10 @@ public interface MultiplePlayer {
 		void showError(String message);
 
 		void enablePlayControls(boolean play, boolean pause, boolean stop);
+
+		void displayCurrentSource(SourceInfo sourceInfo);
+
+		void doNotDisplayCurrentSource();
 	}
 
 	interface Presenter<SourceInfo> {

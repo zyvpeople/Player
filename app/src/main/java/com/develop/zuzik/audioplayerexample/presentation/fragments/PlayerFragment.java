@@ -254,6 +254,18 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		}
 	}
 
+	@Override
+	public void displayCurrentSource(Song song) {
+		this.singer.setText("Not set yet");
+		this.song.setText(song.name);
+	}
+
+	@Override
+	public void doNotDisplayCurrentSource() {
+		this.singer.setText("");
+		this.song.setText("");
+	}
+
 	//endregion
 
 	private void showPlayPauseButtonAsPlay() {

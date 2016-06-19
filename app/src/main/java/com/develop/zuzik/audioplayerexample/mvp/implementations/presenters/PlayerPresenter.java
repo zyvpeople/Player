@@ -128,5 +128,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 		} else {
 			this.view.hideLoading();
 		}
+
+		this.view.displayCurrentSource(bundle.playerSource.getSourceInfo());
 	}
 }

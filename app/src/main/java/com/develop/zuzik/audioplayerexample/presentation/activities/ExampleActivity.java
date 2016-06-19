@@ -20,6 +20,7 @@ import com.develop.zuzik.audioplayerexample.presentation.player_exception_messag
 
 public class ExampleActivity extends AppCompatActivity implements Player.View<Song> {
 
+	private TextView title;
 	private Button play;
 	private Button pause;
 	private Button stop;
@@ -45,6 +46,7 @@ public class ExampleActivity extends AppCompatActivity implements Player.View<So
 			throw new RuntimeException(e);
 		}
 
+		this.title = (TextView) findViewById(R.id.title);
 		this.play = (Button) findViewById(R.id.play);
 		this.pause = (Button) findViewById(R.id.pause);
 		this.stop = (Button) findViewById(R.id.stop);
@@ -158,6 +160,11 @@ public class ExampleActivity extends AppCompatActivity implements Player.View<So
 	@Override
 	public void hideLoading() {
 		this.loading.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void displayCurrentSource(Song song) {
+		this.title.setText(song.name);
 	}
 
 	//endregion

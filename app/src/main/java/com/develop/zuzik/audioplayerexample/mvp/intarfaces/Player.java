@@ -53,6 +53,8 @@ public interface Player {
 		void showLoading();
 
 		void hideLoading();
+
+		void displayCurrentSource(SourceInfo sourceInfo);
 	}
 
 	interface Presenter<SourceInfo> {

@@ -167,10 +167,12 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 				this.view.hideProgress();
 				this.view.setProgress(0, 100);
 			}
+			this.view.displayCurrentSource(playbackState.playerSource.getSourceInfo());
 		} else {
 			this.view.showTime("", "");
 			this.view.hideProgress();
 			this.view.setProgress(0, 100);
+			this.view.doNotDisplayCurrentSource();
 		}
 	}
 
