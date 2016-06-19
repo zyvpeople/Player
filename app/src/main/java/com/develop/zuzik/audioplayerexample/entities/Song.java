@@ -1,10 +1,12 @@
 package com.develop.zuzik.audioplayerexample.entities;
 
+import java.io.Serializable;
+
 /**
  * User: zuzik
  * Date: 6/19/16
  */
-public class Song {
+public class Song implements Serializable{
 	public final String name;
 
 	public Song(String name) {

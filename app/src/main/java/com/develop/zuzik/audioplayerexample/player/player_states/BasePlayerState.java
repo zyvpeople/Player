@@ -11,7 +11,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -46,7 +46,7 @@ abstract class BasePlayerState implements PlayerState {
 		return this.playerStateContext.getPlayerSource();
 	}
 
-	protected final void getMediaPlayerSafely(ResultAction<MediaPlayer> action) {
+	protected final void getMediaPlayerSafely(ParamAction<MediaPlayer> action) {
 		try {
 			action.execute(getMediaPlayer());
 		} catch (IllegalStateException e) {

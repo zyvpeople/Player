@@ -24,12 +24,15 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExampleNextPlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExamplePreviousPlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
-import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
+import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: zuzik
@@ -62,7 +65,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	private ImageView shuffle;
 	private ImageView playPause;
 
-	private SongDetailViewPagerAdapter adapter;
+	private SongViewPagerAdapter adapter;
 
 	private MultiplePlayer.Presenter<Song> presenter;
 
@@ -111,10 +114,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.shuffle = (ImageView) view.findViewById(R.id.shuffle);
 		this.playPause = (ImageView) view.findViewById(R.id.playPause);
 
-		this.singer.setText("Of monsters and men");
-		this.song.setText("Little talks");
-
-		this.adapter = new SongDetailViewPagerAdapter(getChildFragmentManager(), 3);
+		this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<>());
 		this.viewPager.setAdapter(this.adapter);
 		this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -255,15 +255,25 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	}
 
 	@Override
-	public void displayCurrentSource(Song song) {
+	public void displayCurrentSource(PlayerSource<Song> song) {
 		this.singer.setText("Not set yet");
-		this.song.setText(song.name);
+		this.song.setText(song.getSourceInfo().name);
+		int songIndex = this.adapter.getSongs().indexOf(song);
+		if (songIndex != -1) {
+			this.viewPager.setCurrentItem(songIndex);
+		}
 	}
 
 	@Override
 	public void doNotDisplayCurrentSource() {
 		this.singer.setText("");
 		this.song.setText("");
+	}
+
+	@Override
+	public void displaySources(List<PlayerSource<Song>> playerSources) {
+		this.adapter.setSongs(playerSources);
+		this.adapter.notifyDataSetChanged();
 	}
 
 	//endregion

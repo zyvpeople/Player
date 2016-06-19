@@ -146,6 +146,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 		}
 
 		MultiplePlaybackState<SourceInfo> bundle = state.bundle;
+		this.view.displaySources(bundle.playerSources);
 		if (bundle.currentPlaybackState.isPresent()) {
 			PlaybackState<SourceInfo> playbackState = bundle.currentPlaybackState.get();
 
@@ -167,7 +168,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 				this.view.hideProgress();
 				this.view.setProgress(0, 100);
 			}
-			this.view.displayCurrentSource(playbackState.playerSource.getSourceInfo());
+			this.view.displayCurrentSource(playbackState.playerSource);
 		} else {
 			this.view.showTime("", "");
 			this.view.hideProgress();

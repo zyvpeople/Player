@@ -1,5 +1,9 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -62,9 +66,11 @@ public interface MultiplePlayer {
 
 		void enablePlayControls(boolean play, boolean pause, boolean stop);
 
-		void displayCurrentSource(SourceInfo sourceInfo);
+		void displayCurrentSource(PlayerSource<SourceInfo> source);
 
 		void doNotDisplayCurrentSource();
+
+		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
 	}
 
 	interface Presenter<SourceInfo> {

@@ -10,7 +10,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class MultiplePlayback<SourceInfo> {
 		return this.multiplePlaybackState;
 	}
 
-	private void currentPlayback(ResultAction<Playback<SourceInfo>> action) {
+	private void currentPlayback(ParamAction<Playback<SourceInfo>> action) {
 		if (this.currentPlayback.isPresent()) {
 			action.execute(this.currentPlayback.get());
 		}
@@ -170,7 +170,7 @@ public class MultiplePlayback<SourceInfo> {
 		playback.setPlaybackListener(null);
 	}
 
-	private void nextPlayback(ResultAction<Optional<Playback<SourceInfo>>> action) {
+	private void nextPlayback(ParamAction<Optional<Playback<SourceInfo>>> action) {
 		currentPlayback(currentPlayback -> {
 			Optional<PlayerSource<SourceInfo>> playerInitializer = this.nextPlayerSourceStrategyFactory
 					.create(this.multiplePlaybackState.shuffle)
@@ -187,7 +187,7 @@ public class MultiplePlayback<SourceInfo> {
 		});
 	}
 
-	private void previousPlayback(ResultAction<Optional<Playback<SourceInfo>>> action) {
+	private void previousPlayback(ParamAction<Optional<Playback<SourceInfo>>> action) {
 		currentPlayback(currentPlayback -> {
 			Optional<PlayerSource<SourceInfo>> playerInitializer = this.previousPlayerSourceStrategyFactory
 					.create(this.multiplePlaybackState.shuffle)
