@@ -38,7 +38,7 @@ abstract class PausedPlayerState extends BasePlayerState {
 	@Override
 	public final void play() {
 		super.play();
-		setState(new StartedPlayerState(this.playerStateContext));
+		applyState(new StartedPlayerState(this.playerStateContext));
 	}
 
 	@Override

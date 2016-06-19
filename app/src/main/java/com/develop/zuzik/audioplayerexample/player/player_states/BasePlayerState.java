@@ -46,7 +46,7 @@ abstract class BasePlayerState implements PlayerState {
 		return this.playerStateContext.getPlayerInitializer();
 	}
 
-	protected final void getPlayer(ResultAction<MediaPlayer> action) {
+	protected final void getMediaPlayerSafely(ResultAction<MediaPlayer> action) {
 		try {
 			action.execute(getMediaPlayer());
 		} catch (IllegalStateException e) {
@@ -55,16 +55,16 @@ abstract class BasePlayerState implements PlayerState {
 		}
 	}
 
-	protected final void setState(PlayerState state) {
+	protected final void applyState(PlayerState state) {
 		this.playerStateContext.setState(state);
 	}
 
-	protected final void setMediaPlayerState(MediaPlayerState mediaPlayerState) {
+	protected final void saveMediaPlayerState(MediaPlayerState mediaPlayerState) {
 		this.mediaPlayerState = mediaPlayerState;
 	}
 
-	protected final void setMediaPlayerStateAndNotify(MediaPlayerState mediaPlayerState) {
-		setMediaPlayerState(mediaPlayerState);
+	protected final void saveMediaPlayerStateAndNotify(MediaPlayerState mediaPlayerState) {
+		saveMediaPlayerState(mediaPlayerState);
 		this.playerStateContext.onUpdate();
 	}
 
@@ -79,9 +79,9 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	protected final void stopPlayer() {
-		getPlayer(value -> {
+		getMediaPlayerSafely(value -> {
 			value.stop();
-			setState(new IdlePlayerState(this.playerStateContext));
+			applyState(new IdlePlayerState(this.playerStateContext));
 		});
 	}
 
@@ -95,9 +95,9 @@ abstract class BasePlayerState implements PlayerState {
 	@Override
 	public final void onRepeatChanged() {
 		if (this.allowSetRepeat) {
-			getPlayer(value -> {
+			getMediaPlayerSafely(value -> {
 				value.setLooping(this.playerStateContext.isRepeat());
-				setMediaPlayerStateAndNotify(playerToState(value));
+				saveMediaPlayerStateAndNotify(playerToState(value));
 			});
 		}
 	}
@@ -112,15 +112,15 @@ abstract class BasePlayerState implements PlayerState {
 			return true;
 		});
 		getMediaPlayer().setOnCompletionListener(mp ->
-				getPlayer(value ->
-						setState(value.isLooping()
+				getMediaPlayerSafely(value ->
+						applyState(value.isLooping()
 								? new StartedPlayerState(this.playerStateContext)
 								: new CompletedPlayerState(this.playerStateContext))));
 		getMediaPlayer().setOnSeekCompleteListener(mp ->
-				getPlayer(value ->
-						setMediaPlayerStateAndNotify(playerToState(value))));
+				getMediaPlayerSafely(value ->
+						saveMediaPlayerStateAndNotify(playerToState(value))));
 		doOnApply(getMediaPlayer());
-		setMediaPlayerState(playerToState(getMediaPlayer()));
+		saveMediaPlayerState(playerToState(getMediaPlayer()));
 	}
 
 	@Override
@@ -162,7 +162,7 @@ abstract class BasePlayerState implements PlayerState {
 	@Override
 	public final void seekTo(int positionInMilliseconds) {
 		if (this.allowSeekToPosition) {
-			getPlayer(value -> value.seekTo(positionInMilliseconds));
+			getMediaPlayerSafely(value -> value.seekTo(positionInMilliseconds));
 		}
 	}
 

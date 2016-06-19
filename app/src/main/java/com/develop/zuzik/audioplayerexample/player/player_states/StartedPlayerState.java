@@ -46,8 +46,8 @@ public class StartedPlayerState extends BasePlayerState {
 	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
 				.subscribe(aLong ->
-						getPlayer(value ->
-								setMediaPlayerStateAndNotify(playerToState(value))));
+						getMediaPlayerSafely(value ->
+								saveMediaPlayerStateAndNotify(playerToState(value))));
 		this.playerStateContext
 				.requestFocus(
 						() -> player.start(),
@@ -65,7 +65,7 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void pause() {
 		super.pause();
-		setState(new ManualPausedPlayerState(this.playerStateContext));
+		applyState(new ManualPausedPlayerState(this.playerStateContext));
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	public void audioFocusLossTransient() {
 		super.audioFocusLossTransient();
-		setState(new AudioFocusLostTransientPausedPlayerState(this.playerStateContext));
+		applyState(new AudioFocusLostTransientPausedPlayerState(this.playerStateContext));
 	}
 
 	@Override

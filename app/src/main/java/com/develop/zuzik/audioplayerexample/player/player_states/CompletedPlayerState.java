@@ -36,7 +36,7 @@ public class CompletedPlayerState extends BasePlayerState {
 	@Override
 	public void play() {
 		super.play();
-		setState(new StartedPlayerState(this.playerStateContext));
+		applyState(new StartedPlayerState(this.playerStateContext));
 	}
 
 	@Override
