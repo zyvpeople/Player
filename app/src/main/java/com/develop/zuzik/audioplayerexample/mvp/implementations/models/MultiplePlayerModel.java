@@ -7,7 +7,7 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelSt
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlaybackStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerInitializerStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 
 import java.util.List;
@@ -29,9 +29,9 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 
 	public MultiplePlayerModel(Context context,
 							   List<PlayerInitializer> initializers,
-							   PlaybackStrategyFactory nextPlaybackStrategyFactory,
-							   PlaybackStrategyFactory previousPlaybackStrategyFactory) throws AudioServiceNotSupportException {
-		this.playback = new MultiplePlayback(context, initializers, nextPlaybackStrategyFactory, previousPlaybackStrategyFactory);
+							   PlayerInitializerStrategyFactory nextPlayerInitializerStrategyFactory,
+							   PlayerInitializerStrategyFactory previousPlayerInitializerStrategyFactory) throws AudioServiceNotSupportException {
+		this.playback = new MultiplePlayback(context, initializers, nextPlayerInitializerStrategyFactory, previousPlayerInitializerStrategyFactory);
 	}
 
 	@Override

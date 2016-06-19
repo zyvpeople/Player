@@ -21,8 +21,8 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultipleP
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExampleNextPlaybackStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExamplePreviousPlaybackStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExampleNextPlayerInitializerStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExamplePreviousPlayerInitializerStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.UriPlayerInitializer;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
@@ -77,8 +77,8 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 									new RawResourcePlayerInitializer(R.raw.song_short),
 									new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
 									new RawResourcePlayerInitializer(R.raw.song_take_it_back)),
-							new ExampleNextPlaybackStrategyFactory(),
-							new ExamplePreviousPlaybackStrategyFactory()),
+							new ExampleNextPlayerInitializerStrategyFactory(),
+							new ExamplePreviousPlayerInitializerStrategyFactory()),
 					new ExamplePlayerExceptionMessageProvider());
 		} catch (AudioServiceNotSupportException e) {
 			throw new RuntimeException(e);

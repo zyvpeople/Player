@@ -53,7 +53,7 @@ public class Playback implements PlayerStateContext {
 				: new NullPlaybackListener();
 	}
 
-	public PlaybackState getPlayerState() {
+	public PlaybackState getPlaybackState() {
 		return this.playbackState;
 	}
 

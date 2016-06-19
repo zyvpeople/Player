@@ -145,8 +145,8 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 		}
 
 		MultiplePlaybackState bundle = state.bundle;
-		if (bundle.playerState.isPresent()) {
-			PlaybackState playbackState = bundle.playerState.get();
+		if (bundle.currentPlaybackState.isPresent()) {
+			PlaybackState playbackState = bundle.currentPlaybackState.get();
 
 			this.view.enablePlayControls(
 					this.allowedPlayButtonStates.contains(playbackState.state),

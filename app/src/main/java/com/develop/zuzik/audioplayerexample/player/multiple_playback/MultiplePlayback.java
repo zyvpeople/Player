@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlaybackStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerInitializerStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
@@ -13,7 +13,6 @@ import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInit
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
 import com.fernandocejas.arrow.optional.Optional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,29 +20,33 @@ import java.util.List;
  * Date: 6/4/16
  */
 //TODO: add logic for add and remove songs from list
+//TODO: add logic for start any song and not only next and previous
 public class MultiplePlayback {
 
-	private final List<Playback> playbacks = new ArrayList<>();
+	private MultiplePlaybackState multiplePlaybackState;
 	private Optional<Playback> currentPlayback;
-	private boolean repeatSingle;
-	private boolean shuffle;
+
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
-	private final PlaybackStrategyFactory nextPlaybackStrategyFactory;
-	private final PlaybackStrategyFactory previousPlaybackStrategyFactory;
+	private final PlayerInitializerStrategyFactory nextPlayerInitializerStrategyFactory;
+	private final PlayerInitializerStrategyFactory previousPlayerInitializerStrategyFactory;
+	private final Context context;
 
 	public MultiplePlayback(
 			Context context,
 			List<PlayerInitializer> initializers,
-			PlaybackStrategyFactory nextPlaybackStrategyFactory,
-			PlaybackStrategyFactory previousPlaybackStrategyFactory) throws AudioServiceNotSupportException {
-		for (PlayerInitializer source : initializers) {
-			this.playbacks.add(new Playback(new ContextWrapper(context).getBaseContext(), source));
-		}
-		this.nextPlaybackStrategyFactory = nextPlaybackStrategyFactory;
-		this.previousPlaybackStrategyFactory = previousPlaybackStrategyFactory;
+			PlayerInitializerStrategyFactory nextPlayerInitializerStrategyFactory,
+			PlayerInitializerStrategyFactory previousPlayerInitializerStrategyFactory) throws AudioServiceNotSupportException {
+		this.context = new ContextWrapper(context).getApplicationContext();
+		this.nextPlayerInitializerStrategyFactory = nextPlayerInitializerStrategyFactory;
+		this.previousPlayerInitializerStrategyFactory = previousPlayerInitializerStrategyFactory;
 		this.currentPlayback = initializers.isEmpty()
 				? Optional.absent()
-				: Optional.of(this.playbacks.get(0));
+				: Optional.of(new Playback(this.context, initializers.get(0)));
+		this.multiplePlaybackState = new MultiplePlaybackState(
+				initializers,
+				this.currentPlayback.transform(Playback::getPlaybackState),
+				false,
+				false);
 	}
 
 	public void setListener(MultiplePlaybackListener listener) {
@@ -53,7 +56,7 @@ public class MultiplePlayback {
 	}
 
 	public MultiplePlaybackState getMultiplePlaybackState() {
-		return new MultiplePlaybackState(this.currentPlayback.transform(Playback::getPlayerState), this.repeatSingle, this.shuffle);
+		return this.multiplePlaybackState;
 	}
 
 	private void currentPlayback(ResultAction<Playback> action) {
@@ -63,22 +66,22 @@ public class MultiplePlayback {
 	}
 
 	public void repeatSingle() {
-		this.repeatSingle = true;
+		this.multiplePlaybackState = this.multiplePlaybackState.withRepeatSingle(true);
 		currentPlayback(Playback::repeat);
 	}
 
 	public void doNotRepeatSingle() {
-		this.repeatSingle = false;
+		this.multiplePlaybackState = this.multiplePlaybackState.withRepeatSingle(false);
 		currentPlayback(Playback::doNotRepeat);
 	}
 
 	public void shuffle() {
-		this.shuffle = true;
+		this.multiplePlaybackState = this.multiplePlaybackState.withShuffle(true);
 		this.listener.onUpdate();
 	}
 
 	public void doNotShuffle() {
-		this.shuffle = false;
+		this.multiplePlaybackState = this.multiplePlaybackState.withShuffle(false);
 		this.listener.onUpdate();
 	}
 
@@ -124,6 +127,8 @@ public class MultiplePlayback {
 		if (newPlayback.isPresent()) {
 			releasePlayback(oldPlayback);
 			this.currentPlayback = newPlayback;
+			this.multiplePlaybackState = this.multiplePlaybackState.withCurrentPlaybackState(
+					this.currentPlayback.transform(Playback::getPlaybackState));
 			initPlayback(newPlayback.get(), true);
 		}
 	}
@@ -132,8 +137,9 @@ public class MultiplePlayback {
 		playback.setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onUpdate() {
+				PlaybackState bundle = playback.getPlaybackState();
+				multiplePlaybackState = multiplePlaybackState.withCurrentPlaybackState(Optional.of(bundle));
 				listener.onUpdate();
-				PlaybackState bundle = playback.getPlayerState();
 				if (bundle.state == State.COMPLETED) {
 					skipNext();
 				}
@@ -141,13 +147,14 @@ public class MultiplePlayback {
 
 			@Override
 			public void onError(Throwable throwable) {
+				multiplePlaybackState = multiplePlaybackState.withCurrentPlaybackState(Optional.of(playback.getPlaybackState()));
 				listener.onError(throwable);
 				skipNext();
 			}
 		});
 		playback.init();
 
-		if (this.repeatSingle) {
+		if (this.multiplePlaybackState.repeatSingle) {
 			playback.repeat();
 		} else {
 			playback.doNotRepeat();
@@ -164,13 +171,37 @@ public class MultiplePlayback {
 	}
 
 	private void nextPlayback(ResultAction<Optional<Playback>> action) {
-		currentPlayback(currentPlayback ->
-				action.execute(this.nextPlaybackStrategyFactory.create(this.shuffle).determine(this.playbacks, currentPlayback)));
+		currentPlayback(currentPlayback -> {
+			Optional<PlayerInitializer> playerInitializer = this.nextPlayerInitializerStrategyFactory
+					.create(this.multiplePlaybackState.shuffle)
+					.determine(this.multiplePlaybackState.playerInitializers, currentPlayback.getPlayerInitializer());
+			if (playerInitializer.isPresent()) {
+				try {
+					action.execute(Optional.of(new Playback(this.context, playerInitializer.get())));
+				} catch (AudioServiceNotSupportException e) {
+					action.execute(Optional.absent());
+				}
+			} else {
+				action.execute(Optional.absent());
+			}
+		});
 	}
 
 	private void previousPlayback(ResultAction<Optional<Playback>> action) {
-		currentPlayback(currentPlayback ->
-				action.execute(this.previousPlaybackStrategyFactory.create(this.shuffle).determine(this.playbacks, currentPlayback)));
+		currentPlayback(currentPlayback -> {
+			Optional<PlayerInitializer> playerInitializer = this.previousPlayerInitializerStrategyFactory
+					.create(this.multiplePlaybackState.shuffle)
+					.determine(this.multiplePlaybackState.playerInitializers, currentPlayback.getPlayerInitializer());
+			if (playerInitializer.isPresent()) {
+				try {
+					action.execute(Optional.of(new Playback(this.context, playerInitializer.get())));
+				} catch (AudioServiceNotSupportException e) {
+					action.execute(Optional.absent());
+				}
+			} else {
+				action.execute(Optional.absent());
+			}
+		});
 	}
 
 	//endregion
