@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
+import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;
@@ -41,6 +42,8 @@ public interface MultiplePlayer {
 		void shuffle();
 
 		void doNotShuffle();
+
+		void switchToSource(PlayerSource<SourceInfo> source);
 
 		void simulateError();
 	}
@@ -105,6 +108,8 @@ public interface MultiplePlayer {
 		void onRepeatAll();
 
 		void onDoNotRepeatAll();
+
+		void onSwitchToSource(PlayerSource<SourceInfo> source);
 
 		void simulateError();
 	}

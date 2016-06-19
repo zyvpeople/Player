@@ -124,6 +124,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 
 			@Override
 			public void onPageSelected(int position) {
+				presenter.onSwitchToSource(adapter.getSongs().get(position));
 			}
 
 			@Override
@@ -259,7 +260,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.singer.setText("Not set yet");
 		this.song.setText(song.getSourceInfo().name);
 		int songIndex = this.adapter.getSongs().indexOf(song);
-		if (songIndex != -1) {
+		if (songIndex != -1 && this.viewPager.getCurrentItem() != songIndex) {
 			this.viewPager.setCurrentItem(songIndex);
 		}
 	}
@@ -272,8 +273,10 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 
 	@Override
 	public void displaySources(List<PlayerSource<Song>> playerSources) {
-		this.adapter.setSongs(playerSources);
-		this.adapter.notifyDataSetChanged();
+		if (!this.adapter.getSongs().equals(playerSources)) {
+			this.adapter.setSongs(playerSources);
+			this.adapter.notifyDataSetChanged();
+		}
 	}
 
 	//endregion

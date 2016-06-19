@@ -112,25 +112,42 @@ public class MultiplePlayback<SourceInfo> {
 	}
 
 	public void skipNext() {
-		currentPlayback(currentPlayback ->
-				nextPlayback(nextPlayback ->
-						switchFromOldToNewPlayback(currentPlayback, nextPlayback)));
+		nextPlayback(nextPlayback ->
+				switchFromOldToNewPlayback(this.currentPlayback, nextPlayback));
 	}
 
 	public void skipPrevious() {
-		currentPlayback(currentPlayback ->
-				previousPlayback(previousPlayback ->
-						switchFromOldToNewPlayback(currentPlayback, previousPlayback)));
+		previousPlayback(previousPlayback ->
+				switchFromOldToNewPlayback(this.currentPlayback, previousPlayback));
 	}
 
-	private void switchFromOldToNewPlayback(Playback<SourceInfo> oldPlayback, Optional<Playback<SourceInfo>> newPlayback) {
+	public void switchToPlayerSource(PlayerSource<SourceInfo> playerSource) {
+		if (this.currentPlayback.isPresent()
+				&& this.currentPlayback.get().getPlaybackState().playerSource.equals(playerSource)) {
+			return;
+		}
+		try {
+			int indexOfPlayerSource = this.multiplePlaybackState.playerSources.indexOf(playerSource);
+			Optional<Playback<SourceInfo>> newPlayback = indexOfPlayerSource != -1
+					? Optional.of(new Playback<SourceInfo>(this.context, this.multiplePlaybackState.playerSources.get(indexOfPlayerSource)))
+					: Optional.absent();
+			switchFromOldToNewPlayback(this.currentPlayback, newPlayback);
+		} catch (AudioServiceNotSupportException e) {
+			//TODO: handle exception correctly
+		}
+	}
+
+	private void switchFromOldToNewPlayback(Optional<Playback<SourceInfo>> oldPlayback, Optional<Playback<SourceInfo>> newPlayback) {
+		if (oldPlayback.isPresent() && newPlayback.isPresent()) {
+			releasePlayback(oldPlayback.get());
+			this.currentPlayback = Optional.absent();
+		}
 		if (newPlayback.isPresent()) {
-			releasePlayback(oldPlayback);
 			this.currentPlayback = newPlayback;
-			this.multiplePlaybackState = this.multiplePlaybackState.withCurrentPlaybackState(
-					this.currentPlayback.transform(Playback::getPlaybackState));
 			initPlayback(newPlayback.get(), true);
 		}
+		this.multiplePlaybackState = this.multiplePlaybackState.withCurrentPlaybackState(
+				this.currentPlayback.transform(Playback::getPlaybackState));
 	}
 
 	private void initPlayback(Playback<SourceInfo> playback, boolean play) {
@@ -180,6 +197,7 @@ public class MultiplePlayback<SourceInfo> {
 					action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
 				} catch (AudioServiceNotSupportException e) {
 					action.execute(Optional.absent());
+					//TODO: handle exception correctly
 				}
 			} else {
 				action.execute(Optional.absent());
@@ -197,6 +215,7 @@ public class MultiplePlayback<SourceInfo> {
 					action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
 				} catch (AudioServiceNotSupportException e) {
 					action.execute(Optional.absent());
+					//TODO: handle exception correctly
 				}
 			} else {
 				action.execute(Optional.absent());

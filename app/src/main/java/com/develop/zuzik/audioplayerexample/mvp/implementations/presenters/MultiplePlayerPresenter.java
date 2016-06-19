@@ -6,6 +6,7 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessag
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -121,6 +122,11 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	@Override
 	public void onDoNotRepeatAll() {
 
+	}
+
+	@Override
+	public void onSwitchToSource(PlayerSource<SourceInfo> source) {
+		this.model.switchToSource(source);
 	}
 
 	@Override

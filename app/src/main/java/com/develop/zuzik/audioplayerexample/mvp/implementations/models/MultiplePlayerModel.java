@@ -126,6 +126,11 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	}
 
 	@Override
+	public void switchToSource(PlayerSource<SourceInfo> source) {
+		this.playback.switchToPlayerSource(source);
+	}
+
+	@Override
 	public void simulateError() {
 		this.playback.simulateError();
 	}
