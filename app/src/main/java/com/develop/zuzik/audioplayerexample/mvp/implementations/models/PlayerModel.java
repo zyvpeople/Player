@@ -16,15 +16,15 @@ import rx.subjects.PublishSubject;
  * User: zuzik
  * Date: 6/4/16
  */
-public class PlayerModel implements Player.Model {
+public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
-	private final Playback playback;
+	private final Playback<SourceInfo> playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
 
-	public PlayerModel(Context context, PlayerSource source) throws AudioServiceNotSupportException {
-		this.playback = new Playback(context, source);
+	public PlayerModel(Context context, PlayerSource<SourceInfo> source) throws AudioServiceNotSupportException {
+		this.playback = new Playback<>(context, source);
 	}
 
 	@Override
@@ -50,8 +50,8 @@ public class PlayerModel implements Player.Model {
 	}
 
 	@Override
-	public PlayerModelState getState() {
-		return new PlayerModelState(this.playback.getPlaybackState(), this.repeat);
+	public PlayerModelState<SourceInfo> getState() {
+		return new PlayerModelState<>(this.playback.getPlaybackState(), this.repeat);
 	}
 
 	@Override

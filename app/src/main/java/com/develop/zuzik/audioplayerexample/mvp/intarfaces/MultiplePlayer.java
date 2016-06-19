@@ -7,12 +7,12 @@ import rx.Observable;
  * Date: 6/4/16
  */
 public interface MultiplePlayer {
-	interface Model {
+	interface Model<SourceInfo> {
 		void init();
 
 		void destroy();
 
-		MultiplePlayerModelState getState();
+		MultiplePlayerModelState<SourceInfo> getState();
 
 		Observable<Void> stateChangedObservable();
 
@@ -41,7 +41,7 @@ public interface MultiplePlayer {
 		void simulateError();
 	}
 
-	interface View {
+	interface View<SourceInfo> {
 		void repeat();
 
 		void doNotRepeat();
@@ -63,8 +63,8 @@ public interface MultiplePlayer {
 		void enablePlayControls(boolean play, boolean pause, boolean stop);
 	}
 
-	interface Presenter {
-		void onInit(View view);
+	interface Presenter<SourceInfo> {
+		void onInit(View<SourceInfo> view);
 
 		void onDestroy();
 

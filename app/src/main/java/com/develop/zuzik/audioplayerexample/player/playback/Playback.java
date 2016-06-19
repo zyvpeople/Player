@@ -22,22 +22,22 @@ import com.fernandocejas.arrow.optional.Optional;
  * User: zuzik
  * Date: 5/29/16
  */
-public class Playback implements PlayerStateContext {
+public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 
-	private PlaybackState playbackState;
+	private PlaybackState<SourceInfo> playbackState;
 	private MediaPlayer mediaPlayer;
 	private PlayerState playerState = new NullPlayerState();
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private final Context context;
 	private final AudioManager audioManager;
 
-	public Playback(Context context, PlayerSource playerSource) throws AudioServiceNotSupportException {
+	public Playback(Context context, PlayerSource<SourceInfo> playerSource) throws AudioServiceNotSupportException {
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		if (this.audioManager == null) {
 			throw new AudioServiceNotSupportException();
 		}
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.playbackState = new PlaybackState(
+		this.playbackState = new PlaybackState<SourceInfo>(
 				State.NONE,
 				0,
 				Optional.absent(),
@@ -53,7 +53,7 @@ public class Playback implements PlayerStateContext {
 				: new NullPlaybackListener();
 	}
 
-	public PlaybackState getPlaybackState() {
+	public PlaybackState<SourceInfo> getPlaybackState() {
 		return this.playbackState;
 	}
 
@@ -125,7 +125,7 @@ public class Playback implements PlayerStateContext {
 	@Override
 	public void onUpdate() {
 		MediaPlayerState mediaPlayerState = this.playerState.getMediaPlayerState();
-		this.playbackState = new PlaybackState(
+		this.playbackState = new PlaybackState<SourceInfo>(
 				mediaPlayerState.state,
 				mediaPlayerState.currentTimeInMilliseconds,
 				mediaPlayerState.maxTimeInMilliseconds,
@@ -165,7 +165,7 @@ public class Playback implements PlayerStateContext {
 	}
 
 	@Override
-	public PlayerSource getPlayerInitializer() {
+	public PlayerSource<SourceInfo> getPlayerSource() {
 		return this.playbackState.playerSource;
 	}
 

@@ -9,8 +9,8 @@ import java.util.List;
  * User: zuzik
  * Date: 6/13/16
  */
-public interface PlayerSourceStrategy {
-	Optional<PlayerSource> determine(
-			List<PlayerSource> playerSources,
-			PlayerSource currentPlayerSource);
+public interface PlayerSourceStrategy<SourceInfo> {
+	Optional<PlayerSource<SourceInfo>> determine(
+			List<PlayerSource<SourceInfo>> playerSources,
+			PlayerSource<SourceInfo> currentPlayerSource);
 }

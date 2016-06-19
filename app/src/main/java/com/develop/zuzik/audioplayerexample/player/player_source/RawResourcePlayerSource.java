@@ -15,12 +15,20 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class RawResourcePlayerSource implements PlayerSource {
-	@RawRes
-	public final int rawResId;
+public class RawResourcePlayerSource<SourceInfo> implements PlayerSource<SourceInfo> {
 
-	public RawResourcePlayerSource(int rawResId) {
+	private final SourceInfo sourceInfo;
+	@RawRes
+	private final int rawResId;
+
+	public RawResourcePlayerSource(SourceInfo sourceInfo, int rawResId) {
+		this.sourceInfo = sourceInfo;
 		this.rawResId = rawResId;
+	}
+
+	@Override
+	public SourceInfo getSourceInfo() {
+		return this.sourceInfo;
 	}
 
 	@Override
@@ -53,7 +61,9 @@ public class RawResourcePlayerSource implements PlayerSource {
 		if (o == this) {
 			return true;
 		} else if (o instanceof RawResourcePlayerSource) {
-			return this.rawResId == ((RawResourcePlayerSource) o).rawResId;
+			RawResourcePlayerSource source = (RawResourcePlayerSource) o;
+			return this.sourceInfo.equals(source.sourceInfo)
+					&& this.rawResId == source.rawResId;
 		} else {
 			return false;
 		}

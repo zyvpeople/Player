@@ -9,6 +9,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.State;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -17,10 +18,10 @@ import rx.Subscription;
  * User: zuzik
  * Date: 6/4/16
  */
-public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
+public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Presenter<SourceInfo> {
 
-	private final MultiplePlayer.Model model;
-	private MultiplePlayer.View view;
+	private final MultiplePlayer.Model<SourceInfo> model;
+	private MultiplePlayer.View<SourceInfo> view;
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
@@ -29,13 +30,13 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
 	List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
-	public MultiplePlayerPresenter(MultiplePlayer.Model model, PlayerExceptionMessageProvider exceptionMessageProvider) {
+	public MultiplePlayerPresenter(MultiplePlayer.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;
 		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
 	}
 
 	@Override
-	public void onInit(MultiplePlayer.View view) {
+	public void onInit(MultiplePlayer.View<SourceInfo> view) {
 		this.view = view;
 		this.model.init();
 	}
@@ -131,7 +132,7 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 		updateView(this.model.getState());
 	}
 
-	private void updateView(MultiplePlayerModelState state) {
+	private void updateView(MultiplePlayerModelState<SourceInfo> state) {
 		if (state.repeat) {
 			this.view.repeat();
 		} else {
@@ -144,9 +145,9 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 			this.view.doNotShuffle();
 		}
 
-		MultiplePlaybackState bundle = state.bundle;
+		MultiplePlaybackState<SourceInfo> bundle = state.bundle;
 		if (bundle.currentPlaybackState.isPresent()) {
-			PlaybackState playbackState = bundle.currentPlaybackState.get();
+			PlaybackState<SourceInfo> playbackState = bundle.currentPlaybackState.get();
 
 			this.view.enablePlayControls(
 					this.allowedPlayButtonStates.contains(playbackState.state),
@@ -174,7 +175,8 @@ public class MultiplePlayerPresenter implements MultiplePlayer.Presenter {
 	}
 
 	private String timeToRepresentation(long milliseconds) {
-		return String.format("%d:%02d",
+		return String.format(Locale.getDefault(),
+				"%d:%02d",
 				TimeUnit.MILLISECONDS.toMinutes(milliseconds),
 				TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
 						TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));

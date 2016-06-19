@@ -7,12 +7,12 @@ import rx.Observable;
  * Date: 6/4/16
  */
 public interface Player {
-	interface Model {
+	interface Model<SourceInfo> {
 		void init();
 
 		void destroy();
 
-		PlayerModelState getState();
+		PlayerModelState<SourceInfo> getState();
 
 		Observable<Void> stateChangedObservable();
 
@@ -33,7 +33,7 @@ public interface Player {
 		void simulateError();
 	}
 
-	interface View {
+	interface View<SourceInfo> {
 		void setRepeat();
 
 		void setDoNotRepeat();
@@ -55,8 +55,8 @@ public interface Player {
 		void hideLoading();
 	}
 
-	interface Presenter {
-		void onInit(View view);
+	interface Presenter<SourceInfo> {
+		void onInit(View<SourceInfo> view);
 
 		void onDestroy();
 

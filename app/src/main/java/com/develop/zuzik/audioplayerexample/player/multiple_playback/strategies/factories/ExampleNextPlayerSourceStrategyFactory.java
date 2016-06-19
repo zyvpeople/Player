@@ -8,11 +8,11 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.
  * User: zuzik
  * Date: 6/18/16
  */
-public class ExampleNextPlayerSourceStrategyFactory implements PlayerSourceStrategyFactory {
+public class ExampleNextPlayerSourceStrategyFactory<SourceInfo> implements PlayerSourceStrategyFactory<SourceInfo> {
 	@Override
-	public PlayerSourceStrategy create(boolean shuffle) {
+	public PlayerSourceStrategy<SourceInfo> create(boolean shuffle) {
 		return shuffle
-				? new ShufflePlayerSourceStrategy()
-				: new EndedNextPlayerSourceStrategy();
+				? new ShufflePlayerSourceStrategy<SourceInfo>()
+				: new EndedNextPlayerSourceStrategy<SourceInfo>();
 	}
 }

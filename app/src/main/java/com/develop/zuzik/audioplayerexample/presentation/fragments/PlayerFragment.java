@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
+import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
@@ -34,7 +35,7 @@ import java.util.Arrays;
  * User: zuzik
  * Date: 6/4/16
  */
-public class PlayerFragment extends Fragment implements MultiplePlayer.View {
+public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song> {
 
 	private static final String TAG_STATE_PLAY = "TAG_STATE_PLAY";
 	private static final String TAG_STATE_PAUSE = "TAG_STATE_PAUSE";
@@ -63,22 +64,22 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 
 	private SongDetailViewPagerAdapter adapter;
 
-	private MultiplePlayer.Presenter presenter;
+	private MultiplePlayer.Presenter<Song> presenter;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
-			this.presenter = new MultiplePlayerPresenter(
-					new MultiplePlayerModel(
+			this.presenter = new MultiplePlayerPresenter<Song>(
+					new MultiplePlayerModel<>(
 							getContext(),
 							Arrays.asList(
-									new RawResourcePlayerSource(R.raw.song),
-									new RawResourcePlayerSource(R.raw.song_short),
-									new UriPlayerSource(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
-									new RawResourcePlayerSource(R.raw.song_take_it_back)),
-							new ExampleNextPlayerSourceStrategyFactory(),
-							new ExamplePreviousPlayerSourceStrategyFactory()),
+									new RawResourcePlayerSource<>(new Song("Crystal (long)"), R.raw.song),
+									new RawResourcePlayerSource<>(new Song("Crystal (short)"), R.raw.song_short),
+									new UriPlayerSource<>(new Song("Enter shikary (network)"), Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
+									new RawResourcePlayerSource<>(new Song("Take it back"), R.raw.song_take_it_back)),
+							new ExampleNextPlayerSourceStrategyFactory<>(),
+							new ExamplePreviousPlayerSourceStrategyFactory<>()),
 					new ExamplePlayerExceptionMessageProvider());
 		} catch (AudioServiceNotSupportException e) {
 			throw new RuntimeException(e);
@@ -176,7 +177,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 			}
 		});
 
-		if (BuildConfig.DEBUG == true) {
+		if (BuildConfig.DEBUG) {
 			this.playPause.setOnLongClickListener(v -> {
 				this.presenter.simulateError();
 				return true;

@@ -6,12 +6,12 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePla
  * User: zuzik
  * Date: 6/7/16
  */
-public class MultiplePlayerModelState {
-	public final MultiplePlaybackState bundle;
+public class MultiplePlayerModelState<SourceInfo> {
+	public final MultiplePlaybackState<SourceInfo> bundle;
 	public final boolean repeat;
 	public final boolean shuffle;
 
-	public MultiplePlayerModelState(MultiplePlaybackState bundle, boolean repeat, boolean shuffle) {
+	public MultiplePlayerModelState(MultiplePlaybackState<SourceInfo> bundle, boolean repeat, boolean shuffle) {
 		this.bundle = bundle;
 		this.repeat = repeat;
 		this.shuffle = shuffle;

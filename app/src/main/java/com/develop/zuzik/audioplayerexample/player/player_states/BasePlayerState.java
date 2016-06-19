@@ -43,7 +43,7 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	protected final PlayerSource getPlayerInitializer() {
-		return this.playerStateContext.getPlayerInitializer();
+		return this.playerStateContext.getPlayerSource();
 	}
 
 	protected final void getMediaPlayerSafely(ResultAction<MediaPlayer> action) {

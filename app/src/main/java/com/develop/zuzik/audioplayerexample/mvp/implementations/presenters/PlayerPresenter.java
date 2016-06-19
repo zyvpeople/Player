@@ -16,10 +16,10 @@ import rx.Subscription;
  * Date: 6/4/16
  */
 //TODO: there is a lot of duplication between Player and MultiplePlayer Presenters
-public class PlayerPresenter implements Player.Presenter {
+public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo> {
 
-	private final Player.Model model;
-	private Player.View view;
+	private final Player.Model<SourceInfo> model;
+	private Player.View<SourceInfo> view;
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
@@ -28,13 +28,13 @@ public class PlayerPresenter implements Player.Presenter {
 	List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
 	List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
-	public PlayerPresenter(Player.Model model, PlayerExceptionMessageProvider exceptionMessageProvider) {
+	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;
 		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
 	}
 
 	@Override
-	public void onInit(Player.View view) {
+	public void onInit(Player.View<SourceInfo> view) {
 		this.view = view;
 		this.model.init();
 	}
@@ -100,8 +100,8 @@ public class PlayerPresenter implements Player.Presenter {
 		updateView(this.model.getState());
 	}
 
-	private void updateView(PlayerModelState state) {
-		PlaybackState bundle = state.bundle;
+	private void updateView(PlayerModelState<SourceInfo> state) {
+		PlaybackState<SourceInfo> bundle = state.bundle;
 		this.view.enablePlayControls(
 				this.allowedPlayButtonStates.contains(bundle.state),
 				this.allowedPauseButtonStates.contains(bundle.state),

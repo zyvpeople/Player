@@ -9,9 +9,9 @@ import java.util.List;
  * User: zuzik
  * Date: 6/13/16
  */
-public class EndedNextPlayerSourceStrategy implements PlayerSourceStrategy {
+public class EndedNextPlayerSourceStrategy<SourceInfo> implements PlayerSourceStrategy<SourceInfo> {
 	@Override
-	public Optional<PlayerSource> determine(List<PlayerSource> playerSources, PlayerSource currentPlayerSource) {
+	public Optional<PlayerSource<SourceInfo>> determine(List<PlayerSource<SourceInfo>> playerSources, PlayerSource<SourceInfo> currentPlayerSource) {
 		int currentPlayerSourceIndex = playerSources.indexOf(currentPlayerSource);
 		return 0 <= currentPlayerSourceIndex && currentPlayerSourceIndex < playerSources.size() - 1
 				? Optional.of(playerSources.get(currentPlayerSourceIndex + 1))

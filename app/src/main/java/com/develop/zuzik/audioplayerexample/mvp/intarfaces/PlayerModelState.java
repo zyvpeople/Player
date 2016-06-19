@@ -6,11 +6,11 @@ import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
  * User: zuzik
  * Date: 6/7/16
  */
-public class PlayerModelState {
-	public final PlaybackState bundle;
+public class PlayerModelState<SourceInfo> {
+	public final PlaybackState<SourceInfo> bundle;
 	public final boolean repeat;
 
-	public PlayerModelState(PlaybackState bundle, boolean repeat) {
+	public PlayerModelState(PlaybackState<SourceInfo> bundle, boolean repeat) {
 		this.bundle = bundle;
 		this.repeat = repeat;
 	}

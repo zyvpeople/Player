@@ -19,19 +19,19 @@ import rx.subjects.PublishSubject;
  * User: zuzik
  * Date: 6/4/16
  */
-public class MultiplePlayerModel implements MultiplePlayer.Model {
+public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<SourceInfo> {
 
-	private final MultiplePlayback playback;
+	private final MultiplePlayback<SourceInfo> playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
 	private boolean shuffle;
 
 	public MultiplePlayerModel(Context context,
-							   List<PlayerSource> initializers,
-							   PlayerSourceStrategyFactory nextPlayerSourceStrategyFactory,
-							   PlayerSourceStrategyFactory previousPlayerSourceStrategyFactory) throws AudioServiceNotSupportException {
-		this.playback = new MultiplePlayback(context, initializers, nextPlayerSourceStrategyFactory, previousPlayerSourceStrategyFactory);
+							   List<PlayerSource<SourceInfo>> initializers,
+							   PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
+							   PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory) throws AudioServiceNotSupportException {
+		this.playback = new MultiplePlayback<>(context, initializers, nextPlayerSourceStrategyFactory, previousPlayerSourceStrategyFactory);
 	}
 
 	@Override
@@ -57,8 +57,8 @@ public class MultiplePlayerModel implements MultiplePlayer.Model {
 	}
 
 	@Override
-	public MultiplePlayerModelState getState() {
-		return new MultiplePlayerModelState(this.playback.getMultiplePlaybackState(), this.repeat, this.shuffle);
+	public MultiplePlayerModelState<SourceInfo> getState() {
+		return new MultiplePlayerModelState<SourceInfo>(this.playback.getMultiplePlaybackState(), this.repeat, this.shuffle);
 	}
 
 	@Override

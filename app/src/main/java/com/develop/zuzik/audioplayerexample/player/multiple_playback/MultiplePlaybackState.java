@@ -10,16 +10,16 @@ import java.util.List;
  * User: zuzik
  * Date: 6/4/16
  */
-public class MultiplePlaybackState {
+public class MultiplePlaybackState<SourceInfo> {
 
-	public final List<PlayerSource> playerSources;
-	public final Optional<PlaybackState> currentPlaybackState;
+	public final List<PlayerSource<SourceInfo>> playerSources;
+	public final Optional<PlaybackState<SourceInfo>> currentPlaybackState;
 	public final boolean repeatSingle;
 	public final boolean shuffle;
 
 	public MultiplePlaybackState(
-			List<PlayerSource> playerSources,
-			Optional<PlaybackState> currentPlaybackState,
+			List<PlayerSource<SourceInfo>> playerSources,
+			Optional<PlaybackState<SourceInfo>> currentPlaybackState,
 			boolean repeatSingle,
 			boolean shuffle) {
 		this.playerSources = playerSources;
@@ -28,24 +28,24 @@ public class MultiplePlaybackState {
 		this.shuffle = shuffle;
 	}
 
-	public MultiplePlaybackState withRepeatSingle(boolean repeatSingle) {
-		return new MultiplePlaybackState(
+	public MultiplePlaybackState<SourceInfo> withRepeatSingle(boolean repeatSingle) {
+		return new MultiplePlaybackState<SourceInfo>(
 				this.playerSources,
 				this.currentPlaybackState,
 				repeatSingle,
 				this.shuffle);
 	}
 
-	public MultiplePlaybackState withShuffle(boolean shuffle) {
-		return new MultiplePlaybackState(
+	public MultiplePlaybackState<SourceInfo> withShuffle(boolean shuffle) {
+		return new MultiplePlaybackState<SourceInfo>(
 				this.playerSources,
 				this.currentPlaybackState,
 				this.repeatSingle,
 				shuffle);
 	}
 
-	public MultiplePlaybackState withCurrentPlaybackState(Optional<PlaybackState> currentPlaybackState) {
-		return new MultiplePlaybackState(
+	public MultiplePlaybackState<SourceInfo> withCurrentPlaybackState(Optional<PlaybackState<SourceInfo>> currentPlaybackState) {
+		return new MultiplePlaybackState<SourceInfo>(
 				this.playerSources,
 				currentPlaybackState,
 				this.repeatSingle,

@@ -14,12 +14,20 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class UriPlayerSource implements PlayerSource {
-	@RawRes
-	public final Uri uri;
+public class UriPlayerSource<SourceInfo> implements PlayerSource<SourceInfo> {
 
-	public UriPlayerSource(Uri uri) {
+	private final SourceInfo sourceInfo;
+	@RawRes
+	private final Uri uri;
+
+	public UriPlayerSource(SourceInfo sourceInfo, Uri uri) {
+		this.sourceInfo = sourceInfo;
 		this.uri = uri;
+	}
+
+	@Override
+	public SourceInfo getSourceInfo() {
+		return this.sourceInfo;
 	}
 
 	@Override
@@ -37,7 +45,9 @@ public class UriPlayerSource implements PlayerSource {
 		if (o == this) {
 			return true;
 		} else if (o instanceof UriPlayerSource) {
-			return this.uri.equals(((UriPlayerSource) o).uri);
+			UriPlayerSource source = (UriPlayerSource) o;
+			return this.sourceInfo.equals(source.sourceInfo)
+					&& this.uri.equals(source.uri);
 		} else {
 			return false;
 		}

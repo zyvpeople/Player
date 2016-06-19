@@ -6,6 +6,6 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.
  * User: zuzik
  * Date: 6/18/16
  */
-public interface PlayerSourceStrategyFactory {
-	PlayerSourceStrategy create(boolean shuffle);
+public interface PlayerSourceStrategyFactory<SourceInfo> {
+	PlayerSourceStrategy<SourceInfo> create(boolean shuffle);
 }
