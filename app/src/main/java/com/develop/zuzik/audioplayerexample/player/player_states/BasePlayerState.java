@@ -3,7 +3,9 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
@@ -88,26 +90,22 @@ abstract class BasePlayerState implements PlayerState {
 		return this.mediaPlayerState;
 	}
 
+	//TODO: rename to onRepeatChanged and take value from stateContext
 	@Override
 	public final void setRepeat(boolean repeat) {
-		setRepeat(repeat, true);
-	}
-
-	private void setRepeat(boolean repeat, boolean notifyAboutChanges) {
 		if (this.allowSetRepeat) {
 			getPlayer(value -> {
 				value.setLooping(repeat);
-				if (notifyAboutChanges) {
-					setMediaPlayerStateAndNotify(playerToState(value));
-				}
+				setMediaPlayerStateAndNotify(playerToState(value));
 			});
 		}
 	}
 
 	@Override
-	public void apply() {
-		setRepeat(this.playerStateContext.isRepeat(), false);
-
+	public void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
+		if (this.allowSetRepeat) {
+			getMediaPlayer().setLooping(this.playerStateContext.isRepeat());
+		}
 		getMediaPlayer().setOnErrorListener((mp, what, extra) -> {
 			handleError(new MediaPlayerStateException());
 			return true;

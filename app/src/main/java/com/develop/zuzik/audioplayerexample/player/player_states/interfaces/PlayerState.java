@@ -1,5 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 
 /**
@@ -12,7 +14,7 @@ public interface PlayerState {
 
 	void setRepeat(boolean repeat);
 
-	void apply();
+	void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException;
 
 	void unapply();
 

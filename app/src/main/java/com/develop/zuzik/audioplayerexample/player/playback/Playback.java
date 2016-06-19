@@ -7,7 +7,9 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
@@ -106,7 +108,11 @@ public class Playback implements PlayerStateContext {
 		logState(this.state, state);
 		this.state.unapply();
 		this.state = state;
-		this.state.apply();
+		try {
+			this.state.apply();
+		} catch (IllegalStateException | PlayerInitializeException | FailRequestAudioFocusException e) {
+			onError(e);
+		}
 		onUpdate();
 	}
 

@@ -2,6 +2,8 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
+import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
@@ -29,10 +31,11 @@ abstract class PausedPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public final void apply() {
+	public final void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		super.apply();
-		getPlayer(MediaPlayer::pause);
-		getPlayer(value -> setMediaPlayerState(playerToState(value)));
+		if (true) throw new IllegalStateException("pause error");
+		getMediaPlayer().pause();
+		setMediaPlayerState(playerToState(getMediaPlayer()));
 	}
 
 	@Override

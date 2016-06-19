@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.fernandocejas.arrow.optional.Optional;
@@ -26,7 +26,7 @@ public class NullPlayerState implements PlayerState {
 	}
 
 	@Override
-	public void apply() {
+	public void apply() throws IllegalStateException, PlayerInitializeException {
 
 	}
 

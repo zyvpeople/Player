@@ -3,6 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
@@ -28,24 +29,17 @@ public class PreparingPlayerState extends BasePlayerState {
 	}
 
 	@Override
-	public void apply() {
+	public void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		super.apply();
-		getPlayer(value -> {
-			value.setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState(this.playerStateContext)));
-			try {
-				getPlayerInitializer().initialize(this.playerStateContext.context(), value);
-				value.prepareAsync();
-			} catch (PlayerInitializeException e) {
-				Log.e(getClass().getSimpleName(), e.getMessage());
-				handleError(e);
-			}
-		});
-		getPlayer(value -> setMediaPlayerState(playerToState(value)));
+		getMediaPlayer().setOnPreparedListener(preparedPlayer -> setState(new StartedPlayerState(this.playerStateContext)));
+		getPlayerInitializer().initialize(this.playerStateContext.context(), getMediaPlayer());
+		getMediaPlayer().prepareAsync();
+		setMediaPlayerState(playerToState(getMediaPlayer()));
 	}
 
 	@Override
 	public void unapply() {
-		getPlayer(value -> value.setOnPreparedListener(null));
+		getMediaPlayer().setOnPreparedListener(null);
 		super.unapply();
 	}
 }
