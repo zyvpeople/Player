@@ -12,7 +12,7 @@ public interface PlayerState {
 
 	MediaPlayerState getMediaPlayerState();
 
-	void setRepeat(boolean repeat);
+	void onRepeatChanged();
 
 	void apply() throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException;
 

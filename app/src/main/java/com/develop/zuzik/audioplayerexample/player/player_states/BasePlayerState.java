@@ -92,12 +92,11 @@ abstract class BasePlayerState implements PlayerState {
 		return this.mediaPlayerState;
 	}
 
-	//TODO: rename to onRepeatChanged and take value from stateContext
 	@Override
-	public final void setRepeat(boolean repeat) {
+	public final void onRepeatChanged() {
 		if (this.allowSetRepeat) {
 			getPlayer(value -> {
-				value.setLooping(repeat);
+				value.setLooping(this.playerStateContext.isRepeat());
 				setMediaPlayerStateAndNotify(playerToState(value));
 			});
 		}

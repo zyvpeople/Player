@@ -21,7 +21,7 @@ public class NullPlayerState implements PlayerState {
 	}
 
 	@Override
-	public void setRepeat(boolean repeat) {
+	public void onRepeatChanged() {
 
 	}
 

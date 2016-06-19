@@ -58,13 +58,16 @@ public class Playback implements PlayerStateContext {
 	}
 
 	public void repeat() {
-		this.repeat = true;
-		this.state.setRepeat(true);
+		repeat(true);
 	}
 
 	public void doNotRepeat() {
-		this.repeat = false;
-		this.state.setRepeat(false);
+		repeat(false);
+	}
+
+	private void repeat(boolean repeat) {
+		this.repeat = repeat;
+		this.state.onRepeatChanged();
 	}
 
 	//endregion
