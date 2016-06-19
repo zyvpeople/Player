@@ -11,7 +11,7 @@ import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInit
  */
 public interface PlayerStateContext {
 
-	void setState(PlayerState state);
+	void setPlayerState(PlayerState state);
 
 	void onUpdate();
 

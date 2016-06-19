@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.player.playback;
 
+import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -12,11 +13,27 @@ public class PlaybackState {
 	public final int currentTimeInMilliseconds;
 	public final Optional<Integer> maxTimeInMilliseconds;
 	public final boolean repeat;
+	public final PlayerInitializer playerInitializer;
 
-	public PlaybackState(State state, int currentTimeInMilliseconds, Optional<Integer> maxTimeInMilliseconds, boolean repeat) {
+	public PlaybackState(
+			State state,
+			int currentTimeInMilliseconds,
+			Optional<Integer> maxTimeInMilliseconds,
+			boolean repeat,
+			PlayerInitializer playerInitializer) {
 		this.state = state;
 		this.currentTimeInMilliseconds = currentTimeInMilliseconds;
 		this.maxTimeInMilliseconds = maxTimeInMilliseconds;
 		this.repeat = repeat;
+		this.playerInitializer = playerInitializer;
+	}
+
+	public PlaybackState withRepeat(boolean repeat) {
+		return new PlaybackState(
+				this.state,
+				this.currentTimeInMilliseconds,
+				this.maxTimeInMilliseconds,
+				repeat,
+				this.playerInitializer);
 	}
 }

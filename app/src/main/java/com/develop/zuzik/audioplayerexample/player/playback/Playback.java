@@ -16,6 +16,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -23,11 +24,10 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Play
  */
 public class Playback implements PlayerStateContext {
 
+	private PlaybackState playbackState;
 	private MediaPlayer mediaPlayer;
-	private PlayerState state = new NullPlayerState();
-	public final PlayerInitializer playerInitializer;
+	private PlayerState playerState = new NullPlayerState();
 	private PlaybackListener playbackListener = new NullPlaybackListener();
-	private boolean repeat;
 	private final Context context;
 	private final AudioManager audioManager;
 
@@ -37,7 +37,12 @@ public class Playback implements PlayerStateContext {
 			throw new AudioServiceNotSupportException();
 		}
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.playerInitializer = playerInitializer;
+		this.playbackState = new PlaybackState(
+				State.NONE,
+				0,
+				Optional.absent(),
+				false,
+				playerInitializer);
 	}
 
 	//region Getters/Setters
@@ -48,13 +53,8 @@ public class Playback implements PlayerStateContext {
 				: new NullPlaybackListener();
 	}
 
-	public PlaybackState getState() {
-		MediaPlayerState mediaPlayerState = this.state.getMediaPlayerState();
-		return new PlaybackState(
-				mediaPlayerState.state,
-				mediaPlayerState.currentTimeInMilliseconds,
-				mediaPlayerState.maxTimeInMilliseconds,
-				isRepeat());
+	public PlaybackState getPlayerState() {
+		return this.playbackState;
 	}
 
 	public void repeat() {
@@ -66,8 +66,8 @@ public class Playback implements PlayerStateContext {
 	}
 
 	private void repeat(boolean repeat) {
-		this.repeat = repeat;
-		this.state.onRepeatChanged();
+		this.playbackState = this.playbackState.withRepeat(repeat);
+		this.playerState.onRepeatChanged();
 	}
 
 	//endregion
@@ -76,47 +76,46 @@ public class Playback implements PlayerStateContext {
 
 	public void init() {
 		this.mediaPlayer = new MediaPlayer();
-		setState(new IdlePlayerState(this));
+		setPlayerState(new IdlePlayerState(this));
 	}
 
 	public void release() {
-		this.state.unapply();
-		this.state.release();
-		this.audioManager.abandonAudioFocus(this.onAudioFocusChangeListener);
+		this.playerState.unapply();
+		this.playerState.release();
+		abandonAudioFocus();
 		this.mediaPlayer = null;
 	}
 
 	public void play() {
-		this.state.play();
+		this.playerState.play();
 	}
 
 	public void pause() {
-		this.state.pause();
+		this.playerState.pause();
 	}
 
 	public void stop() {
-		this.state.stop();
+		this.playerState.stop();
 	}
 
 	public void seekTo(int positionInMilliseconds) {
-		this.state.seekTo(positionInMilliseconds);
+		this.playerState.seekTo(positionInMilliseconds);
 	}
 
 	//endregion
 
 	//region PlayerStateContainer
 
-	@Override
-	public void setState(PlayerState state) {
-		logState(this.state, state);
-		this.state.unapply();
-		this.state = state;
+	public void setPlayerState(PlayerState playerState) {
+		logState(this.playerState, playerState);
+		this.playerState.unapply();
+		this.playerState = playerState;
 		try {
-			this.state.apply();
+			this.playerState.apply();
+			onUpdate();
 		} catch (IllegalStateException | PlayerInitializeException | FailRequestAudioFocusException e) {
 			onError(e);
 		}
-		onUpdate();
 	}
 
 	private void logState(PlayerState oldState, PlayerState newState) {
@@ -125,12 +124,19 @@ public class Playback implements PlayerStateContext {
 
 	@Override
 	public void onUpdate() {
+		MediaPlayerState mediaPlayerState = this.playerState.getMediaPlayerState();
+		this.playbackState = new PlaybackState(
+				mediaPlayerState.state,
+				mediaPlayerState.currentTimeInMilliseconds,
+				mediaPlayerState.maxTimeInMilliseconds,
+				isRepeat(),
+				this.playbackState.playerInitializer);
 		this.playbackListener.onUpdate();
 	}
 
 	@Override
 	public void onError(Throwable throwable) {
-		setState(new IdlePlayerState(this));
+		setPlayerState(new IdlePlayerState(this));
 		this.playbackListener.onError(throwable);
 	}
 
@@ -160,12 +166,12 @@ public class Playback implements PlayerStateContext {
 
 	@Override
 	public PlayerInitializer getPlayerInitializer() {
-		return this.playerInitializer;
+		return this.playbackState.playerInitializer;
 	}
 
 	@Override
 	public boolean isRepeat() {
-		return this.repeat;
+		return this.playbackState.repeat;
 	}
 
 	@Override
@@ -178,19 +184,19 @@ public class Playback implements PlayerStateContext {
 	//region Fake
 
 	public void simulateError() {
-		this.state.simulateError(new FakeMediaPlayerException());
+		this.playerState.simulateError(new FakeMediaPlayerException());
 	}
 
 	//endregion
 
 	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = focusChange -> {
 		if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-			this.state.audioFocusLossTransient();
+			this.playerState.audioFocusLossTransient();
 		} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-			this.state.audioFocusGain();
+			this.playerState.audioFocusGain();
 			//TODO: in this place we should restore volume to previous normal state
 		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-			this.state.audioFocusLoss();
+			this.playerState.audioFocusLoss();
 		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 			//TODO: in this place we should made volume level lower
 		}

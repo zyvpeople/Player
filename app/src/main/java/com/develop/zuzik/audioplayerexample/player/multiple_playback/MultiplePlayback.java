@@ -53,7 +53,7 @@ public class MultiplePlayback {
 	}
 
 	public MultiplePlaybackState getMultiplePlaybackState() {
-		return new MultiplePlaybackState(currentPlayback().transform(Playback::getState), this.repeatSingle, this.shuffle);
+		return new MultiplePlaybackState(currentPlayback().transform(Playback::getPlayerState), this.repeatSingle, this.shuffle);
 	}
 
 	private void currentPlayback(ResultAction<Playback> action) {
@@ -145,7 +145,7 @@ public class MultiplePlayback {
 			@Override
 			public void onUpdate() {
 				listener.onUpdate();
-				PlaybackState bundle = playback.getState();
+				PlaybackState bundle = playback.getPlayerState();
 				if (bundle.state == State.COMPLETED) {
 					skipNext();
 				}

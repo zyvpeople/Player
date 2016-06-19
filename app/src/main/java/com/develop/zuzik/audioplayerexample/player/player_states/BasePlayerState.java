@@ -56,7 +56,7 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	protected final void applyState(PlayerState state) {
-		this.playerStateContext.setState(state);
+		this.playerStateContext.setPlayerState(state);
 	}
 
 	protected final void saveMediaPlayerState(MediaPlayerState mediaPlayerState) {
