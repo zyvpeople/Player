@@ -24,7 +24,7 @@ import java.util.List;
 public class MultiplePlayback {
 
 	private final List<Playback> playbacks = new ArrayList<>();
-	private Optional<Integer> currentPosition;
+	private Optional<Playback> currentPlayback;
 	private boolean repeatSingle;
 	private boolean shuffle;
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
@@ -41,9 +41,9 @@ public class MultiplePlayback {
 		}
 		this.nextPlaybackStrategyFactory = nextPlaybackStrategyFactory;
 		this.previousPlaybackStrategyFactory = previousPlaybackStrategyFactory;
-		this.currentPosition = initializers.isEmpty()
+		this.currentPlayback = initializers.isEmpty()
 				? Optional.absent()
-				: Optional.of(0);
+				: Optional.of(this.playbacks.get(0));
 	}
 
 	public void setListener(MultiplePlaybackListener listener) {
@@ -53,18 +53,13 @@ public class MultiplePlayback {
 	}
 
 	public MultiplePlaybackState getMultiplePlaybackState() {
-		return new MultiplePlaybackState(currentPlayback().transform(Playback::getPlayerState), this.repeatSingle, this.shuffle);
+		return new MultiplePlaybackState(this.currentPlayback.transform(Playback::getPlayerState), this.repeatSingle, this.shuffle);
 	}
 
 	private void currentPlayback(ResultAction<Playback> action) {
-		Optional<Playback> currentPlayback = currentPlayback();
-		if (currentPlayback.isPresent()) {
-			action.execute(this.currentPosition.transform(this.playbacks::get).get());
+		if (this.currentPlayback.isPresent()) {
+			action.execute(this.currentPlayback.get());
 		}
-	}
-
-	private Optional<Playback> currentPlayback() {
-		return this.currentPosition.transform(this.playbacks::get);
 	}
 
 	public void repeatSingle() {
@@ -128,16 +123,9 @@ public class MultiplePlayback {
 	private void switchFromOldToNewPlayback(Playback oldPlayback, Optional<Playback> newPlayback) {
 		if (newPlayback.isPresent()) {
 			releasePlayback(oldPlayback);
-			updateCurrentPositionForPlayback(newPlayback.get());
+			this.currentPlayback = newPlayback;
 			initPlayback(newPlayback.get(), true);
 		}
-	}
-
-	private void updateCurrentPositionForPlayback(Playback playback) {
-		int indexOfPlayback = this.playbacks.indexOf(playback);
-		this.currentPosition = indexOfPlayback != -1
-				? Optional.of(indexOfPlayback)
-				: Optional.absent();
 	}
 
 	private void initPlayback(Playback playback, boolean play) {
