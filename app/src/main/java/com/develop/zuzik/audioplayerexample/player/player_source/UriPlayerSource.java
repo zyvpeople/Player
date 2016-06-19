@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.player_initializer;
+package com.develop.zuzik.audioplayerexample.player.player_source;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -14,16 +14,16 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class UriPlayerInitializer implements PlayerInitializer {
+public class UriPlayerSource implements PlayerSource {
 	@RawRes
 	public final Uri uri;
 
-	public UriPlayerInitializer(Uri uri) {
+	public UriPlayerSource(Uri uri) {
 		this.uri = uri;
 	}
 
 	@Override
-	public void initialize(Context context, MediaPlayer player) throws PlayerInitializeException {
+	public void initializePlayerWithSource(Context context, MediaPlayer player) throws PlayerInitializeException {
 		player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
 			player.setDataSource(context, this.uri);
@@ -36,8 +36,8 @@ public class UriPlayerInitializer implements PlayerInitializer {
 	public boolean equals(Object o) {
 		if (o == this) {
 			return true;
-		} else if (o instanceof UriPlayerInitializer) {
-			return this.uri.equals(((UriPlayerInitializer) o).uri);
+		} else if (o instanceof UriPlayerSource) {
+			return this.uri.equals(((UriPlayerSource) o).uri);
 		} else {
 			return false;
 		}

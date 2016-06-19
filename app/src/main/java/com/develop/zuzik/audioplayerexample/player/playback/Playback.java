@@ -10,7 +10,7 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSup
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
@@ -31,7 +31,7 @@ public class Playback implements PlayerStateContext {
 	private final Context context;
 	private final AudioManager audioManager;
 
-	public Playback(Context context, PlayerInitializer playerInitializer) throws AudioServiceNotSupportException {
+	public Playback(Context context, PlayerSource playerSource) throws AudioServiceNotSupportException {
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		if (this.audioManager == null) {
 			throw new AudioServiceNotSupportException();
@@ -42,7 +42,7 @@ public class Playback implements PlayerStateContext {
 				0,
 				Optional.absent(),
 				false,
-				playerInitializer);
+				playerSource);
 	}
 
 	//region Getters/Setters
@@ -130,7 +130,7 @@ public class Playback implements PlayerStateContext {
 				mediaPlayerState.currentTimeInMilliseconds,
 				mediaPlayerState.maxTimeInMilliseconds,
 				isRepeat(),
-				this.playbackState.playerInitializer);
+				this.playbackState.playerSource);
 		this.playbackListener.onUpdate();
 	}
 
@@ -165,8 +165,8 @@ public class Playback implements PlayerStateContext {
 	}
 
 	@Override
-	public PlayerInitializer getPlayerInitializer() {
-		return this.playbackState.playerInitializer;
+	public PlayerSource getPlayerInitializer() {
+		return this.playbackState.playerSource;
 	}
 
 	@Override

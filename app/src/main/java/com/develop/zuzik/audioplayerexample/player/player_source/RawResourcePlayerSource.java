@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.player_initializer;
+package com.develop.zuzik.audioplayerexample.player.player_source;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -15,16 +15,16 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class RawResourcePlayerInitializer implements PlayerInitializer {
+public class RawResourcePlayerSource implements PlayerSource {
 	@RawRes
 	public final int rawResId;
 
-	public RawResourcePlayerInitializer(int rawResId) {
+	public RawResourcePlayerSource(int rawResId) {
 		this.rawResId = rawResId;
 	}
 
 	@Override
-	public void initialize(Context context, MediaPlayer player) throws PlayerInitializeException {
+	public void initializePlayerWithSource(Context context, MediaPlayer player) throws PlayerInitializeException {
 		player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
 		try {
@@ -52,8 +52,8 @@ public class RawResourcePlayerInitializer implements PlayerInitializer {
 	public boolean equals(Object o) {
 		if (o == this) {
 			return true;
-		} else if (o instanceof RawResourcePlayerInitializer) {
-			return this.rawResId == ((RawResourcePlayerInitializer) o).rawResId;
+		} else if (o instanceof RawResourcePlayerSource) {
+			return this.rawResId == ((RawResourcePlayerSource) o).rawResId;
 		} else {
 			return false;
 		}

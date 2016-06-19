@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;
@@ -12,17 +12,17 @@ import java.util.List;
  */
 public class MultiplePlaybackState {
 
-	public final List<PlayerInitializer> playerInitializers;
+	public final List<PlayerSource> playerSources;
 	public final Optional<PlaybackState> currentPlaybackState;
 	public final boolean repeatSingle;
 	public final boolean shuffle;
 
 	public MultiplePlaybackState(
-			List<PlayerInitializer> playerInitializers,
+			List<PlayerSource> playerSources,
 			Optional<PlaybackState> currentPlaybackState,
 			boolean repeatSingle,
 			boolean shuffle) {
-		this.playerInitializers = playerInitializers;
+		this.playerSources = playerSources;
 		this.currentPlaybackState = currentPlaybackState;
 		this.repeatSingle = repeatSingle;
 		this.shuffle = shuffle;
@@ -30,7 +30,7 @@ public class MultiplePlaybackState {
 
 	public MultiplePlaybackState withRepeatSingle(boolean repeatSingle) {
 		return new MultiplePlaybackState(
-				this.playerInitializers,
+				this.playerSources,
 				this.currentPlaybackState,
 				repeatSingle,
 				this.shuffle);
@@ -38,7 +38,7 @@ public class MultiplePlaybackState {
 
 	public MultiplePlaybackState withShuffle(boolean shuffle) {
 		return new MultiplePlaybackState(
-				this.playerInitializers,
+				this.playerSources,
 				this.currentPlaybackState,
 				this.repeatSingle,
 				shuffle);
@@ -46,7 +46,7 @@ public class MultiplePlaybackState {
 
 	public MultiplePlaybackState withCurrentPlaybackState(Optional<PlaybackState> currentPlaybackState) {
 		return new MultiplePlaybackState(
-				this.playerInitializers,
+				this.playerSources,
 				currentPlaybackState,
 				this.repeatSingle,
 				this.shuffle);

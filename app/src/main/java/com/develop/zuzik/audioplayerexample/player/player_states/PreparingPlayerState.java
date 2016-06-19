@@ -30,7 +30,7 @@ public class PreparingPlayerState extends BasePlayerState {
 	@Override
 	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		player.setOnPreparedListener(preparedPlayer -> applyState(new StartedPlayerState(this.playerStateContext)));
-		getPlayerInitializer().initialize(this.playerStateContext.context(), player);
+		getPlayerInitializer().initializePlayerWithSource(this.playerStateContext.context(), player);
 		getMediaPlayer().prepareAsync();
 	}
 

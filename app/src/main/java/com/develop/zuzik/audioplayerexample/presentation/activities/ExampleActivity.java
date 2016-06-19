@@ -14,7 +14,7 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerMod
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
 public class ExampleActivity extends AppCompatActivity implements Player.View {
@@ -38,7 +38,7 @@ public class ExampleActivity extends AppCompatActivity implements Player.View {
 
 		try {
 			this.presenter = new PlayerPresenter(
-					new PlayerModel(this, new RawResourcePlayerInitializer(R.raw.song)),
+					new PlayerModel(this, new RawResourcePlayerSource(R.raw.song)),
 					new ExamplePlayerExceptionMessageProvider());
 		} catch (AudioServiceNotSupportException e) {
 			throw new RuntimeException(e);

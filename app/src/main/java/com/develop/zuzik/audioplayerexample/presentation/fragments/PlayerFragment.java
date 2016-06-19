@@ -21,10 +21,10 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultipleP
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExampleNextPlayerInitializerStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExamplePreviousPlayerInitializerStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.RawResourcePlayerInitializer;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.UriPlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExampleNextPlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExamplePreviousPlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongDetailViewPagerAdapter;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
@@ -73,12 +73,12 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View {
 					new MultiplePlayerModel(
 							getContext(),
 							Arrays.asList(
-									new RawResourcePlayerInitializer(R.raw.song),
-									new RawResourcePlayerInitializer(R.raw.song_short),
-									new UriPlayerInitializer(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
-									new RawResourcePlayerInitializer(R.raw.song_take_it_back)),
-							new ExampleNextPlayerInitializerStrategyFactory(),
-							new ExamplePreviousPlayerInitializerStrategyFactory()),
+									new RawResourcePlayerSource(R.raw.song),
+									new RawResourcePlayerSource(R.raw.song_short),
+									new UriPlayerSource(Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
+									new RawResourcePlayerSource(R.raw.song_take_it_back)),
+							new ExampleNextPlayerSourceStrategyFactory(),
+							new ExamplePreviousPlayerSourceStrategyFactory()),
 					new ExamplePlayerExceptionMessageProvider());
 		} catch (AudioServiceNotSupportException e) {
 			throw new RuntimeException(e);

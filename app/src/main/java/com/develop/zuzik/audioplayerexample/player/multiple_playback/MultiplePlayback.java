@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerInitializerStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -27,23 +27,23 @@ public class MultiplePlayback {
 	private Optional<Playback> currentPlayback;
 
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
-	private final PlayerInitializerStrategyFactory nextPlayerInitializerStrategyFactory;
-	private final PlayerInitializerStrategyFactory previousPlayerInitializerStrategyFactory;
+	private final PlayerSourceStrategyFactory nextPlayerSourceStrategyFactory;
+	private final PlayerSourceStrategyFactory previousPlayerSourceStrategyFactory;
 	private final Context context;
 
 	public MultiplePlayback(
 			Context context,
-			List<PlayerInitializer> initializers,
-			PlayerInitializerStrategyFactory nextPlayerInitializerStrategyFactory,
-			PlayerInitializerStrategyFactory previousPlayerInitializerStrategyFactory) throws AudioServiceNotSupportException {
+			List<PlayerSource> playerSources,
+			PlayerSourceStrategyFactory nextPlayerSourceStrategyFactory,
+			PlayerSourceStrategyFactory previousPlayerSourceStrategyFactory) throws AudioServiceNotSupportException {
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.nextPlayerInitializerStrategyFactory = nextPlayerInitializerStrategyFactory;
-		this.previousPlayerInitializerStrategyFactory = previousPlayerInitializerStrategyFactory;
-		this.currentPlayback = initializers.isEmpty()
+		this.nextPlayerSourceStrategyFactory = nextPlayerSourceStrategyFactory;
+		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
+		this.currentPlayback = playerSources.isEmpty()
 				? Optional.absent()
-				: Optional.of(new Playback(this.context, initializers.get(0)));
+				: Optional.of(new Playback(this.context, playerSources.get(0)));
 		this.multiplePlaybackState = new MultiplePlaybackState(
-				initializers,
+				playerSources,
 				this.currentPlayback.transform(Playback::getPlaybackState),
 				false,
 				false);
@@ -172,9 +172,9 @@ public class MultiplePlayback {
 
 	private void nextPlayback(ResultAction<Optional<Playback>> action) {
 		currentPlayback(currentPlayback -> {
-			Optional<PlayerInitializer> playerInitializer = this.nextPlayerInitializerStrategyFactory
+			Optional<PlayerSource> playerInitializer = this.nextPlayerSourceStrategyFactory
 					.create(this.multiplePlaybackState.shuffle)
-					.determine(this.multiplePlaybackState.playerInitializers, currentPlayback.getPlayerInitializer());
+					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerInitializer());
 			if (playerInitializer.isPresent()) {
 				try {
 					action.execute(Optional.of(new Playback(this.context, playerInitializer.get())));
@@ -189,9 +189,9 @@ public class MultiplePlayback {
 
 	private void previousPlayback(ResultAction<Optional<Playback>> action) {
 		currentPlayback(currentPlayback -> {
-			Optional<PlayerInitializer> playerInitializer = this.previousPlayerInitializerStrategyFactory
+			Optional<PlayerSource> playerInitializer = this.previousPlayerSourceStrategyFactory
 					.create(this.multiplePlaybackState.shuffle)
-					.determine(this.multiplePlaybackState.playerInitializers, currentPlayback.getPlayerInitializer());
+					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerInitializer());
 			if (playerInitializer.isPresent()) {
 				try {
 					action.execute(Optional.of(new Playback(this.context, playerInitializer.get())));

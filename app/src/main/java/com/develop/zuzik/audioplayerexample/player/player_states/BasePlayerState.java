@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateEx
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ResultAction;
@@ -42,7 +42,7 @@ abstract class BasePlayerState implements PlayerState {
 		return this.playerStateContext.getMediaPlayer();
 	}
 
-	protected final PlayerInitializer getPlayerInitializer() {
+	protected final PlayerSource getPlayerInitializer() {
 		return this.playerStateContext.getPlayerInitializer();
 	}
 

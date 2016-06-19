@@ -3,7 +3,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
 import android.content.Context;
 import android.media.MediaPlayer;
 
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 /**
  * User: zuzik
@@ -23,7 +23,7 @@ public interface PlayerStateContext {
 
 	MediaPlayer getMediaPlayer();
 
-	PlayerInitializer getPlayerInitializer();
+	PlayerSource getPlayerInitializer();
 
 	boolean isRepeat();
 

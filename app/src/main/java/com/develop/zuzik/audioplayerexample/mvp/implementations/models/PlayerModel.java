@@ -7,7 +7,7 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.player_initializer.PlayerInitializer;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -23,7 +23,7 @@ public class PlayerModel implements Player.Model {
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
 
-	public PlayerModel(Context context, PlayerInitializer source) throws AudioServiceNotSupportException {
+	public PlayerModel(Context context, PlayerSource source) throws AudioServiceNotSupportException {
 		this.playback = new Playback(context, source);
 	}
 
