@@ -168,5 +168,9 @@ public class ExampleActivity extends AppCompatActivity implements Player.View<So
 		this.title.setText(song.name);
 	}
 
+	@Override
+	public void display(ViewData<Song> viewData) {
+	}
+
 	//endregion
 }

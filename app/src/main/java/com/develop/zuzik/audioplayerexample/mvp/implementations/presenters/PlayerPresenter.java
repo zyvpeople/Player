@@ -102,33 +102,44 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 
 	private void updateView(PlayerModelState<SourceInfo> state) {
 		PlaybackState<SourceInfo> bundle = state.bundle;
-		this.view.enablePlayControls(
+
+		Player.View.ViewData<SourceInfo> viewData = new Player.View.ViewData<>(
+				state.repeat,
+				bundle.currentTimeInMilliseconds,
+				bundle.maxTimeInMilliseconds.or(100),
+				bundle.maxTimeInMilliseconds.isPresent() ? String.valueOf(bundle.currentTimeInMilliseconds) : "-",
+				bundle.maxTimeInMilliseconds.isPresent() ? bundle.maxTimeInMilliseconds.transform(String::valueOf).get() : "-",
+				bundle.maxTimeInMilliseconds.isPresent(),
 				this.allowedPlayButtonStates.contains(bundle.state),
 				this.allowedPauseButtonStates.contains(bundle.state),
-				this.allowedStopButtonStates.contains(bundle.state));
+				this.allowedStopButtonStates.contains(bundle.state),
+				bundle.state == State.PREPARING,
+				bundle.playerSource.getSourceInfo());
 
-		if (bundle.maxTimeInMilliseconds.isPresent()) {
-			this.view.showTime(String.valueOf(bundle.currentTimeInMilliseconds), bundle.maxTimeInMilliseconds.transform(String::valueOf).get());
+		this.view.enablePlayControls(viewData.play, viewData.pause, viewData.stop);
+		this.view.showTime(viewData.displayedCurrentTime, viewData.displayedTotalTime);
+		this.view.setProgress(viewData.currentTimeInMilliseconds, viewData.totalTimeInMilliseconds);
+
+		if (viewData.progressVisible) {
 			this.view.showProgress();
-			this.view.setProgress(bundle.currentTimeInMilliseconds, bundle.maxTimeInMilliseconds.get());
 		} else {
-			this.view.showTime("-", "-");
 			this.view.hideProgress();
-			this.view.setProgress(0, 100);
 		}
 
-		if (state.repeat) {
+		if (viewData.repeat) {
 			this.view.setRepeat();
 		} else {
 			this.view.setDoNotRepeat();
 		}
 
-		if (bundle.state == State.PREPARING) {
+		if (viewData.loading) {
 			this.view.showLoading();
 		} else {
 			this.view.hideLoading();
 		}
 
 		this.view.displayCurrentSource(bundle.playerSource.getSourceInfo());
+		this.view.display(viewData);
 	}
+
 }
