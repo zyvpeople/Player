@@ -10,6 +10,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.services.PlaybackService;
+import com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory;
 import com.fernandocejas.arrow.optional.Optional;
 
 import rx.Observable;
@@ -34,7 +35,7 @@ public class ServicePlayerModel<SourceInfo> implements Player.Model<SourceInfo> 
 
 	@Override
 	public void init() {
-		this.context.startService(PlaybackService.createForInit(this.context, source));
+		this.context.startService(PlaybackServiceIntentFactory.createPlayerSource(this.context, source));
 	}
 
 	@Override
@@ -59,17 +60,17 @@ public class ServicePlayerModel<SourceInfo> implements Player.Model<SourceInfo> 
 
 	@Override
 	public void play() {
-		this.context.startService(PlaybackService.createForPlay(this.context));
+		this.context.startService(PlaybackServiceIntentFactory.createPlay(this.context));
 	}
 
 	@Override
 	public void pause() {
-		this.context.startService(PlaybackService.createForPause(this.context));
+		this.context.startService(PlaybackServiceIntentFactory.createPause(this.context));
 	}
 
 	@Override
 	public void stop() {
-		this.context.startService(PlaybackService.createForStop(this.context));
+		this.context.startService(PlaybackServiceIntentFactory.createStop(this.context));
 	}
 
 	@Override
