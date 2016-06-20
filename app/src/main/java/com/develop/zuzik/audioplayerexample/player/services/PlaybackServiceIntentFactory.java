@@ -15,10 +15,15 @@ public class PlaybackServiceIntentFactory {
 
 	private static final String EXTRA_ACTION = "EXTRA_ACTION";
 	private static final String EXTRA_PLAYER_SOURCE = "EXTRA_PLAYER_SOURCE";
+	private static final String EXTRA_SEEK_TO = "EXTRA_SEEK_TO";
 	private static final String ACTION_INIT = "ACTION_INIT";
 	private static final String ACTION_PLAY = "ACTION_PLAY";
 	private static final String ACTION_PAUSE = "ACTION_PAUSE";
 	private static final String ACTION_STOP = "ACTION_STOP";
+	private static final String ACTION_SEEK_TO = "ACTION_SEEK_TO";
+	private static final String ACTION_REPEAT = "ACTION_REPEAT";
+	private static final String ACTION_DO_NOT_REPEAT = "ACTION_DO_NOT_REPEAT";
+	private static final String ACTION_SIMULATE_ERROR = "ACTION_SIMULATE_ERROR";
 
 	public static Intent create(Context context) {
 		return new Intent(context, PlaybackService.class);
@@ -75,4 +80,48 @@ public class PlaybackServiceIntentFactory {
 		}
 	}
 
+	public static Intent createSeekTo(Context context, int positionInMilliseconds) {
+		Intent intent = create(context);
+		intent.putExtra(EXTRA_ACTION, ACTION_SEEK_TO);
+		intent.putExtra(EXTRA_SEEK_TO, positionInMilliseconds);
+		return intent;
+	}
+
+	public static void parseSeekTo(Intent intent, ParamAction<Integer> success) {
+		parseAction(intent, ACTION_SEEK_TO, () -> {
+			if (intent != null && intent.hasExtra(EXTRA_SEEK_TO)) {
+				success.execute(intent.getIntExtra(EXTRA_SEEK_TO, 0));
+			}
+		});
+	}
+
+	public static Intent createRepeat(Context context) {
+		Intent intent = create(context);
+		intent.putExtra(EXTRA_ACTION, ACTION_REPEAT);
+		return intent;
+	}
+
+	public static void parseRepeat(Intent intent, Action success) {
+		parseAction(intent, ACTION_REPEAT, success);
+	}
+
+	public static Intent createDoNotRepeat(Context context) {
+		Intent intent = create(context);
+		intent.putExtra(EXTRA_ACTION, ACTION_DO_NOT_REPEAT);
+		return intent;
+	}
+
+	public static void parseDoNotRepeat(Intent intent, Action success) {
+		parseAction(intent, ACTION_DO_NOT_REPEAT, success);
+	}
+
+	public static Intent createSimulateError(Context context) {
+		Intent intent = create(context);
+		intent.putExtra(EXTRA_ACTION, ACTION_SIMULATE_ERROR);
+		return intent;
+	}
+
+	public static void parseSimulateError(Intent intent, Action success) {
+		parseAction(intent, ACTION_SIMULATE_ERROR, success);
+	}
 }

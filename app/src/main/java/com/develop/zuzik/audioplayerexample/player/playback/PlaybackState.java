@@ -3,11 +3,13 @@ package com.develop.zuzik.audioplayerexample.player.playback;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
+import java.io.Serializable;
+
 /**
  * User: zuzik
  * Date: 6/5/16
  */
-public class PlaybackState<SourceInfo> {
+public class PlaybackState<SourceInfo> implements Serializable {
 
 	public final State state;
 	public final int currentTimeInMilliseconds;

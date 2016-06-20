@@ -4,10 +4,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
@@ -42,12 +44,30 @@ public class PlaybackService extends Service {
 		PlaybackServiceIntentFactory.parsePlay(intent, () -> getPlayback(Playback::play));
 		PlaybackServiceIntentFactory.parsePause(intent, () -> getPlayback(Playback::pause));
 		PlaybackServiceIntentFactory.parseStop(intent, () -> getPlayback(Playback::stop));
+		PlaybackServiceIntentFactory.parseSeekTo(intent, value -> getPlayback(playback -> playback.seekTo(value)));
+		PlaybackServiceIntentFactory.parseRepeat(intent, () -> getPlayback(Playback::repeat));
+		PlaybackServiceIntentFactory.parseDoNotRepeat(intent, () -> getPlayback(Playback::doNotRepeat));
 		return START_STICKY;
 	}
 
 	private void initPlayback(PlayerSource value) {
 		try {
 			this.playback = Optional.of(new Playback(this, value));
+			this.playback.get().setPlaybackListener(new PlaybackListener() {
+				@Override
+				public void onUpdate() {
+					LocalBroadcastManager
+							.getInstance(getApplicationContext())
+							.sendBroadcast(PlaybackServiceBroadcastIntentFactory.createPlaybackState(playback.get().getPlaybackState()));
+				}
+
+				@Override
+				public void onError(Throwable throwable) {
+					LocalBroadcastManager
+							.getInstance(getApplicationContext())
+							.sendBroadcast(PlaybackServiceBroadcastIntentFactory.createError(throwable));
+				}
+			});
 			this.playback.get().init();
 		} catch (AudioServiceNotSupportException e) {
 			this.playback = Optional.absent();
