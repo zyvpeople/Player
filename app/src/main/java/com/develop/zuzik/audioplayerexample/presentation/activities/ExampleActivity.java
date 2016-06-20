@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
+import com.develop.zuzik.audioplayerexample.mvp.implementations.models.ServicePlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
@@ -40,7 +40,8 @@ public class ExampleActivity extends AppCompatActivity implements Player.View<So
 
 		try {
 			this.presenter = new PlayerPresenter<Song>(
-					new PlayerModel<>(this, new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song)),
+					new ServicePlayerModel<>(this, new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song)),
+//					new PlayerModel<>(this, new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song)),
 					new ExamplePlayerExceptionMessageProvider());
 		} catch (AudioServiceNotSupportException e) {
 			throw new RuntimeException(e);
