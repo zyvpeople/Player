@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
@@ -51,27 +50,23 @@ public class PlaybackService extends Service {
 	}
 
 	private void initPlayback(PlayerSource value) {
-		try {
-			this.playback = Optional.of(new Playback(this, value));
-			this.playback.get().setPlaybackListener(new PlaybackListener() {
-				@Override
-				public void onUpdate() {
-					LocalBroadcastManager
-							.getInstance(getApplicationContext())
-							.sendBroadcast(PlaybackServiceBroadcastIntentFactory.createPlaybackState(playback.get().getPlaybackState()));
-				}
+		this.playback = Optional.of(new Playback(this, value));
+		this.playback.get().setPlaybackListener(new PlaybackListener() {
+			@Override
+			public void onUpdate() {
+				LocalBroadcastManager
+						.getInstance(getApplicationContext())
+						.sendBroadcast(PlaybackServiceBroadcastIntentFactory.createPlaybackState(playback.get().getPlaybackState()));
+			}
 
-				@Override
-				public void onError(Throwable throwable) {
-					LocalBroadcastManager
-							.getInstance(getApplicationContext())
-							.sendBroadcast(PlaybackServiceBroadcastIntentFactory.createError(throwable));
-				}
-			});
-			this.playback.get().init();
-		} catch (AudioServiceNotSupportException e) {
-			this.playback = Optional.absent();
-		}
+			@Override
+			public void onError(Throwable throwable) {
+				LocalBroadcastManager
+						.getInstance(getApplicationContext())
+						.sendBroadcast(PlaybackServiceBroadcastIntentFactory.createError(throwable));
+			}
+		});
+		this.playback.get().init();
 	}
 
 	@Nullable

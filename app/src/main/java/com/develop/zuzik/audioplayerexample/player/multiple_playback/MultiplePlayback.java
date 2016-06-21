@@ -3,7 +3,6 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
@@ -35,7 +34,7 @@ public class MultiplePlayback<SourceInfo> {
 			Context context,
 			List<PlayerSource<SourceInfo>> playerSources,
 			PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
-			PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory) throws AudioServiceNotSupportException {
+			PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.nextPlayerSourceStrategyFactory = nextPlayerSourceStrategyFactory;
 		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
@@ -126,15 +125,11 @@ public class MultiplePlayback<SourceInfo> {
 				&& this.currentPlayback.get().getPlaybackState().playerSource.equals(playerSource)) {
 			return;
 		}
-		try {
-			int indexOfPlayerSource = this.multiplePlaybackState.playerSources.indexOf(playerSource);
-			Optional<Playback<SourceInfo>> newPlayback = indexOfPlayerSource != -1
-					? Optional.of(new Playback<SourceInfo>(this.context, this.multiplePlaybackState.playerSources.get(indexOfPlayerSource)))
-					: Optional.absent();
-			switchFromOldToNewPlayback(this.currentPlayback, newPlayback);
-		} catch (AudioServiceNotSupportException e) {
-			//TODO: handle exception correctly
-		}
+		int indexOfPlayerSource = this.multiplePlaybackState.playerSources.indexOf(playerSource);
+		Optional<Playback<SourceInfo>> newPlayback = indexOfPlayerSource != -1
+				? Optional.of(new Playback<SourceInfo>(this.context, this.multiplePlaybackState.playerSources.get(indexOfPlayerSource)))
+				: Optional.absent();
+		switchFromOldToNewPlayback(this.currentPlayback, newPlayback);
 	}
 
 	private void switchFromOldToNewPlayback(Optional<Playback<SourceInfo>> oldPlayback, Optional<Playback<SourceInfo>> newPlayback) {
@@ -193,12 +188,7 @@ public class MultiplePlayback<SourceInfo> {
 					.create(this.multiplePlaybackState.shuffle)
 					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerSource());
 			if (playerInitializer.isPresent()) {
-				try {
-					action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
-				} catch (AudioServiceNotSupportException e) {
-					action.execute(Optional.absent());
-					//TODO: handle exception correctly
-				}
+				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
 			} else {
 				action.execute(Optional.absent());
 			}
@@ -211,12 +201,7 @@ public class MultiplePlayback<SourceInfo> {
 					.create(this.multiplePlaybackState.shuffle)
 					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerSource());
 			if (playerInitializer.isPresent()) {
-				try {
-					action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
-				} catch (AudioServiceNotSupportException e) {
-					action.execute(Optional.absent());
-					//TODO: handle exception correctly
-				}
+				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
 			} else {
 				action.execute(Optional.absent());
 			}

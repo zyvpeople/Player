@@ -21,7 +21,6 @@ import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExampleNextPlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.ExamplePreviousPlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
@@ -72,21 +71,17 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		try {
-			this.presenter = new MultiplePlayerPresenter<Song>(
-					new MultiplePlayerModel<>(
-							getContext(),
-							Arrays.asList(
-									new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
-									new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
-									new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
-									new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)),
-							new ExampleNextPlayerSourceStrategyFactory<>(),
-							new ExamplePreviousPlayerSourceStrategyFactory<>()),
-					new ExamplePlayerExceptionMessageProvider());
-		} catch (AudioServiceNotSupportException e) {
-			throw new RuntimeException(e);
-		}
+		this.presenter = new MultiplePlayerPresenter<Song>(
+				new MultiplePlayerModel<>(
+						getContext(),
+						Arrays.asList(
+								new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
+								new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
+								new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
+								new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)),
+						new ExampleNextPlayerSourceStrategyFactory<>(),
+						new ExamplePreviousPlayerSourceStrategyFactory<>()),
+				new ExamplePlayerExceptionMessageProvider());
 		this.presenter.onInit(this);
 	}
 

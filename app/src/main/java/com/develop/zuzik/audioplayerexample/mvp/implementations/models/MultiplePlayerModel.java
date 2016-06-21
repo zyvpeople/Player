@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
-import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerSourceStrategyFactory;
@@ -30,7 +29,7 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	public MultiplePlayerModel(Context context,
 							   List<PlayerSource<SourceInfo>> initializers,
 							   PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
-							   PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory) throws AudioServiceNotSupportException {
+							   PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory) {
 		this.playback = new MultiplePlayback<>(context, initializers, nextPlayerSourceStrategyFactory, previousPlayerSourceStrategyFactory);
 	}
 

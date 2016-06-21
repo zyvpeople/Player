@@ -6,7 +6,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.exceptions.AudioServiceNotSupportException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
@@ -31,18 +30,10 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 	private final Context context;
 	private final AudioManager audioManager;
 
-	public Playback(Context context, PlayerSource<SourceInfo> playerSource) throws AudioServiceNotSupportException {
+	public Playback(Context context, PlayerSource<SourceInfo> playerSource) {
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		if (this.audioManager == null) {
-			throw new AudioServiceNotSupportException();
-		}
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.playbackState = new PlaybackState<SourceInfo>(
-				State.NONE,
-				0,
-				Optional.absent(),
-				false,
-				playerSource);
+		this.playbackState = new PlaybackState<SourceInfo>(State.NONE, 0, Optional.absent(), false, playerSource);
 	}
 
 	//region Getters/Setters
@@ -106,6 +97,7 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 
 	//region PlayerStateContainer
 
+	@Override
 	public void setPlayerState(PlayerState playerState) {
 		logState(this.playerState, playerState);
 		this.playerState.unapply();
