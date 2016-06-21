@@ -40,10 +40,9 @@ public interface Player {
 
 		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
 
-		//TODO: rename because showLoading exists
-		void showProgress();
+		void showSourceProgress();
 
-		void hideProgress();
+		void hideSourceProgress();
 
 		void showTime(String currentTime, String totalTime);
 
@@ -51,9 +50,9 @@ public interface Player {
 
 		void enablePlayControls(boolean play, boolean pause, boolean stop);
 
-		void showLoading();
+		void showLoadingIndicator();
 
-		void hideLoading();
+		void hideLoadingIndicator();
 
 		void displayCurrentSource(SourceInfo sourceInfo);
 

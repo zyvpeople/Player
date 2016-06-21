@@ -121,12 +121,12 @@ public class ExampleActivity extends AppCompatActivity implements Player.View<So
 	}
 
 	@Override
-	public void showProgress() {
+	public void showSourceProgress() {
 		this.seekBar.setEnabled(true);
 	}
 
 	@Override
-	public void hideProgress() {
+	public void hideSourceProgress() {
 		this.seekBar.setEnabled(false);
 	}
 
@@ -149,12 +149,12 @@ public class ExampleActivity extends AppCompatActivity implements Player.View<So
 	}
 
 	@Override
-	public void showLoading() {
+	public void showLoadingIndicator() {
 		this.loading.setVisibility(View.VISIBLE);
 	}
 
 	@Override
-	public void hideLoading() {
+	public void hideLoadingIndicator() {
 		this.loading.setVisibility(View.GONE);
 	}
 

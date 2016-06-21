@@ -121,9 +121,9 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 		this.view.setProgress(viewData.currentTimeInMilliseconds, viewData.totalTimeInMilliseconds);
 
 		if (viewData.progressVisible) {
-			this.view.showProgress();
+			this.view.showSourceProgress();
 		} else {
-			this.view.hideProgress();
+			this.view.hideSourceProgress();
 		}
 
 		if (viewData.repeat) {
@@ -133,9 +133,9 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 		}
 
 		if (viewData.loading) {
-			this.view.showLoading();
+			this.view.showLoadingIndicator();
 		} else {
-			this.view.hideLoading();
+			this.view.hideLoadingIndicator();
 		}
 
 		this.view.displayCurrentSource(bundle.playerSource.getSourceInfo());
