@@ -5,6 +5,7 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessag
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,6 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	@Override
 	public void onInit(Player.View<SourceInfo> view) {
 		this.view = view;
-		this.model.init();
 	}
 
 	@Override
@@ -59,6 +59,11 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	public void onDisappear() {
 		this.playbackStateChangedSubscription.unsubscribe();
 		this.errorPlayingSubscription.unsubscribe();
+	}
+
+	@Override
+	public void onSetSource(PlayerSource<SourceInfo> source) {
+		this.model.initSource(source);
 	}
 
 	@Override

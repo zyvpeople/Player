@@ -37,19 +37,24 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	@Override
-	public void init() {
-		this.context.startService(PlaybackServiceIntentFactory.createPlayerSource(this.context, this.playbackState.playerSource));
-		LocalBroadcastManager
-				.getInstance(this.context)
-				.registerReceiver(
-						this.playbackStateReceiver,
-						new IntentFilter(PlaybackServiceBroadcastIntentFactory.ACTION_PLAYBACK_STATE));
-		LocalBroadcastManager
-				.getInstance(this.context)
-				.registerReceiver(
-						this.errorReceiver,
-						new IntentFilter(PlaybackServiceBroadcastIntentFactory.ACTION_ERROR));
+	public void initSource(PlayerSource<SourceInfo> source) {
+
 	}
+
+//	@Override
+//	public void init() {
+//		this.context.startService(PlaybackServiceIntentFactory.createPlayerSource(this.context, this.playbackState.playerSource));
+//		LocalBroadcastManager
+//				.getInstance(this.context)
+//				.registerReceiver(
+//						this.playbackStateReceiver,
+//						new IntentFilter(PlaybackServiceBroadcastIntentFactory.ACTION_PLAYBACK_STATE));
+//		LocalBroadcastManager
+//				.getInstance(this.context)
+//				.registerReceiver(
+//						this.errorReceiver,
+//						new IntentFilter(PlaybackServiceBroadcastIntentFactory.ACTION_ERROR));
+//	}
 
 	@Override
 	public void destroy() {

@@ -1,5 +1,7 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+
 import rx.Observable;
 
 /**
@@ -8,7 +10,7 @@ import rx.Observable;
  */
 public interface Player {
 	interface Model<SourceInfo> {
-		void init();
+		void initSource(PlayerSource<SourceInfo> source);
 
 		void destroy();
 
@@ -106,6 +108,8 @@ public interface Player {
 		void onAppear();
 
 		void onDisappear();
+
+		void onSetSource(PlayerSource<SourceInfo> source);
 
 		void onPlay();
 

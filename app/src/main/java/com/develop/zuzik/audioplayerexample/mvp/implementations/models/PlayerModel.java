@@ -1,12 +1,17 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
+import com.fernandocejas.arrow.optional.Optional;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -17,19 +22,32 @@ import rx.subjects.PublishSubject;
  */
 public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
-	private final Playback<SourceInfo> playback;
+	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
+	private final Context context;
 
-	public PlayerModel(Context context, PlayerSource<SourceInfo> source) {
-		this.playback = new Playback<>(context, source);
+	public PlayerModel(Context context) {
+		this.context = new ContextWrapper(context).getApplicationContext();
 	}
 
 	@Override
-	public void init() {
-		this.playback.init();
-		this.playback.setPlaybackListener(new PlaybackListener() {
+	public void initSource(PlayerSource<SourceInfo> source) {
+		if (this.playback.isPresent()) {
+			if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
+				releasePlayback(this.playback.get());
+				initPlayback(source);
+			}
+		} else {
+			initPlayback(source);
+		}
+	}
+
+	private void initPlayback(PlayerSource<SourceInfo> source) {
+		this.playback = Optional.of(new Playback<SourceInfo>(this.context, source));
+		this.playback.get().init();
+		this.playback.get().setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onUpdate() {
 				playbackStateChangedPublishSubject.onNext(null);
@@ -44,13 +62,24 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	@Override
 	public void destroy() {
-		this.playback.setPlaybackListener(null);
-		this.playback.release();
+		getPlayback(value -> {
+			releasePlayback(value);
+			this.playback = Optional.absent();
+		});
+	}
+
+	private void releasePlayback(Playback<SourceInfo> playback) {
+		playback.setPlaybackListener(null);
+		playback.release();
 	}
 
 	@Override
 	public PlayerModelState<SourceInfo> getState() {
-		return new PlayerModelState<>(this.playback.getPlaybackState(), this.repeat);
+		return new PlayerModelState<>(
+				this.playback.isPresent()
+						? this.playback.get().getPlaybackState()
+						: new PlaybackState<>(State.NONE, 0, Optional.absent(), this.repeat, null),
+				this.repeat);
 	}
 
 	@Override
@@ -65,38 +94,44 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	@Override
 	public void play() {
-		this.playback.play();
+		getPlayback(Playback::play);
 	}
 
 	@Override
 	public void pause() {
-		this.playback.pause();
+		getPlayback(Playback::pause);
 	}
 
 	@Override
 	public void stop() {
-		this.playback.stop();
+		getPlayback(Playback::stop);
 	}
 
 	@Override
 	public void seekToPosition(int positionInMilliseconds) {
-		this.playback.seekTo(positionInMilliseconds);
+		getPlayback(value -> value.seekTo(positionInMilliseconds));
 	}
 
 	@Override
 	public void repeat() {
 		this.repeat = true;
-		this.playback.repeat();
+		getPlayback(Playback::repeat);
 	}
 
 	@Override
 	public void doNotRepeat() {
 		this.repeat = false;
-		this.playback.doNotRepeat();
+		getPlayback(Playback::doNotRepeat);
 	}
 
 	@Override
 	public void simulateError() {
-		this.playback.simulateError();
+		getPlayback(Playback::simulateError);
+	}
+
+	private void getPlayback(ParamAction<Playback<SourceInfo>> success) {
+		if (this.playback.isPresent()) {
+			success.execute(this.playback.get());
+		}
 	}
 }
