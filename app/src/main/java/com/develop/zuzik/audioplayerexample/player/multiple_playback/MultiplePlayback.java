@@ -8,6 +8,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
@@ -40,7 +41,7 @@ public class MultiplePlayback<SourceInfo> {
 		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
 		this.currentPlayback = playerSources.isEmpty()
 				? Optional.absent()
-				: Optional.of(new Playback<SourceInfo>(this.context, playerSources.get(0)));
+				: Optional.of(new Playback<SourceInfo>(this.context, playerSources.get(0), new InMemoryPlaybackSettings()));
 		this.multiplePlaybackState = new MultiplePlaybackState<SourceInfo>(
 				playerSources,
 				this.currentPlayback.transform(Playback::getPlaybackState),
@@ -127,7 +128,7 @@ public class MultiplePlayback<SourceInfo> {
 		}
 		int indexOfPlayerSource = this.multiplePlaybackState.playerSources.indexOf(playerSource);
 		Optional<Playback<SourceInfo>> newPlayback = indexOfPlayerSource != -1
-				? Optional.of(new Playback<SourceInfo>(this.context, this.multiplePlaybackState.playerSources.get(indexOfPlayerSource)))
+				? Optional.of(new Playback<SourceInfo>(this.context, this.multiplePlaybackState.playerSources.get(indexOfPlayerSource), new InMemoryPlaybackSettings()))
 				: Optional.absent();
 		switchFromOldToNewPlayback(this.currentPlayback, newPlayback);
 	}
@@ -188,7 +189,7 @@ public class MultiplePlayback<SourceInfo> {
 					.create(this.multiplePlaybackState.shuffle)
 					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerSource());
 			if (playerInitializer.isPresent()) {
-				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
+				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get(), new InMemoryPlaybackSettings())));
 			} else {
 				action.execute(Optional.absent());
 			}
@@ -201,7 +202,7 @@ public class MultiplePlayback<SourceInfo> {
 					.create(this.multiplePlaybackState.shuffle)
 					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerSource());
 			if (playerInitializer.isPresent()) {
-				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get())));
+				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get(), new InMemoryPlaybackSettings())));
 			} else {
 				action.execute(Optional.absent());
 			}

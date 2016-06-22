@@ -9,6 +9,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.settings.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
@@ -27,9 +28,11 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
 	private final Context context;
+	private final PlaybackSettings playbackSettings;
 
-	public PlayerModel(Context context) {
+	public PlayerModel(Context context, PlaybackSettings playbackSettings) {
 		this.context = new ContextWrapper(context).getApplicationContext();
+		this.playbackSettings = playbackSettings;
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	private void initPlayback(PlayerSource<SourceInfo> source) {
-		this.playback = Optional.of(new Playback<SourceInfo>(this.context, source));
+		this.playback = Optional.of(new Playback<SourceInfo>(this.context, source, this.playbackSettings));
 		this.playback.get().init();
 		this.playback.get().setPlaybackListener(new PlaybackListener() {
 			@Override

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
@@ -17,6 +18,7 @@ import com.fernandocejas.arrow.optional.Optional;
  * User: zuzik
  * Date: 6/20/16
  */
+//FIXME:is not implemented
 public class PlaybackService extends Service {
 
 	private Optional<Playback> playback = Optional.absent();
@@ -50,7 +52,7 @@ public class PlaybackService extends Service {
 	}
 
 	private void initPlayback(PlayerSource value) {
-		this.playback = Optional.of(new Playback(this, value));
+		this.playback = Optional.of(new Playback(this, value, new InMemoryPlaybackSettings()));
 		this.playback.get().setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onUpdate() {

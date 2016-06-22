@@ -9,6 +9,7 @@ import android.util.Log;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
+import com.develop.zuzik.audioplayerexample.player.playback.settings.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
@@ -29,11 +30,13 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private final Context context;
 	private final AudioManager audioManager;
+	private final PlaybackSettings settings;
 
-	public Playback(Context context, PlayerSource<SourceInfo> playerSource) {
+	public Playback(Context context, PlayerSource<SourceInfo> playerSource, PlaybackSettings settings) {
+		this.settings = settings;
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.playbackState = new PlaybackState<SourceInfo>(State.NONE, 0, Optional.absent(), false, playerSource);
+		this.playbackState = new PlaybackState<SourceInfo>(State.NONE, 0, Optional.absent(), this.settings.isRepeat(), playerSource);
 	}
 
 	//region Getters/Setters
@@ -49,10 +52,12 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 	}
 
 	public void repeat() {
+		this.settings.repeat();
 		repeat(true);
 	}
 
 	public void doNotRepeat() {
+		this.settings.doNotRepeat();
 		repeat(false);
 	}
 
