@@ -114,9 +114,9 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private void initPlayback(PlayerSource<SourceInfo> source) {
 		this.playback = Optional.of(this.playbackFactory.create(this.context, this.playbackSettings, source));
 		this.playback.get().init();
-		this.playback.get().setPlaybackListener(new PlaybackListener() {
+		this.playback.get().setPlaybackListener(new PlaybackListener<SourceInfo>() {
 			@Override
-			public void onUpdate(PlaybackState playbackState) {
+			public void onUpdate(PlaybackState<SourceInfo> playbackState) {
 				updatePublishSubject.onNext(playbackState);
 			}
 

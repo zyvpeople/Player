@@ -42,7 +42,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.settings = settings;
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		this.playbackState = new PlaybackState<SourceInfo>(State.NONE, 0, Optional.absent(), this.settings.isRepeat(), playerSource);
+		this.playbackState = new PlaybackState<>(State.NONE, 0, Optional.absent(), this.settings.isRepeat(), playerSource);
 	}
 
 	//region Playback
@@ -153,7 +153,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	@Override
 	public void onUpdate() {
 		MediaPlayerState mediaPlayerState = this.playerState.getMediaPlayerState();
-		this.playbackState = new PlaybackState<SourceInfo>(
+		this.playbackState = new PlaybackState<>(
 				mediaPlayerState.state,
 				mediaPlayerState.currentTimeInMilliseconds,
 				mediaPlayerState.maxTimeInMilliseconds,
