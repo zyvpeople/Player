@@ -1,6 +1,8 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 import rx.Observable;
 
@@ -10,11 +12,11 @@ import rx.Observable;
  */
 public interface Player {
 	interface Model<SourceInfo> {
-		void initSource(PlayerSource<SourceInfo> source);
+		void initWithSource(PlayerSource<SourceInfo> source);
 
 		void destroy();
 
-		PlayerModelState<SourceInfo> getState();
+		Optional<PlaybackState<SourceInfo>> getState();
 
 		Observable<Void> stateChangedObservable();
 
@@ -58,50 +60,14 @@ public interface Player {
 
 		void displayCurrentSource(SourceInfo sourceInfo);
 
-		void display(ViewData<SourceInfo> viewData);
+		void doNotDisplayCurrentSource();
 
-		class ViewData<SourceInfo> {
-			public final boolean repeat;
-			public final int currentTimeInMilliseconds;
-			public final int totalTimeInMilliseconds;
-			public final String displayedCurrentTime;
-			public final String displayedTotalTime;
-			public final boolean progressVisible;
-			public final boolean play;
-			public final boolean pause;
-			public final boolean stop;
-			public final boolean loading;
-			public final SourceInfo sourceInfo;
-
-			public ViewData(
-					boolean repeat,
-					int currentTimeInMilliseconds,
-					int totalTimeInMilliseconds,
-					String displayedCurrentTime,
-					String displayedTotalTime,
-					boolean progressVisible,
-					boolean play,
-					boolean pause,
-					boolean stop,
-					boolean loading,
-					SourceInfo sourceInfo) {
-				this.repeat = repeat;
-				this.currentTimeInMilliseconds = currentTimeInMilliseconds;
-				this.totalTimeInMilliseconds = totalTimeInMilliseconds;
-				this.displayedCurrentTime = displayedCurrentTime;
-				this.displayedTotalTime = displayedTotalTime;
-				this.progressVisible = progressVisible;
-				this.play = play;
-				this.pause = pause;
-				this.stop = stop;
-				this.loading = loading;
-				this.sourceInfo = sourceInfo;
-			}
-		}
 	}
 
 	interface Presenter<SourceInfo> {
-		void onInit(View<SourceInfo> view);
+		void setView(View<SourceInfo> view);
+
+		void onCreated();
 
 		void onDestroy();
 

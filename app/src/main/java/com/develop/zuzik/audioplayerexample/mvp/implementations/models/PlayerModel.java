@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.playback.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
@@ -26,7 +24,6 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
-	private boolean repeat;
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
 
@@ -36,7 +33,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	@Override
-	public void initSource(PlayerSource<SourceInfo> source) {
+	public void initWithSource(PlayerSource<SourceInfo> source) {
 		if (this.playback.isPresent()) {
 			if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
 				releasePlayback(this.playback.get());
@@ -77,12 +74,8 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	@Override
-	public PlayerModelState<SourceInfo> getState() {
-		return new PlayerModelState<>(
-				this.playback.isPresent()
-						? this.playback.get().getPlaybackState()
-						: new PlaybackState<>(State.NONE, 0, Optional.absent(), this.repeat, null),
-				this.repeat);
+	public Optional<PlaybackState<SourceInfo>> getState() {
+		return this.playback.transform(Playback::getPlaybackState);
 	}
 
 	@Override
@@ -117,13 +110,11 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	@Override
 	public void repeat() {
-		this.repeat = true;
 		getPlayback(Playback::repeat);
 	}
 
 	@Override
 	public void doNotRepeat() {
-		this.repeat = false;
 		getPlayback(Playback::doNotRepeat);
 	}
 

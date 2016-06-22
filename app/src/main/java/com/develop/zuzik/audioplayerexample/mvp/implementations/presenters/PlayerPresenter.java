@@ -2,10 +2,11 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessageProvider;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.null_objects.NullPlayerView;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,29 +21,39 @@ import rx.Subscription;
 public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo> {
 
 	private final Player.Model<SourceInfo> model;
-	private Player.View<SourceInfo> view;
+	private Player.View<SourceInfo> view = new NullPlayerView<>();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
+	private final boolean destroyModelIfViewDestroyed;
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
 
-	List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
-	List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
-	List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
+	private List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
+	private List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
+	private List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
-	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider) {
+	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider, boolean destroyModelIfViewDestroyed) {
 		this.model = model;
 		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
+		this.destroyModelIfViewDestroyed = destroyModelIfViewDestroyed;
 	}
 
 	@Override
-	public void onInit(Player.View<SourceInfo> view) {
-		this.view = view;
+	public void setView(Player.View<SourceInfo> view) {
+		this.view = view != null
+				? view
+				: new NullPlayerView<>();
+	}
+
+	@Override
+	public void onCreated() {
+
 	}
 
 	@Override
 	public void onDestroy() {
-		this.view = null;
-		this.model.destroy();
+		if (this.destroyModelIfViewDestroyed) {
+			this.model.destroy();
+		}
 	}
 
 	@Override
@@ -63,7 +74,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 
 	@Override
 	public void onSetSource(PlayerSource<SourceInfo> source) {
-		this.model.initSource(source);
+		this.model.initWithSource(source);
 	}
 
 	@Override
@@ -105,46 +116,62 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 		updateView(this.model.getState());
 	}
 
-	private void updateView(PlayerModelState<SourceInfo> state) {
-		PlaybackState<SourceInfo> bundle = state.bundle;
+	private void updateView(Optional<PlaybackState<SourceInfo>> state) {
 
-		Player.View.ViewData<SourceInfo> viewData = new Player.View.ViewData<>(
-				state.repeat,
-				bundle.currentTimeInMilliseconds,
-				bundle.maxTimeInMilliseconds.or(100),
-				bundle.maxTimeInMilliseconds.isPresent() ? String.valueOf(bundle.currentTimeInMilliseconds) : "-",
-				bundle.maxTimeInMilliseconds.isPresent() ? bundle.maxTimeInMilliseconds.transform(String::valueOf).get() : "-",
-				bundle.maxTimeInMilliseconds.isPresent(),
-				this.allowedPlayButtonStates.contains(bundle.state),
-				this.allowedPauseButtonStates.contains(bundle.state),
-				this.allowedStopButtonStates.contains(bundle.state),
-				bundle.state == State.PREPARING,
-				bundle.playerSource.getSourceInfo());
+		boolean repeat = false;
+		int currentTimeInMilliseconds = 0;
+		int totalTimeInMilliseconds = 100;
+		boolean showSourceProgress = false;
+		boolean playAvailable = false;
+		boolean pauseAvailable = false;
+		boolean stopAvailable = false;
+		boolean showLoading = false;
+		Optional<SourceInfo> sourceInfo = Optional.absent();
+		String currentTimeText = "";
+		String totalTimeText = "";
 
-		this.view.enablePlayControls(viewData.play, viewData.pause, viewData.stop);
-		this.view.showTime(viewData.displayedCurrentTime, viewData.displayedTotalTime);
-		this.view.setProgress(viewData.currentTimeInMilliseconds, viewData.totalTimeInMilliseconds);
+		if (state.isPresent()) {
+			PlaybackState<SourceInfo> bundle = state.get();
+			repeat = bundle.repeat;
+			currentTimeInMilliseconds = bundle.currentTimeInMilliseconds;
+			totalTimeInMilliseconds = bundle.maxTimeInMilliseconds.or(totalTimeInMilliseconds);
+			showSourceProgress = bundle.maxTimeInMilliseconds.isPresent();
+			playAvailable = this.allowedPlayButtonStates.contains(bundle.state);
+			pauseAvailable = this.allowedPauseButtonStates.contains(bundle.state);
+			stopAvailable = this.allowedStopButtonStates.contains(bundle.state);
+			showLoading = bundle.state == State.PREPARING;
+			sourceInfo = Optional.of(bundle.playerSource.getSourceInfo());
+			currentTimeText = bundle.maxTimeInMilliseconds.isPresent() ? String.valueOf(bundle.currentTimeInMilliseconds) : currentTimeText;
+			totalTimeText = bundle.maxTimeInMilliseconds.transform(String::valueOf).or(totalTimeText);
+		}
 
-		if (viewData.progressVisible) {
+		this.view.enablePlayControls(playAvailable, pauseAvailable, stopAvailable);
+		this.view.showTime(currentTimeText, totalTimeText);
+		this.view.setProgress(currentTimeInMilliseconds, totalTimeInMilliseconds);
+
+		if (showSourceProgress) {
 			this.view.showSourceProgress();
 		} else {
 			this.view.hideSourceProgress();
 		}
 
-		if (viewData.repeat) {
+		if (repeat) {
 			this.view.setRepeat();
 		} else {
 			this.view.setDoNotRepeat();
 		}
 
-		if (viewData.loading) {
+		if (showLoading) {
 			this.view.showLoadingIndicator();
 		} else {
 			this.view.hideLoadingIndicator();
 		}
 
-		this.view.displayCurrentSource(bundle.playerSource.getSourceInfo());
-		this.view.display(viewData);
+		if (sourceInfo.isPresent()) {
+			this.view.displayCurrentSource(sourceInfo.get());
+		} else {
+			this.view.doNotDisplayCurrentSource();
+		}
 	}
 
 }

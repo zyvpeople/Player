@@ -115,11 +115,10 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	@Override
 	public void onStart() {
 		super.onStart();
-		this.presenter = new PlayerPresenter<Song>(
-				this.mListener.getModel(),
-				new ExamplePlayerExceptionMessageProvider());
-		this.presenter.onInit(this);
+		this.presenter = new PlayerPresenter<Song>(this.mListener.getModel(), new ExamplePlayerExceptionMessageProvider(), true);
+		this.presenter.setView(this);
 		this.presenter.onSetSource(new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song));
+		this.presenter.onCreated();
 		this.presenter.onAppear();
 	}
 
@@ -127,6 +126,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	public void onStop() {
 		this.presenter.onDisappear();
 		this.presenter.onDestroy();
+		this.presenter.setView(null);
 		super.onStop();
 	}
 
@@ -196,7 +196,8 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	}
 
 	@Override
-	public void display(ViewData<Song> viewData) {
+	public void doNotDisplayCurrentSource() {
+		this.title.setText("");
 	}
 
 	//endregion

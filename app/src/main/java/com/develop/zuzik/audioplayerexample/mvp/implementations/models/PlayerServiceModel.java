@@ -4,11 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
@@ -23,21 +21,21 @@ import rx.subjects.PublishSubject;
  * User: zuzik
  * Date: 6/4/16
  */
+//FIXME:implement
 public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
-	private boolean repeat;
 	private final Context context;
 	private PlaybackState<SourceInfo> playbackState;
 
 	public PlayerServiceModel(Context context, PlayerSource<SourceInfo> source) {
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.playbackState = new PlaybackState<>(State.NONE, 0, Optional.absent(), this.repeat, source);
+//		this.playbackState = new PlaybackState<>(State.NONE, 0, Optional.absent(), this.repeat, source);
 	}
 
 	@Override
-	public void initSource(PlayerSource<SourceInfo> source) {
+	public void initWithSource(PlayerSource<SourceInfo> source) {
 
 	}
 
@@ -68,8 +66,9 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	@Override
-	public PlayerModelState<SourceInfo> getState() {
-		return new PlayerModelState<>(this.playbackState, this.repeat);
+	public Optional<PlaybackState<SourceInfo>> getState() {
+		return Optional.absent();
+//		return new PlayerModelState<>(this.playbackState, this.repeat);
 	}
 
 	@Override
@@ -104,13 +103,13 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 
 	@Override
 	public void repeat() {
-		this.repeat = true;
+//		this.repeat = true;
 		this.context.startService(PlaybackServiceIntentFactory.createRepeat(this.context));
 	}
 
 	@Override
 	public void doNotRepeat() {
-		this.repeat = false;
+//		this.repeat = false;
 		this.context.startService(PlaybackServiceIntentFactory.createDoNotRepeat(this.context));
 	}
 
