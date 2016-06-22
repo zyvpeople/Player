@@ -2,7 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.playback.MediaPlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.MediaPlayerState;
 
 /**
  * User: zuzik

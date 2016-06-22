@@ -11,7 +11,15 @@ import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
  */
 public interface PlayerStateContext<SourceInfo> {
 
-	void setPlayerState(PlayerState state);
+	MediaPlayer getMediaPlayer();
+
+	PlayerSource<SourceInfo> getPlayerSource();
+
+	boolean isRepeat();
+
+	Context context();
+
+	void setPlayerState(PlayerState playerState);
 
 	void onUpdate();
 
@@ -21,11 +29,4 @@ public interface PlayerStateContext<SourceInfo> {
 
 	void abandonAudioFocus();
 
-	MediaPlayer getMediaPlayer();
-
-	PlayerSource<SourceInfo> getPlayerSource();
-
-	boolean isRepeat();
-
-	Context context();
 }

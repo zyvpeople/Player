@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.Playback;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.State;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlayback;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
@@ -24,7 +24,7 @@ import java.util.List;
 public class MultiplePlayback<SourceInfo> {
 
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
-	private Optional<Playback<SourceInfo>> currentPlayback;
+	private Optional<LocalPlayback<SourceInfo>> currentPlayback;
 
 	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
 	private final PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory;
@@ -41,10 +41,10 @@ public class MultiplePlayback<SourceInfo> {
 		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
 		this.currentPlayback = playerSources.isEmpty()
 				? Optional.absent()
-				: Optional.of(new Playback<SourceInfo>(this.context, playerSources.get(0), new InMemoryPlaybackSettings()));
+				: Optional.of(new LocalPlayback<SourceInfo>(this.context, new InMemoryPlaybackSettings(), playerSources.get(0)));
 		this.multiplePlaybackState = new MultiplePlaybackState<SourceInfo>(
 				playerSources,
-				this.currentPlayback.transform(Playback::getPlaybackState),
+				this.currentPlayback.transform(LocalPlayback::getPlaybackState),
 				false,
 				false);
 	}
@@ -59,7 +59,7 @@ public class MultiplePlayback<SourceInfo> {
 		return this.multiplePlaybackState;
 	}
 
-	private void currentPlayback(ParamAction<Playback<SourceInfo>> action) {
+	private void currentPlayback(ParamAction<LocalPlayback<SourceInfo>> action) {
 		if (this.currentPlayback.isPresent()) {
 			action.execute(this.currentPlayback.get());
 		}
@@ -67,12 +67,12 @@ public class MultiplePlayback<SourceInfo> {
 
 	public void repeatSingle() {
 		this.multiplePlaybackState = this.multiplePlaybackState.withRepeatSingle(true);
-		currentPlayback(Playback::repeat);
+		currentPlayback(LocalPlayback::repeat);
 	}
 
 	public void doNotRepeatSingle() {
 		this.multiplePlaybackState = this.multiplePlaybackState.withRepeatSingle(false);
-		currentPlayback(Playback::doNotRepeat);
+		currentPlayback(LocalPlayback::doNotRepeat);
 	}
 
 	public void shuffle() {
@@ -96,15 +96,15 @@ public class MultiplePlayback<SourceInfo> {
 	}
 
 	public void play() {
-		currentPlayback(Playback::play);
+		currentPlayback(LocalPlayback::play);
 	}
 
 	public void pause() {
-		currentPlayback(Playback::pause);
+		currentPlayback(LocalPlayback::pause);
 	}
 
 	public void stop() {
-		currentPlayback(Playback::stop);
+		currentPlayback(LocalPlayback::stop);
 	}
 
 	public void seekTo(int positionInMilliseconds) {
@@ -127,13 +127,13 @@ public class MultiplePlayback<SourceInfo> {
 			return;
 		}
 		int indexOfPlayerSource = this.multiplePlaybackState.playerSources.indexOf(playerSource);
-		Optional<Playback<SourceInfo>> newPlayback = indexOfPlayerSource != -1
-				? Optional.of(new Playback<SourceInfo>(this.context, this.multiplePlaybackState.playerSources.get(indexOfPlayerSource), new InMemoryPlaybackSettings()))
+		Optional<LocalPlayback<SourceInfo>> newPlayback = indexOfPlayerSource != -1
+				? Optional.of(new LocalPlayback<SourceInfo>(this.context, new InMemoryPlaybackSettings(), this.multiplePlaybackState.playerSources.get(indexOfPlayerSource)))
 				: Optional.absent();
 		switchFromOldToNewPlayback(this.currentPlayback, newPlayback);
 	}
 
-	private void switchFromOldToNewPlayback(Optional<Playback<SourceInfo>> oldPlayback, Optional<Playback<SourceInfo>> newPlayback) {
+	private void switchFromOldToNewPlayback(Optional<LocalPlayback<SourceInfo>> oldPlayback, Optional<LocalPlayback<SourceInfo>> newPlayback) {
 		if (oldPlayback.isPresent() && newPlayback.isPresent()) {
 			releasePlayback(oldPlayback.get());
 			this.currentPlayback = Optional.absent();
@@ -143,10 +143,10 @@ public class MultiplePlayback<SourceInfo> {
 			initPlayback(newPlayback.get(), true);
 		}
 		this.multiplePlaybackState = this.multiplePlaybackState.withCurrentPlaybackState(
-				this.currentPlayback.transform(Playback::getPlaybackState));
+				this.currentPlayback.transform(LocalPlayback::getPlaybackState));
 	}
 
-	private void initPlayback(Playback<SourceInfo> playback, boolean play) {
+	private void initPlayback(LocalPlayback<SourceInfo> playback, boolean play) {
 		playback.setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onUpdate() {
@@ -178,31 +178,31 @@ public class MultiplePlayback<SourceInfo> {
 		}
 	}
 
-	private void releasePlayback(Playback<SourceInfo> playback) {
+	private void releasePlayback(LocalPlayback<SourceInfo> playback) {
 		playback.release();
 		playback.setPlaybackListener(null);
 	}
 
-	private void nextPlayback(ParamAction<Optional<Playback<SourceInfo>>> action) {
+	private void nextPlayback(ParamAction<Optional<LocalPlayback<SourceInfo>>> action) {
 		currentPlayback(currentPlayback -> {
 			Optional<PlayerSource<SourceInfo>> playerInitializer = this.nextPlayerSourceStrategyFactory
 					.create(this.multiplePlaybackState.shuffle)
 					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerSource());
 			if (playerInitializer.isPresent()) {
-				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get(), new InMemoryPlaybackSettings())));
+				action.execute(Optional.of(new LocalPlayback<>(this.context, new InMemoryPlaybackSettings(), playerInitializer.get())));
 			} else {
 				action.execute(Optional.absent());
 			}
 		});
 	}
 
-	private void previousPlayback(ParamAction<Optional<Playback<SourceInfo>>> action) {
+	private void previousPlayback(ParamAction<Optional<LocalPlayback<SourceInfo>>> action) {
 		currentPlayback(currentPlayback -> {
 			Optional<PlayerSource<SourceInfo>> playerInitializer = this.previousPlayerSourceStrategyFactory
 					.create(this.multiplePlaybackState.shuffle)
 					.determine(this.multiplePlaybackState.playerSources, currentPlayback.getPlayerSource());
 			if (playerInitializer.isPresent()) {
-				action.execute(Optional.of(new Playback<>(this.context, playerInitializer.get(), new InMemoryPlaybackSettings())));
+				action.execute(Optional.of(new LocalPlayback<>(this.context, new InMemoryPlaybackSettings(), playerInitializer.get())));
 			} else {
 				action.execute(Optional.absent());
 			}
@@ -214,7 +214,7 @@ public class MultiplePlayback<SourceInfo> {
 	//region Fake
 
 	public void simulateError() {
-		currentPlayback(Playback::simulateError);
+		currentPlayback(LocalPlayback::simulateError);
 	}
 
 	//endregion

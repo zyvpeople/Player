@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.playback;
+package com.develop.zuzik.audioplayerexample.player.playback.local;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -9,7 +9,13 @@ import android.util.Log;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.playback.settings.PlaybackSettings;
+import com.develop.zuzik.audioplayerexample.player.player_states.MediaPlayerState;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
+import com.develop.zuzik.audioplayerexample.player.playback.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
@@ -22,43 +28,84 @@ import com.fernandocejas.arrow.optional.Optional;
  * User: zuzik
  * Date: 5/29/16
  */
-public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
+public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerStateContext<SourceInfo> {
 
-	private PlaybackState<SourceInfo> playbackState;
-	private MediaPlayer mediaPlayer;
-	private PlayerState playerState = new NullPlayerState();
-	private PlaybackListener playbackListener = new NullPlaybackListener();
 	private final Context context;
-	private final AudioManager audioManager;
 	private final PlaybackSettings settings;
+	private final AudioManager audioManager;
+	private PlaybackState<SourceInfo> playbackState;
+	private PlaybackListener playbackListener = new NullPlaybackListener();
+	private PlayerState playerState = new NullPlayerState();
+	private MediaPlayer mediaPlayer;
 
-	public Playback(Context context, PlayerSource<SourceInfo> playerSource, PlaybackSettings settings) {
+	public LocalPlayback(Context context, PlaybackSettings settings, PlayerSource<SourceInfo> playerSource) {
+		this.context = new ContextWrapper(context).getApplicationContext();
 		this.settings = settings;
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackState = new PlaybackState<SourceInfo>(State.NONE, 0, Optional.absent(), this.settings.isRepeat(), playerSource);
 	}
 
-	//region Getters/Setters
+	//region Playback
 
-	public void setPlaybackListener(PlaybackListener playbackListener) {
-		this.playbackListener = playbackListener != null
-				? playbackListener
-				: new NullPlaybackListener();
-	}
-
+	@Override
 	public PlaybackState<SourceInfo> getPlaybackState() {
 		return this.playbackState;
 	}
 
+	@Override
+	public void setPlaybackListener(PlaybackListener playbackListener) {
+		this.playbackListener = playbackListener != null ? playbackListener : new NullPlaybackListener();
+	}
+
+	@Override
+	public void init() {
+		this.mediaPlayer = new MediaPlayer();
+		setPlayerState(new IdlePlayerState(this));
+	}
+
+	@Override
+	public void release() {
+		this.playerState.unapply();
+		this.playerState.release();
+		abandonAudioFocus();
+		this.mediaPlayer = null;
+	}
+
+	@Override
+	public void play() {
+		this.playerState.play();
+	}
+
+	@Override
+	public void pause() {
+		this.playerState.pause();
+	}
+
+	@Override
+	public void stop() {
+		this.playerState.stop();
+	}
+
+	@Override
 	public void repeat() {
 		this.settings.repeat();
 		repeat(true);
 	}
 
+	@Override
 	public void doNotRepeat() {
 		this.settings.doNotRepeat();
 		repeat(false);
+	}
+
+	@Override
+	public void seekTo(int positionInMilliseconds) {
+		this.playerState.seekTo(positionInMilliseconds);
+	}
+
+	@Override
+	public void simulateError() {
+		this.playerState.simulateError(new FakeMediaPlayerException());
 	}
 
 	private void repeat(boolean repeat) {
@@ -68,39 +115,27 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 
 	//endregion
 
-	//region Play
-
-	public void init() {
-		this.mediaPlayer = new MediaPlayer();
-		setPlayerState(new IdlePlayerState(this));
-	}
-
-	public void release() {
-		this.playerState.unapply();
-		this.playerState.release();
-		abandonAudioFocus();
-		this.mediaPlayer = null;
-	}
-
-	public void play() {
-		this.playerState.play();
-	}
-
-	public void pause() {
-		this.playerState.pause();
-	}
-
-	public void stop() {
-		this.playerState.stop();
-	}
-
-	public void seekTo(int positionInMilliseconds) {
-		this.playerState.seekTo(positionInMilliseconds);
-	}
-
-	//endregion
-
 	//region PlayerStateContainer
+
+	@Override
+	public MediaPlayer getMediaPlayer() {
+		return this.mediaPlayer;
+	}
+
+	@Override
+	public PlayerSource<SourceInfo> getPlayerSource() {
+		return this.playbackState.playerSource;
+	}
+
+	@Override
+	public boolean isRepeat() {
+		return this.playbackState.repeat;
+	}
+
+	@Override
+	public Context context() {
+		return this.context;
+	}
 
 	@Override
 	public void setPlayerState(PlayerState playerState) {
@@ -113,10 +148,6 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 		} catch (IllegalStateException | PlayerInitializeException | FailRequestAudioFocusException e) {
 			onError(e);
 		}
-	}
-
-	private void logState(PlayerState oldState, PlayerState newState) {
-		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
 	}
 
 	@Override
@@ -156,35 +187,9 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 		this.audioManager.abandonAudioFocus(this.onAudioFocusChangeListener);
 	}
 
-	@Override
-	public MediaPlayer getMediaPlayer() {
-		return this.mediaPlayer;
+	private void logState(PlayerState oldState, PlayerState newState) {
+		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
 	}
-
-	@Override
-	public PlayerSource<SourceInfo> getPlayerSource() {
-		return this.playbackState.playerSource;
-	}
-
-	@Override
-	public boolean isRepeat() {
-		return this.playbackState.repeat;
-	}
-
-	@Override
-	public Context context() {
-		return this.context;
-	}
-
-	//endregion
-
-	//region Fake
-
-	public void simulateError() {
-		this.playerState.simulateError(new FakeMediaPlayerException());
-	}
-
-	//endregion
 
 	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = focusChange -> {
 		if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
@@ -198,4 +203,6 @@ public class Playback<SourceInfo> implements PlayerStateContext<SourceInfo> {
 			//TODO: in this place we should made volume level lower
 		}
 	};
+
+	//endregion
 }

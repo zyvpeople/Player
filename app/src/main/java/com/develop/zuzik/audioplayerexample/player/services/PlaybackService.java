@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.playback.Playback;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlayback;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
@@ -21,7 +21,7 @@ import com.fernandocejas.arrow.optional.Optional;
 //FIXME:is not implemented
 public class PlaybackService extends Service {
 
-	private Optional<Playback> playback = Optional.absent();
+	private Optional<LocalPlayback> playback = Optional.absent();
 
 	@Override
 	public void onCreate() {
@@ -42,17 +42,17 @@ public class PlaybackService extends Service {
 				initPlayback(value);
 			}
 		});
-		PlaybackServiceIntentFactory.parsePlay(intent, () -> getPlayback(Playback::play));
-		PlaybackServiceIntentFactory.parsePause(intent, () -> getPlayback(Playback::pause));
-		PlaybackServiceIntentFactory.parseStop(intent, () -> getPlayback(Playback::stop));
+		PlaybackServiceIntentFactory.parsePlay(intent, () -> getPlayback(LocalPlayback::play));
+		PlaybackServiceIntentFactory.parsePause(intent, () -> getPlayback(LocalPlayback::pause));
+		PlaybackServiceIntentFactory.parseStop(intent, () -> getPlayback(LocalPlayback::stop));
 		PlaybackServiceIntentFactory.parseSeekTo(intent, value -> getPlayback(playback -> playback.seekTo(value)));
-		PlaybackServiceIntentFactory.parseRepeat(intent, () -> getPlayback(Playback::repeat));
-		PlaybackServiceIntentFactory.parseDoNotRepeat(intent, () -> getPlayback(Playback::doNotRepeat));
+		PlaybackServiceIntentFactory.parseRepeat(intent, () -> getPlayback(LocalPlayback::repeat));
+		PlaybackServiceIntentFactory.parseDoNotRepeat(intent, () -> getPlayback(LocalPlayback::doNotRepeat));
 		return START_STICKY;
 	}
 
 	private void initPlayback(PlayerSource value) {
-		this.playback = Optional.of(new Playback(this, value, new InMemoryPlaybackSettings()));
+		this.playback = Optional.of(new LocalPlayback(this, new InMemoryPlaybackSettings(), value));
 		this.playback.get().setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onUpdate() {
@@ -79,11 +79,11 @@ public class PlaybackService extends Service {
 
 	@Override
 	public void onDestroy() {
-		getPlayback(Playback::release);
+		getPlayback(LocalPlayback::release);
 		super.onDestroy();
 	}
 
-	private void getPlayback(ParamAction<Playback> success) {
+	private void getPlayback(ParamAction<LocalPlayback> success) {
 		if (this.playback.isPresent()) {
 			success.execute(this.playback.get());
 		}

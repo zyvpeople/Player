@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.playback.Playback;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.settings.PlaybackSettings;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
@@ -26,10 +27,12 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
+	private final PlaybackFactory<SourceInfo> playbackFactory;
 
-	public PlayerModel(Context context, PlaybackSettings playbackSettings) {
+	public PlayerModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
+		this.playbackFactory = playbackFactory;
 	}
 
 	@Override
@@ -45,7 +48,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	private void initPlayback(PlayerSource<SourceInfo> source) {
-		this.playback = Optional.of(new Playback<SourceInfo>(this.context, source, this.playbackSettings));
+		this.playback = Optional.of(this.playbackFactory.create(this.context, this.playbackSettings, source));
 		this.playback.get().init();
 		this.playback.get().setPlaybackListener(new PlaybackListener() {
 			@Override

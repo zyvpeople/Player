@@ -2,7 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.services;
 
 import android.content.Intent;
 
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 
 import java.io.Serializable;

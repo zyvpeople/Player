@@ -1,5 +1,6 @@
-package com.develop.zuzik.audioplayerexample.player.playback;
+package com.develop.zuzik.audioplayerexample.player.player_states;
 
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
