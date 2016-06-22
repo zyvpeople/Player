@@ -18,9 +18,9 @@ public interface Player {
 
 		Optional<PlaybackState<SourceInfo>> getState();
 
-		Observable<Void> stateChangedObservable();
+		Observable<PlaybackState<SourceInfo>> updateObservable();
 
-		Observable<Throwable> errorPlayingObservable();
+		Observable<Throwable> errorObservable();
 
 		void play();
 

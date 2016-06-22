@@ -8,6 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlayback;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
@@ -54,8 +55,9 @@ public class PlaybackService extends Service {
 	private void initPlayback(PlayerSource value) {
 		this.playback = Optional.of(new LocalPlayback(this, new InMemoryPlaybackSettings(), value));
 		this.playback.get().setPlaybackListener(new PlaybackListener() {
+
 			@Override
-			public void onUpdate() {
+			public void onUpdate(PlaybackState playbackState) {
 				LocalBroadcastManager
 						.getInstance(getApplicationContext())
 						.sendBroadcast(PlaybackServiceBroadcastIntentFactory.createPlaybackState(playback.get().getPlaybackState()));

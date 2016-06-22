@@ -9,7 +9,6 @@ import android.util.Log;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.player_states.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
@@ -18,6 +17,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.playback.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
+import com.develop.zuzik.audioplayerexample.player.player_states.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
@@ -34,7 +34,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	private final PlaybackSettings settings;
 	private final AudioManager audioManager;
 	private PlaybackState<SourceInfo> playbackState;
-	private PlaybackListener playbackListener = new NullPlaybackListener();
+	private PlaybackListener<SourceInfo> playbackListener = new NullPlaybackListener<>();
 	private PlayerState playerState = new NullPlayerState();
 	private MediaPlayer mediaPlayer;
 
@@ -53,8 +53,8 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	}
 
 	@Override
-	public void setPlaybackListener(PlaybackListener playbackListener) {
-		this.playbackListener = playbackListener != null ? playbackListener : new NullPlaybackListener();
+	public void setPlaybackListener(PlaybackListener<SourceInfo> playbackListener) {
+		this.playbackListener = playbackListener != null ? playbackListener : new NullPlaybackListener<>();
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 				mediaPlayerState.maxTimeInMilliseconds,
 				isRepeat(),
 				this.playbackState.playerSource);
-		this.playbackListener.onUpdate();
+		this.playbackListener.onUpdate(this.playbackState);
 	}
 
 	@Override

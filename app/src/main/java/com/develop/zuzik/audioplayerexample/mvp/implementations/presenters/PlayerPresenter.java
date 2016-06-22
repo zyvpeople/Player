@@ -59,9 +59,10 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	@Override
 	public void onAppear() {
 		updateView();
-		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
-				.subscribe(aVoid -> updateView());
-		this.errorPlayingSubscription = this.model.errorPlayingObservable()
+		this.playbackStateChangedSubscription = this.model.updateObservable()
+				.map(Optional::of)
+				.subscribe(this::updateView);
+		this.errorPlayingSubscription = this.model.errorObservable()
 				.map(this.exceptionToMessageTransformation::transform)
 				.subscribe(this.view::showError);
 	}

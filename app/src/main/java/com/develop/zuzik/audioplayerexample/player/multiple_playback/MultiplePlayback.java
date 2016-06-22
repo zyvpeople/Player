@@ -148,8 +148,9 @@ public class MultiplePlayback<SourceInfo> {
 
 	private void initPlayback(LocalPlayback<SourceInfo> playback, boolean play) {
 		playback.setPlaybackListener(new PlaybackListener() {
+
 			@Override
-			public void onUpdate() {
+			public void onUpdate(PlaybackState playbackState) {
 				PlaybackState<SourceInfo> bundle = playback.getPlaybackState();
 				multiplePlaybackState = multiplePlaybackState.withCurrentPlaybackState(Optional.of(bundle));
 				listener.onUpdate();

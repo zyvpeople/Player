@@ -22,12 +22,12 @@ import rx.subjects.PublishSubject;
  */
 public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
-	private Optional<Playback<SourceInfo>> playback = Optional.absent();
-	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
-	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
+	private final PublishSubject<PlaybackState<SourceInfo>> updatePublishSubject = PublishSubject.create();
+	private final PublishSubject<Throwable> errorPublishSubject = PublishSubject.create();
+	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 
 	public PlayerModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
@@ -47,22 +47,6 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		}
 	}
 
-	private void initPlayback(PlayerSource<SourceInfo> source) {
-		this.playback = Optional.of(this.playbackFactory.create(this.context, this.playbackSettings, source));
-		this.playback.get().init();
-		this.playback.get().setPlaybackListener(new PlaybackListener() {
-			@Override
-			public void onUpdate() {
-				playbackStateChangedPublishSubject.onNext(null);
-			}
-
-			@Override
-			public void onError(Throwable throwable) {
-				errorPlayingPublishSubject.onNext(throwable);
-			}
-		});
-	}
-
 	@Override
 	public void destroy() {
 		getPlayback(value -> {
@@ -71,24 +55,19 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		});
 	}
 
-	private void releasePlayback(Playback<SourceInfo> playback) {
-		playback.setPlaybackListener(null);
-		playback.release();
-	}
-
 	@Override
 	public Optional<PlaybackState<SourceInfo>> getState() {
 		return this.playback.transform(Playback::getPlaybackState);
 	}
 
 	@Override
-	public Observable<Void> stateChangedObservable() {
-		return this.playbackStateChangedPublishSubject.asObservable();
+	public Observable<PlaybackState<SourceInfo>> updateObservable() {
+		return this.updatePublishSubject.asObservable();
 	}
 
 	@Override
-	public Observable<Throwable> errorPlayingObservable() {
-		return this.errorPlayingPublishSubject.asObservable();
+	public Observable<Throwable> errorObservable() {
+		return this.errorPublishSubject.asObservable();
 	}
 
 	@Override
@@ -130,5 +109,26 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		if (this.playback.isPresent()) {
 			success.execute(this.playback.get());
 		}
+	}
+
+	private void initPlayback(PlayerSource<SourceInfo> source) {
+		this.playback = Optional.of(this.playbackFactory.create(this.context, this.playbackSettings, source));
+		this.playback.get().init();
+		this.playback.get().setPlaybackListener(new PlaybackListener() {
+			@Override
+			public void onUpdate(PlaybackState playbackState) {
+				updatePublishSubject.onNext(playbackState);
+			}
+
+			@Override
+			public void onError(Throwable throwable) {
+				errorPublishSubject.onNext(throwable);
+			}
+		});
+	}
+
+	private void releasePlayback(Playback<SourceInfo> playback) {
+		playback.setPlaybackListener(null);
+		playback.release();
 	}
 }

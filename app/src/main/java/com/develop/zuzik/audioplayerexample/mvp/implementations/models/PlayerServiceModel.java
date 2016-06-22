@@ -23,7 +23,7 @@ import rx.subjects.PublishSubject;
 //FIXME:implement
 public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> {
 
-	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
+	private final PublishSubject<PlaybackState<SourceInfo>> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private final Context context;
 	private PlaybackState<SourceInfo> playbackState;
@@ -71,12 +71,12 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	@Override
-	public Observable<Void> stateChangedObservable() {
+	public Observable<PlaybackState<SourceInfo>> updateObservable() {
 		return this.playbackStateChangedPublishSubject.asObservable();
 	}
 
 	@Override
-	public Observable<Throwable> errorPlayingObservable() {
+	public Observable<Throwable> errorObservable() {
 		return this.errorPlayingPublishSubject.asObservable();
 	}
 
