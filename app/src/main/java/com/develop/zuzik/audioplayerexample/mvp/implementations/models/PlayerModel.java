@@ -36,7 +36,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	@Override
-	public void initWithSource(PlayerSource<SourceInfo> source) {
+	public void setSource(PlayerSource<SourceInfo> source) {
 		if (this.playback.isPresent()) {
 			if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
 				releasePlayback(this.playback.get());
@@ -48,7 +48,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	@Override
-	public void destroy() {
+	public void clear() {
 		getPlayback(value -> {
 			releasePlayback(value);
 			this.playback = Optional.absent();

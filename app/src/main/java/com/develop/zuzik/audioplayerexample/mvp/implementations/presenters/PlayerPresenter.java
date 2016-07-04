@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
+import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.presenter_destroy_strategy.PresenterDestroyStrategy;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.null_objects.NullPlayerView;
@@ -11,30 +12,28 @@ import com.fernandocejas.arrow.optional.Optional;
 import java.util.Arrays;
 import java.util.List;
 
-import rx.Subscription;
+import rx.internal.util.SubscriptionList;
 
 /**
  * User: zuzik
  * Date: 6/4/16
  */
-//TODO: there is a lot of duplication between Player and MultiplePlayer Presenters
 public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo> {
 
 	private final Player.Model<SourceInfo> model;
 	private Player.View<SourceInfo> view = new NullPlayerView<>();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
-	private final boolean destroyModelIfViewDestroyed;
-	private Subscription playbackStateChangedSubscription;
-	private Subscription errorPlayingSubscription;
+	private final PresenterDestroyStrategy destroyStrategy;
+	private final SubscriptionList subscriptions = new SubscriptionList();
 
 	private List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
 	private List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
 	private List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
-	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider, boolean destroyModelIfViewDestroyed) {
+	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider, PresenterDestroyStrategy destroyStrategy) {
 		this.model = model;
 		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
-		this.destroyModelIfViewDestroyed = destroyModelIfViewDestroyed;
+		this.destroyStrategy = destroyStrategy;
 	}
 
 	@Override
@@ -46,36 +45,33 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 
 	@Override
 	public void onCreated() {
-
 	}
 
 	@Override
 	public void onDestroy() {
-		if (this.destroyModelIfViewDestroyed) {
-			this.model.destroy();
-		}
+		this.destroyStrategy.onDestroy(this.model);
 	}
 
 	@Override
 	public void onAppear() {
 		updateView();
-		this.playbackStateChangedSubscription = this.model.updateObservable()
+		this.subscriptions.add(this.model.updateObservable()
 				.map(Optional::of)
-				.subscribe(this::updateView);
-		this.errorPlayingSubscription = this.model.errorObservable()
+				.subscribe(this::updateView));
+		this.subscriptions.add(this.model.errorObservable()
 				.map(this.exceptionToMessageTransformation::transform)
-				.subscribe(this.view::showError);
+				.subscribe(this.view::showError));
 	}
 
 	@Override
 	public void onDisappear() {
-		this.playbackStateChangedSubscription.unsubscribe();
-		this.errorPlayingSubscription.unsubscribe();
+		this.subscriptions.unsubscribe();
+		this.subscriptions.clear();
 	}
 
 	@Override
 	public void onSetSource(PlayerSource<SourceInfo> source) {
-		this.model.initWithSource(source);
+		this.model.setSource(source);
 	}
 
 	@Override

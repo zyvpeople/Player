@@ -34,7 +34,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	@Override
-	public void initWithSource(PlayerSource<SourceInfo> source) {
+	public void setSource(PlayerSource<SourceInfo> source) {
 
 	}
 
@@ -54,7 +54,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 //	}
 
 	@Override
-	public void destroy() {
+	public void clear() {
 //		this.context.stopService(PlaybackService.createForDestroy(this.context));
 		LocalBroadcastManager
 				.getInstance(this.context)

@@ -12,9 +12,9 @@ import rx.Observable;
  */
 public interface Player {
 	interface Model<SourceInfo> {
-		void initWithSource(PlayerSource<SourceInfo> source);
+		void setSource(PlayerSource<SourceInfo> source);
 
-		void destroy();
+		void clear();
 
 		Optional<PlaybackState<SourceInfo>> getState();
 
