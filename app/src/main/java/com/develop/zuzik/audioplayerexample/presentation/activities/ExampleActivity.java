@@ -1,7 +1,14 @@
 package com.develop.zuzik.audioplayerexample.presentation.activities;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.develop.zuzik.audioplayerexample.R;
@@ -62,6 +69,42 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 		});
 
 		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
+
+		this.model.updateObservable().subscribe(state -> {
+			Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
+			Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
+			Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
+
+			NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+					.setSmallIcon(R.mipmap.ic_launcher)
+					.setContentTitle(state.playerSource.getSourceInfo().artist)
+					.setContentText(state.playerSource.getSourceInfo().name)
+					.setProgress(state.maxTimeInMilliseconds.or(100), state.currentTimeInMilliseconds, false)
+					.addAction(0, "Play", PendingIntent.getBroadcast(getApplicationContext(), 100, playIntent, 0))
+					.addAction(0, "Pause", PendingIntent.getBroadcast(getApplicationContext(), 100, pauseIntent, 0))
+					.addAction(0, "Stop", PendingIntent.getBroadcast(getApplicationContext(), 100, stopIntent, 0));
+			((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+					.notify(100, builder.build());
+		});
+
+		registerReceiver(new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				model.play();
+			}
+		}, new IntentFilter("com.develop.zuzik.audioplayerexample.PLAY"));
+		registerReceiver(new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				model.pause();
+			}
+		}, new IntentFilter("com.develop.zuzik.audioplayerexample.PAUSE"));
+		registerReceiver(new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				model.stop();
+			}
+		}, new IntentFilter("com.develop.zuzik.audioplayerexample.STOP"));
 	}
 
 	@Override
