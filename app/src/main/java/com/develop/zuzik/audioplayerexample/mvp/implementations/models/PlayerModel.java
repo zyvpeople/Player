@@ -13,8 +13,8 @@ import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: zuzik
@@ -25,15 +25,15 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final PublishSubject<PlaybackState<SourceInfo>> updatePublishSubject = PublishSubject.create();
-	private final PublishSubject<Throwable> errorPublishSubject = PublishSubject.create();
-	private Optional<Playback<SourceInfo>> playback = Optional.absent();
+	private final List<Listener<SourceInfo>> listeners = new ArrayList();
 
 	public PlayerModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
 	}
+
+	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 
 	@Override
 	public void setSource(PlayerSource<SourceInfo> source) {
@@ -61,13 +61,15 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	@Override
-	public Observable<PlaybackState<SourceInfo>> updateObservable() {
-		return this.updatePublishSubject.asObservable();
+	public void addListener(Listener<SourceInfo> listener) {
+		if (!this.listeners.contains(listener)) {
+			this.listeners.add(listener);
+		}
 	}
 
 	@Override
-	public Observable<Throwable> errorObservable() {
-		return this.errorPublishSubject.asObservable();
+	public void removeListener(Listener<SourceInfo> listener) {
+		this.listeners.remove(listener);
 	}
 
 	@Override
@@ -117,12 +119,16 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		this.playback.get().setPlaybackListener(new PlaybackListener<SourceInfo>() {
 			@Override
 			public void onUpdate(PlaybackState<SourceInfo> playbackState) {
-				updatePublishSubject.onNext(playbackState);
+				for (Listener<SourceInfo> listener : listeners) {
+					listener.onUpdate(playbackState);
+				}
 			}
 
 			@Override
 			public void onError(Throwable throwable) {
-				errorPublishSubject.onNext(throwable);
+				for (Listener<SourceInfo> listener : listeners) {
+					listener.onError(throwable);
+				}
 			}
 		});
 	}

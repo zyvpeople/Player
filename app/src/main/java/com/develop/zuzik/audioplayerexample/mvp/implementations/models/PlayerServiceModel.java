@@ -13,9 +13,6 @@ import com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceBroad
 import com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory;
 import com.fernandocejas.arrow.optional.Optional;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 /**
  * User: zuzik
  * Date: 6/4/16
@@ -23,8 +20,6 @@ import rx.subjects.PublishSubject;
 //FIXME:implement
 public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> {
 
-	private final PublishSubject<PlaybackState<SourceInfo>> playbackStateChangedPublishSubject = PublishSubject.create();
-	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private final Context context;
 	private PlaybackState<SourceInfo> playbackState;
 
@@ -71,13 +66,13 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	@Override
-	public Observable<PlaybackState<SourceInfo>> updateObservable() {
-		return this.playbackStateChangedPublishSubject.asObservable();
+	public void addListener(Listener<SourceInfo> listener) {
+
 	}
 
 	@Override
-	public Observable<Throwable> errorObservable() {
-		return this.errorPlayingPublishSubject.asObservable();
+	public void removeListener(Listener<SourceInfo> listener) {
+
 	}
 
 	@Override
@@ -123,7 +118,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 			PlaybackServiceBroadcastIntentFactory
 					.parsePlaybackState(intent, value -> {
 						playbackState = value;
-						playbackStateChangedPublishSubject.onNext(null);
+//						playbackStateChangedPublishSubject.onNext(null);
 					});
 		}
 	};
@@ -131,8 +126,8 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private final BroadcastReceiver errorReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			PlaybackServiceBroadcastIntentFactory
-					.parseError(intent, errorPlayingPublishSubject::onNext);
+//			PlaybackServiceBroadcastIntentFactory
+//					.parseError(intent, errorPlayingPublishSubject::onNext);
 		}
 	};
 }

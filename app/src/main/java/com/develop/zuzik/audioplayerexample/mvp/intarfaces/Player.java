@@ -4,8 +4,6 @@ import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackS
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
-import rx.Observable;
-
 /**
  * User: zuzik
  * Date: 6/4/16
@@ -18,9 +16,9 @@ public interface Player {
 
 		Optional<PlaybackState<SourceInfo>> getState();
 
-		Observable<PlaybackState<SourceInfo>> updateObservable();
+		void addListener(Listener<SourceInfo> listener);
 
-		Observable<Throwable> errorObservable();
+		void removeListener(Listener<SourceInfo> listener);
 
 		void play();
 
@@ -35,6 +33,12 @@ public interface Player {
 		void doNotRepeat();
 
 		void simulateError();
+
+		interface Listener<SourceInfo> {
+			void onUpdate(PlaybackState<SourceInfo> state);
+
+			void onError(Throwable error);
+		}
 	}
 
 	interface View<SourceInfo> {

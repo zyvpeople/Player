@@ -15,6 +15,7 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.presentation.fragments.ExampleFragment;
@@ -24,7 +25,7 @@ import rx.Subscription;
 public class ExampleActivity extends AppCompatActivity implements ExampleFragment.OnFragmentInteractionListener {
 
 	private static PlayerModel<Song> model;
-	Subscription subscription;
+	Player.Model.Listener<Song> listener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,22 +76,31 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 			this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
 		}
 
-		this.subscription = this.model.updateObservable().subscribe(state -> {
-			Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
-			Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
-			Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
+		listener = new Player.Model.Listener<Song>() {
+			@Override
+			public void onUpdate(PlaybackState<Song> state) {
+				Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
+				Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
+				Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
 
-			NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
-					.setSmallIcon(R.mipmap.ic_launcher)
-					.setContentTitle(state.playerSource.getSourceInfo().artist)
-					.setContentText(state.playerSource.getSourceInfo().name)
-					.setProgress(state.maxTimeInMilliseconds.or(100), state.currentTimeInMilliseconds, false)
-					.addAction(0, "Play", PendingIntent.getBroadcast(getApplicationContext(), 100, playIntent, 0))
-					.addAction(0, "Pause", PendingIntent.getBroadcast(getApplicationContext(), 100, pauseIntent, 0))
-					.addAction(0, "Stop", PendingIntent.getBroadcast(getApplicationContext(), 100, stopIntent, 0));
-			((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
-					.notify(100, builder.build());
-		});
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+						.setSmallIcon(R.mipmap.ic_launcher)
+						.setContentTitle(state.playerSource.getSourceInfo().artist)
+						.setContentText(state.playerSource.getSourceInfo().name)
+						.setProgress(state.maxTimeInMilliseconds.or(100), state.currentTimeInMilliseconds, false)
+						.addAction(0, "Play", PendingIntent.getBroadcast(getApplicationContext(), 100, playIntent, 0))
+						.addAction(0, "Pause", PendingIntent.getBroadcast(getApplicationContext(), 100, pauseIntent, 0))
+						.addAction(0, "Stop", PendingIntent.getBroadcast(getApplicationContext(), 100, stopIntent, 0));
+				((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+						.notify(100, builder.build());
+			}
+
+			@Override
+			public void onError(Throwable error) {
+
+			}
+		};
+		this.model.addListener(listener);
 
 		registerReceiver(new BroadcastReceiver() {
 			@Override
@@ -114,7 +124,7 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 
 	@Override
 	protected void onDestroy() {
-		this.subscription.unsubscribe();
+		this.model.removeListener(this.listener);
 		super.onDestroy();
 	}
 

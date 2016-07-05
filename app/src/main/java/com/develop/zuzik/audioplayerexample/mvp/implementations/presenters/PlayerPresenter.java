@@ -12,8 +12,6 @@ import com.fernandocejas.arrow.optional.Optional;
 import java.util.Arrays;
 import java.util.List;
 
-import rx.internal.util.SubscriptionList;
-
 /**
  * User: zuzik
  * Date: 6/4/16
@@ -24,7 +22,6 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	private Player.View<SourceInfo> view = new NullPlayerView<>();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private final PresenterDestroyStrategy destroyStrategy;
-	private final SubscriptionList subscriptions = new SubscriptionList();
 
 	private List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
 	private List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
@@ -55,18 +52,12 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	@Override
 	public void onAppear() {
 		updateView();
-		this.subscriptions.add(this.model.updateObservable()
-				.map(Optional::of)
-				.subscribe(this::updateView));
-		this.subscriptions.add(this.model.errorObservable()
-				.map(this.exceptionToMessageTransformation::transform)
-				.subscribe(this.view::showError));
+		this.model.addListener(this.modelListener);
 	}
 
 	@Override
 	public void onDisappear() {
-		this.subscriptions.unsubscribe();
-		this.subscriptions.clear();
+		this.model.removeListener(this.modelListener);
 	}
 
 	@Override
@@ -171,4 +162,15 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 		}
 	}
 
+	private final Player.Model.Listener<SourceInfo> modelListener = new Player.Model.Listener<SourceInfo>() {
+		@Override
+		public void onUpdate(PlaybackState<SourceInfo> state) {
+			updateView(Optional.of(state));
+		}
+
+		@Override
+		public void onError(Throwable error) {
+			view.showError(exceptionToMessageTransformation.transform(error));
+		}
+	};
 }
