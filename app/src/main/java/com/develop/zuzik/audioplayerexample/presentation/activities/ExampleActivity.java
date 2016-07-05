@@ -70,20 +70,20 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 		listener = new Player.Model.Listener<Song>() {
 			@Override
 			public void onUpdate(PlaybackState<Song> state) {
-				Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
-				Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
-				Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
-
-				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
-						.setSmallIcon(R.mipmap.ic_launcher)
-						.setContentTitle(state.playerSource.getSourceInfo().artist)
-						.setContentText(state.playerSource.getSourceInfo().name)
-						.setProgress(state.maxTimeInMilliseconds.or(100), state.currentTimeInMilliseconds, false)
-						.addAction(0, "Play", PendingIntent.getBroadcast(getApplicationContext(), 100, playIntent, 0))
-						.addAction(0, "Pause", PendingIntent.getBroadcast(getApplicationContext(), 100, pauseIntent, 0))
-						.addAction(0, "Stop", PendingIntent.getBroadcast(getApplicationContext(), 100, stopIntent, 0));
-				((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
-						.notify(100, builder.build());
+//				Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
+//				Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
+//				Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
+//
+//				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+//						.setSmallIcon(R.mipmap.ic_launcher)
+//						.setContentTitle(state.playerSource.getSourceInfo().artist)
+//						.setContentText(state.playerSource.getSourceInfo().name)
+//						.setProgress(state.maxTimeInMilliseconds.or(100), state.currentTimeInMilliseconds, false)
+//						.addAction(0, "Play", PendingIntent.getBroadcast(getApplicationContext(), 100, playIntent, 0))
+//						.addAction(0, "Pause", PendingIntent.getBroadcast(getApplicationContext(), 100, pauseIntent, 0))
+//						.addAction(0, "Stop", PendingIntent.getBroadcast(getApplicationContext(), 100, stopIntent, 0));
+//				((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+//						.notify(100, builder.build());
 			}
 
 			@Override

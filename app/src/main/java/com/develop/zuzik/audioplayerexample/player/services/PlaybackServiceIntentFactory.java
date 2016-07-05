@@ -3,8 +3,10 @@ package com.develop.zuzik.audioplayerexample.player.services;
 import android.content.Context;
 import android.content.Intent;
 
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.DoubleParamAction;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 
 /**
@@ -15,6 +17,7 @@ public class PlaybackServiceIntentFactory {
 
 	private static final String EXTRA_ACTION = "EXTRA_ACTION";
 	private static final String EXTRA_PLAYER_SOURCE = "EXTRA_PLAYER_SOURCE";
+	private static final String EXTRA_PLAYBACK_FACTORY = "EXTRA_PLAYBACK_FACTORY";
 	private static final String EXTRA_SEEK_TO = "EXTRA_SEEK_TO";
 	private static final String ACTION_INIT = "ACTION_INIT";
 	private static final String ACTION_PLAY = "ACTION_PLAY";
@@ -29,17 +32,20 @@ public class PlaybackServiceIntentFactory {
 		return new Intent(context, PlaybackService.class);
 	}
 
-	public static Intent createPlayerSource(Context context, PlayerSource playerSource) {
+	public static Intent createForSetSource(Context context, PlayerSource playerSource, PlaybackFactory playbackFactory) {
 		Intent intent = create(context);
 		intent.putExtra(EXTRA_ACTION, ACTION_INIT);
 		intent.putExtra(EXTRA_PLAYER_SOURCE, playerSource);
+		intent.putExtra(EXTRA_PLAYBACK_FACTORY, playbackFactory);
 		return intent;
 	}
 
-	public static void parsePlayerSource(Intent intent, ParamAction<PlayerSource> success) {
+	public static void parseForSetSource(Intent intent, DoubleParamAction<PlayerSource, PlaybackFactory> success) {
 		parseAction(intent, ACTION_INIT, () -> {
-			if (intent != null && intent.hasExtra(EXTRA_PLAYER_SOURCE)) {
-				success.execute((PlayerSource) intent.getSerializableExtra(EXTRA_PLAYER_SOURCE));
+			if (intent != null && intent.hasExtra(EXTRA_PLAYER_SOURCE) && intent.hasExtra(EXTRA_PLAYBACK_FACTORY)) {
+				success.execute(
+						(PlayerSource) intent.getSerializableExtra(EXTRA_PLAYER_SOURCE),
+						(PlaybackFactory) intent.getSerializableExtra(EXTRA_PLAYBACK_FACTORY));
 			}
 		});
 	}

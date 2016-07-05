@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
+import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerServiceModel;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 
@@ -13,15 +15,16 @@ import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPla
  */
 public class App extends Application {
 
-	private PlayerModel<Song> model;
+	private Player.Model<Song> model;
 
-	public PlayerModel<Song> getModel() {
+	public Player.Model<Song> getModel() {
 		return this.model;
 	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
+//		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
+		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
 	}
 }

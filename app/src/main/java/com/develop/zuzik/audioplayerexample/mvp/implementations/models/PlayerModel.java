@@ -26,14 +26,13 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
 	private final List<Listener<SourceInfo>> listeners = new ArrayList();
+	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 
 	public PlayerModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
 	}
-
-	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 
 	@Override
 	public void setSource(PlayerSource<SourceInfo> source) {
