@@ -12,19 +12,14 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.develop.zuzik.audioplayerexample.R;
+import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.presentation.fragments.ExampleFragment;
-
-import rx.Subscription;
 
 public class ExampleActivity extends AppCompatActivity implements ExampleFragment.OnFragmentInteractionListener {
 
-	private static PlayerModel<Song> model;
 	Player.Model.Listener<Song> listener;
 
 	@Override
@@ -72,10 +67,6 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 			}
 		});
 
-		if (this.model == null) {
-			this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
-		}
-
 		listener = new Player.Model.Listener<Song>() {
 			@Override
 			public void onUpdate(PlaybackState<Song> state) {
@@ -100,36 +91,36 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 
 			}
 		};
-		this.model.addListener(listener);
+		getModel().addListener(listener);
 
 		registerReceiver(new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				model.play();
+				getModel().play();
 			}
 		}, new IntentFilter("com.develop.zuzik.audioplayerexample.PLAY"));
 		registerReceiver(new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				model.pause();
+				getModel().pause();
 			}
 		}, new IntentFilter("com.develop.zuzik.audioplayerexample.PAUSE"));
 		registerReceiver(new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				model.stop();
+				getModel().stop();
 			}
 		}, new IntentFilter("com.develop.zuzik.audioplayerexample.STOP"));
 	}
 
 	@Override
 	protected void onDestroy() {
-		this.model.removeListener(this.listener);
+		getModel().removeListener(this.listener);
 		super.onDestroy();
 	}
 
 	@Override
 	public Player.Model<Song> getModel() {
-		return this.model;
+		return ((App) getApplicationContext()).getModel();
 	}
 }
