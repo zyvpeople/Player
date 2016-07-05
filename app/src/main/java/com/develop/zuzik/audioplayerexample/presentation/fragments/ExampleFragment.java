@@ -148,9 +148,9 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	}
 
 	@Override
-	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
-		this.seekBar.setProgress(currentTimeInMilliseconds);
+	public void setProgress(int totalTimeInMilliseconds, int currentTimeInMilliseconds) {
 		this.seekBar.setMax(totalTimeInMilliseconds);
+		this.seekBar.setProgress(currentTimeInMilliseconds);
 	}
 
 	@Override

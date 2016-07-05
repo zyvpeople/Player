@@ -144,7 +144,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 
 		this.view.enablePlayControls(playAvailable, pauseAvailable, stopAvailable);
 		this.view.showTime(currentTimeText, totalTimeText);
-		this.view.setProgress(currentTimeInMilliseconds, totalTimeInMilliseconds);
+		this.view.setProgress(totalTimeInMilliseconds, currentTimeInMilliseconds);
 
 		if (showSourceProgress) {
 			this.view.showSourceProgress();

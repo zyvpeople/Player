@@ -18,7 +18,7 @@ public class NullPlayerView<SourceInfo> implements Player.View<SourceInfo> {
 	}
 
 	@Override
-	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
+	public void setProgress(int totalTimeInMilliseconds, int currentTimeInMilliseconds) {
 
 	}
 

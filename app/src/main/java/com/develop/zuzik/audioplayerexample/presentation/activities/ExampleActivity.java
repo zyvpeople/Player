@@ -19,9 +19,12 @@ import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackF
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.presentation.fragments.ExampleFragment;
 
+import rx.Subscription;
+
 public class ExampleActivity extends AppCompatActivity implements ExampleFragment.OnFragmentInteractionListener {
 
-	private PlayerModel<Song> model;
+	private static PlayerModel<Song> model;
+	Subscription subscription;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +71,11 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 			}
 		});
 
-		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
+		if (this.model == null) {
+			this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
+		}
 
-		this.model.updateObservable().subscribe(state -> {
+		this.subscription = this.model.updateObservable().subscribe(state -> {
 			Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
 			Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
 			Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
@@ -105,6 +110,12 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 				model.stop();
 			}
 		}, new IntentFilter("com.develop.zuzik.audioplayerexample.STOP"));
+	}
+
+	@Override
+	protected void onDestroy() {
+		this.subscription.unsubscribe();
+		super.onDestroy();
 	}
 
 	@Override

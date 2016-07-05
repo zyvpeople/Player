@@ -42,7 +42,7 @@ public interface Player {
 
 		void setDoNotRepeat();
 
-		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
+		void setProgress(int totalTimeInMilliseconds, int currentTimeInMilliseconds);
 
 		void showSourceProgress();
 
