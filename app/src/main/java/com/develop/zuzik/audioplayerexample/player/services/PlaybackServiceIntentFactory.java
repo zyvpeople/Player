@@ -3,9 +3,6 @@ package com.develop.zuzik.audioplayerexample.player.services;
 import android.content.Context;
 import android.content.Intent;
 
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 
@@ -15,10 +12,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Para
  */
 public class PlaybackServiceIntentFactory {
 
-	private static final String EXTRA_PLAYER_SOURCE = "EXTRA_PLAYER_SOURCE";
-	private static final String EXTRA_PLAYBACK_FACTORY = "EXTRA_PLAYBACK_FACTORY";
-	private static final String EXTRA_PLAYBACK_SETTINGS = "EXTRA_PLAYBACK_SETTINGS";
-	private static final String EXTRA_NOTIFICATION_ID = "EXTRA_NOTIFICATION_ID";
+	private static final String EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE = "EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE";
 	private static final String EXTRA_SEEK_TO = "EXTRA_SEEK_TO";
 	private static final String ACTION_INIT = "ACTION_INIT";
 	private static final String ACTION_PLAY = "ACTION_PLAY";
@@ -38,25 +32,15 @@ public class PlaybackServiceIntentFactory {
 	}
 
 	public static Intent createForInit(Context context,
-									   PlayerSource playerSource,
-									   PlaybackFactory playbackFactory,
-									   PlaybackSettings playbackSettings,
-									   int notificationId) {
+									   PlaybackServiceInitializeBundle bundle) {
 		return createWithAction(context, ACTION_INIT)
-				.putExtra(EXTRA_PLAYER_SOURCE, playerSource)
-				.putExtra(EXTRA_PLAYBACK_FACTORY, playbackFactory)
-				.putExtra(EXTRA_PLAYBACK_SETTINGS, playbackSettings)
-				.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
+				.putExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE, bundle);
 	}
 
 	static void parseForInit(Intent intent, ParamAction<PlaybackServiceInitializeBundle> success) {
 		parseAction(intent, ACTION_INIT, () -> {
-			if (intent.hasExtra(EXTRA_PLAYER_SOURCE) && intent.hasExtra(EXTRA_PLAYBACK_FACTORY)) {
-				success.execute(new PlaybackServiceInitializeBundle(
-						(PlayerSource) intent.getSerializableExtra(EXTRA_PLAYER_SOURCE),
-						(PlaybackFactory) intent.getSerializableExtra(EXTRA_PLAYBACK_FACTORY),
-						(PlaybackSettings) intent.getSerializableExtra(EXTRA_PLAYBACK_SETTINGS),
-						intent.getIntExtra(EXTRA_NOTIFICATION_ID, 0)));
+			if (intent.hasExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE)) {
+				success.execute((PlaybackServiceInitializeBundle) intent.getSerializableExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE));
 			}
 		});
 	}

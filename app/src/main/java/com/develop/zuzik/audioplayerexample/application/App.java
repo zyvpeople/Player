@@ -7,6 +7,7 @@ import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerSer
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
+import com.develop.zuzik.audioplayerexample.presentation.notifications.SongNotificationFactory;
 
 /**
  * User: zuzik
@@ -24,6 +25,6 @@ public class App extends Application {
 	public void onCreate() {
 		super.onCreate();
 //		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
-		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500);
+		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500, new SongNotificationFactory());
 	}
 }

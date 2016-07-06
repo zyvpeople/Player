@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
@@ -15,6 +16,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackS
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.services.PlaybackService;
+import com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceInitializeBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
@@ -43,15 +45,18 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private Optional<PlayerSource<SourceInfo>> source = Optional.absent();
 	private Optional<PlaybackService> boundedService = Optional.absent();
 	private final int notificationId;
+	private final NotificationFactory<SourceInfo> notificationFactory;
 
 	public PlayerServiceModel(Context context,
 							  PlaybackSettings playbackSettings,
 							  PlaybackFactory<SourceInfo> playbackFactory,
-							  int notificationId) {
+							  int notificationId,
+							  NotificationFactory<SourceInfo> notificationFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
 		this.notificationId = notificationId;
+		this.notificationFactory = notificationFactory;
 	}
 
 	@Override
@@ -128,7 +133,15 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	private void startServiceForInit(PlayerSource<SourceInfo> source) {
-		startService(createForInit(this.context, source, this.playbackFactory, this.playbackSettings, this.notificationId));
+		startService(
+				createForInit(
+						this.context,
+						new PlaybackServiceInitializeBundle<>(
+								source,
+								this.playbackFactory,
+								this.playbackSettings,
+								this.notificationId,
+								this.notificationFactory)));
 	}
 
 	private ComponentName startService(Intent play) {

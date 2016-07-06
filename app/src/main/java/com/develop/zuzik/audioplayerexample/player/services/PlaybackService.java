@@ -1,19 +1,14 @@
 package com.develop.zuzik.audioplayerexample.player.services;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.R;
-import com.develop.zuzik.audioplayerexample.entities.Song;
+import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
@@ -46,6 +41,7 @@ public class PlaybackService extends Service {
 	private Optional<Playback> playback = Optional.absent();
 	private PlaybackListener playbackListener = new NullPlaybackListener<>();
 	private int notificationId;
+	private NotificationFactory notificationFactory;
 
 	@Override
 	public void onCreate() {
@@ -61,6 +57,7 @@ public class PlaybackService extends Service {
 			PlaybackFactory factory = bundle.playbackFactory;
 			PlaybackSettings settings = bundle.playbackSettings;
 			this.notificationId = bundle.notificationId;
+			this.notificationFactory = bundle.notificationFactory;
 			if (this.playback.isPresent()) {
 				if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
 					this.playback.get().release();
@@ -127,23 +124,12 @@ public class PlaybackService extends Service {
 		}
 	}
 
-	//TODO: create factory for notification
 	private void showForegroundNotification(PlaybackState playbackState) {
-		Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+		PendingIntent playIntent = PendingIntent.getService(getApplicationContext(), 1, createPlay(this), 0);
+		PendingIntent pauseIntent = PendingIntent.getService(getApplicationContext(), 2, createPause(this), 0);
+		PendingIntent stopIntent = PendingIntent.getService(getApplicationContext(), 3, createStop(this), 0);
 
-		Notification notification = new NotificationCompat.Builder(PlaybackService.this)
-				.setContentTitle(((Song) playbackState.playerSource.getSourceInfo()).artist)
-				.setContentText(((Song) playbackState.playerSource.getSourceInfo()).name)
-				.setTicker("Ticker")
-				.setSmallIcon(R.mipmap.ic_launcher)
-				.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
-				.setProgress((Integer) playbackState.maxTimeInMilliseconds.or(100), playbackState.currentTimeInMilliseconds, false)
-				.setOngoing(true)
-				.addAction(0, "Play", PendingIntent.getService(getApplicationContext(), 1, createPlay(this), 0))
-				.addAction(0, "Pause", PendingIntent.getService(getApplicationContext(), 2, createPause(this), 0))
-				.addAction(0, "Stop", PendingIntent.getService(getApplicationContext(), 3, createStop(this), 0))
-				.build();
-		startForeground(this.notificationId, notification);
+		startForeground(this.notificationId, this.notificationFactory.create(this, playbackState, playIntent, pauseIntent, stopIntent));
 	}
 
 	public final class PlaybackServiceBinder extends Binder {
