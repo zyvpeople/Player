@@ -18,7 +18,7 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.presentation.fragments.ExampleFragment;
 
-public class ExampleActivity extends AppCompatActivity implements ExampleFragment.OnFragmentInteractionListener {
+public class ExampleActivity extends AppCompatActivity {
 
 	Player.Model.Listener<Song> listener;
 
@@ -70,20 +70,20 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 		listener = new Player.Model.Listener<Song>() {
 			@Override
 			public void onUpdate(PlaybackState<Song> state) {
-//				Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
-//				Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
-//				Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
-//
-//				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
-//						.setSmallIcon(R.mipmap.ic_launcher)
-//						.setContentTitle(state.playerSource.getSourceInfo().artist)
-//						.setContentText(state.playerSource.getSourceInfo().name)
-//						.setProgress(state.maxTimeInMilliseconds.or(100), state.currentTimeInMilliseconds, false)
-//						.addAction(0, "Play", PendingIntent.getBroadcast(getApplicationContext(), 100, playIntent, 0))
-//						.addAction(0, "Pause", PendingIntent.getBroadcast(getApplicationContext(), 100, pauseIntent, 0))
-//						.addAction(0, "Stop", PendingIntent.getBroadcast(getApplicationContext(), 100, stopIntent, 0));
-//				((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
-//						.notify(100, builder.build());
+				Intent playIntent = new Intent("com.develop.zuzik.audioplayerexample.PLAY");
+				Intent pauseIntent = new Intent("com.develop.zuzik.audioplayerexample.PAUSE");
+				Intent stopIntent = new Intent("com.develop.zuzik.audioplayerexample.STOP");
+
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+						.setSmallIcon(R.mipmap.ic_launcher)
+						.setContentTitle(state.playerSource.getSourceInfo().artist)
+						.setContentText(state.playerSource.getSourceInfo().name)
+						.setProgress(state.maxTimeInMilliseconds.or(100), state.currentTimeInMilliseconds, false)
+						.addAction(0, "Play", PendingIntent.getBroadcast(getApplicationContext(), 100, playIntent, 0))
+						.addAction(0, "Pause", PendingIntent.getBroadcast(getApplicationContext(), 100, pauseIntent, 0))
+						.addAction(0, "Stop", PendingIntent.getBroadcast(getApplicationContext(), 100, stopIntent, 0));
+				((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+						.notify(100, builder.build());
 			}
 
 			@Override
@@ -91,7 +91,7 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 
 			}
 		};
-		getModel().addListener(listener);
+//		getModel().addListener(listener);
 
 		registerReceiver(new BroadcastReceiver() {
 			@Override
@@ -119,7 +119,6 @@ public class ExampleActivity extends AppCompatActivity implements ExampleFragmen
 		super.onDestroy();
 	}
 
-	@Override
 	public Player.Model<Song> getModel() {
 		return ((App) getApplicationContext()).getModel();
 	}

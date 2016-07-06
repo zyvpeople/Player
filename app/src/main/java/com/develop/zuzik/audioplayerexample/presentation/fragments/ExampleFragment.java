@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.R;
+import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.presenter_destroy_strategy.DoNothingPresenterDestroyStrategy;
@@ -21,8 +21,6 @@ import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlay
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
 public class ExampleFragment extends Fragment implements Player.View<Song> {
-
-	private OnFragmentInteractionListener mListener;
 
 	private TextView title;
 	private Button play;
@@ -47,6 +45,10 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_example, container, false);
+
+		this.presenter = new PlayerPresenter<Song>(getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPresenterDestroyStrategy());
+		this.presenter.setView(this);
+		this.presenter.onSetSource(new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song));
 
 		this.title = (TextView) view.findViewById(R.id.title);
 		this.play = (Button) view.findViewById(R.id.play);
@@ -87,52 +89,28 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 			}
 		});
 
+		this.presenter.onCreated();
+
 		return view;
 	}
 
 	@Override
 	public void onDestroyView() {
-
+		this.presenter.onDestroy();
 		super.onDestroyView();
-	}
-
-	@Override
-	public void onAttach(Context context) {
-		super.onAttach(context);
-		if (context instanceof OnFragmentInteractionListener) {
-			mListener = (OnFragmentInteractionListener) context;
-		} else {
-			throw new RuntimeException(context.toString()
-					+ " must implement OnFragmentInteractionListener");
-		}
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		mListener = null;
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		this.presenter = new PlayerPresenter<Song>(this.mListener.getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPresenterDestroyStrategy());
-		this.presenter.setView(this);
-		this.presenter.onSetSource(new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song));
-		this.presenter.onCreated();
 		this.presenter.onAppear();
 	}
 
 	@Override
 	public void onStop() {
 		this.presenter.onDisappear();
-		this.presenter.onDestroy();
 		this.presenter.setView(null);
 		super.onStop();
-	}
-
-	public interface OnFragmentInteractionListener {
-		Player.Model<Song> getModel();
 	}
 
 	//region Player.View
@@ -202,4 +180,8 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	}
 
 	//endregion
+
+	public Player.Model<Song> getModel() {
+		return ((App) getActivity().getApplicationContext()).getModel();
+	}
 }

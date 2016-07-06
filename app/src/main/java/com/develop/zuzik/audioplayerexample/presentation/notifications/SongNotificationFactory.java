@@ -32,9 +32,9 @@ public class SongNotificationFactory implements NotificationFactory<Song> {
 				.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
 				.setProgress(playbackState.maxTimeInMilliseconds.or(100), playbackState.currentTimeInMilliseconds, false)
 				.setOngoing(true)
-				.addAction(0, "Play", playIntent)
-				.addAction(0, "Pause", pauseIntent)
-				.addAction(0, "Stop", stopIntent)
+				.addAction(R.drawable.ic_play, "Play", playIntent)
+				.addAction(R.drawable.ic_pause, "Pause", pauseIntent)
+				.addAction(R.drawable.ic_stop, "Stop", stopIntent)
 				.build();
 	}
 }
