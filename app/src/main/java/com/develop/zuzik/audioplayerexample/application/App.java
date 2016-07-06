@@ -3,7 +3,6 @@ package com.develop.zuzik.audioplayerexample.application;
 import android.app.Application;
 
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerServiceModel;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
@@ -25,6 +24,6 @@ public class App extends Application {
 	public void onCreate() {
 		super.onCreate();
 //		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
-		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
+		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500);
 	}
 }

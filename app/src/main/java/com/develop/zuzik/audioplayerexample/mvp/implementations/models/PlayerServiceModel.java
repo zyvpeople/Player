@@ -42,11 +42,16 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private final List<Listener<SourceInfo>> listeners = new ArrayList();
 	private Optional<PlayerSource<SourceInfo>> source = Optional.absent();
 	private Optional<PlaybackService> boundedService = Optional.absent();
+	private final int notificationId;
 
-	public PlayerServiceModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
+	public PlayerServiceModel(Context context,
+							  PlaybackSettings playbackSettings,
+							  PlaybackFactory<SourceInfo> playbackFactory,
+							  int notificationId) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
+		this.notificationId = notificationId;
 	}
 
 	@Override
@@ -123,7 +128,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	private void startServiceForInit(PlayerSource<SourceInfo> source) {
-		startService(createForInit(this.context, source, this.playbackFactory, this.playbackSettings));
+		startService(createForInit(this.context, source, this.playbackFactory, this.playbackSettings, this.notificationId));
 	}
 
 	private ComponentName startService(Intent play) {

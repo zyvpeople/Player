@@ -45,6 +45,7 @@ public class PlaybackService extends Service {
 	private final IBinder binder = new PlaybackServiceBinder();
 	private Optional<Playback> playback = Optional.absent();
 	private PlaybackListener playbackListener = new NullPlaybackListener<>();
+	private int notificationId;
 
 	@Override
 	public void onCreate() {
@@ -55,10 +56,11 @@ public class PlaybackService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(getClass().getSimpleName(), "onStartCommand");
-		parseForInit(intent, tuple -> {
-			PlayerSource source = tuple.first;
-			PlaybackFactory factory = tuple.second;
-			PlaybackSettings settings = tuple.third;
+		parseForInit(intent, bundle -> {
+			PlayerSource source = bundle.playerSource;
+			PlaybackFactory factory = bundle.playbackFactory;
+			PlaybackSettings settings = bundle.playbackSettings;
+			this.notificationId = bundle.notificationId;
 			if (this.playback.isPresent()) {
 				if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
 					this.playback.get().release();
@@ -127,7 +129,6 @@ public class PlaybackService extends Service {
 
 	//TODO: create factory for notification
 	private void showForegroundNotification(PlaybackState playbackState) {
-		int id = 100500;
 		Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
 		Notification notification = new NotificationCompat.Builder(PlaybackService.this)
@@ -138,11 +139,11 @@ public class PlaybackService extends Service {
 				.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
 				.setProgress((Integer) playbackState.maxTimeInMilliseconds.or(100), playbackState.currentTimeInMilliseconds, false)
 				.setOngoing(true)
-				.addAction(0, "Play", PendingIntent.getService(getApplicationContext(), id, createPlay(this), 0))
-				.addAction(0, "Pause", PendingIntent.getService(getApplicationContext(), id, createPause(this), 0))
-				.addAction(0, "Stop", PendingIntent.getService(getApplicationContext(), id, createStop(this), 0))
+				.addAction(0, "Play", PendingIntent.getService(getApplicationContext(), 1, createPlay(this), 0))
+				.addAction(0, "Pause", PendingIntent.getService(getApplicationContext(), 2, createPause(this), 0))
+				.addAction(0, "Stop", PendingIntent.getService(getApplicationContext(), 3, createStop(this), 0))
 				.build();
-		startForeground(id, notification);
+		startForeground(this.notificationId, notification);
 	}
 
 	public final class PlaybackServiceBinder extends Binder {
