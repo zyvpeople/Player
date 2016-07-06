@@ -3,22 +3,32 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.services.PlaybackService;
-import com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.create;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createDoNotRepeat;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createForInit;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPause;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPlay;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createRepeat;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createSeekTo;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createSimulateError;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createStop;
 
 /**
  * User: zuzik
@@ -30,7 +40,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
 	private final List<Listener<SourceInfo>> listeners = new ArrayList();
-	private Optional<Playback<SourceInfo>> playback = Optional.absent();
+	private Optional<PlayerSource<SourceInfo>> source = Optional.absent();
 	private Optional<PlaybackService> boundedService = Optional.absent();
 
 	public PlayerServiceModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
@@ -41,15 +51,16 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 
 	@Override
 	public void setSource(PlayerSource<SourceInfo> source) {
-		this.context.startService(PlaybackServiceIntentFactory.createForSetSource(this.context, source, this.playbackFactory));
-		this.context.bindService(PlaybackServiceIntentFactory.create(this.context), this.serviceConnection, Context.BIND_AUTO_CREATE);
+		this.source = Optional.of(source);
+		startServiceForInit(source);
+		this.context.bindService(create(this.context), this.serviceConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
 	public void clear() {
 		this.context.unbindService(this.serviceConnection);
-		this.context.stopService(PlaybackServiceIntentFactory.create(this.context));
-		this.playback = Optional.absent();
+		this.context.stopService(create(this.context));
+		this.source = Optional.absent();
 	}
 
 	@Override
@@ -61,8 +72,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 				return Optional.of(state);
 			}
 		}
-		//TODO: there can be a lot of time before service starts so we should return some data - absent is incorrect
-		return Optional.absent();
+		return this.source.transform(source -> new PlaybackState<SourceInfo>(State.NONE, 0, Optional.absent(), this.playbackSettings.isRepeat(), source));
 	}
 
 	@Override
@@ -79,37 +89,57 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 
 	@Override
 	public void play() {
-		this.context.startService(PlaybackServiceIntentFactory.createPlay(this.context));
+		startService(createPlay(this.context));
 	}
 
 	@Override
 	public void pause() {
-		this.context.startService(PlaybackServiceIntentFactory.createPause(this.context));
+		startService(createPause(this.context));
 	}
 
 	@Override
 	public void stop() {
-		this.context.startService(PlaybackServiceIntentFactory.createStop(this.context));
+		startService(createStop(this.context));
 	}
 
 	@Override
 	public void seekToPosition(int positionInMilliseconds) {
-		this.context.startService(PlaybackServiceIntentFactory.createSeekTo(this.context, positionInMilliseconds));
+		startService(createSeekTo(this.context, positionInMilliseconds));
 	}
 
 	@Override
 	public void repeat() {
-		this.context.startService(PlaybackServiceIntentFactory.createRepeat(this.context));
+		startService(createRepeat(this.context));
 	}
 
 	@Override
 	public void doNotRepeat() {
-		this.context.startService(PlaybackServiceIntentFactory.createDoNotRepeat(this.context));
+		startService(createDoNotRepeat(this.context));
 	}
 
 	@Override
 	public void simulateError() {
-		this.context.startService(PlaybackServiceIntentFactory.createSimulateError(this.context));
+		startService(createSimulateError(this.context));
+	}
+
+	private void startServiceForInit(PlayerSource<SourceInfo> source) {
+		startService(createForInit(this.context, source, this.playbackFactory, this.playbackSettings));
+	}
+
+	private ComponentName startService(Intent play) {
+		return this.context.startService(play);
+	}
+
+	private void notifyOnUpdate() {
+		if (getState().isPresent()) {
+			notifyOnUpdate(getState().get());
+		}
+	}
+
+	private void notifyOnUpdate(PlaybackState playbackState) {
+		for (Listener<SourceInfo> listener : this.listeners) {
+			listener.onUpdate(playbackState);
+		}
 	}
 
 	private final ServiceConnection serviceConnection = new ServiceConnection() {
@@ -120,9 +150,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 			boundedService.get().setPlaybackListener(new PlaybackListener() {
 				@Override
 				public void onUpdate(PlaybackState playbackState) {
-					for (Listener<SourceInfo> listener : listeners) {
-						listener.onUpdate(playbackState);
-					}
+					notifyOnUpdate(playbackState);
 				}
 
 				@Override
@@ -132,14 +160,13 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 					}
 				}
 			});
-			//TODO: notify listener
+			notifyOnUpdate();
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			boundedService = Optional.absent();
-			//TODO: notify listener
+			notifyOnUpdate();
 		}
 	};
-
 }

@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Action;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.DoubleParamAction;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
+import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.TripleTuple;
 
 /**
  * User: zuzik
@@ -18,6 +19,7 @@ public class PlaybackServiceIntentFactory {
 	private static final String EXTRA_ACTION = "EXTRA_ACTION";
 	private static final String EXTRA_PLAYER_SOURCE = "EXTRA_PLAYER_SOURCE";
 	private static final String EXTRA_PLAYBACK_FACTORY = "EXTRA_PLAYBACK_FACTORY";
+	private static final String EXTRA_PLAYBACK_SETTINGS = "EXTRA_PLAYBACK_SETTINGS";
 	private static final String EXTRA_SEEK_TO = "EXTRA_SEEK_TO";
 	private static final String ACTION_INIT = "ACTION_INIT";
 	private static final String ACTION_PLAY = "ACTION_PLAY";
@@ -32,28 +34,31 @@ public class PlaybackServiceIntentFactory {
 		return new Intent(context, PlaybackService.class);
 	}
 
-	public static Intent createForSetSource(Context context, PlayerSource playerSource, PlaybackFactory playbackFactory) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_INIT);
-		intent.putExtra(EXTRA_PLAYER_SOURCE, playerSource);
-		intent.putExtra(EXTRA_PLAYBACK_FACTORY, playbackFactory);
-		return intent;
+	public static Intent createForInit(Context context,
+									   PlayerSource playerSource,
+									   PlaybackFactory playbackFactory,
+									   PlaybackSettings playbackSettings) {
+		return create(context)
+				.putExtra(EXTRA_ACTION, ACTION_INIT)
+				.putExtra(EXTRA_PLAYER_SOURCE, playerSource)
+				.putExtra(EXTRA_PLAYBACK_FACTORY, playbackFactory)
+				.putExtra(EXTRA_PLAYBACK_SETTINGS, playbackSettings);
 	}
 
-	public static void parseForSetSource(Intent intent, DoubleParamAction<PlayerSource, PlaybackFactory> success) {
+	public static void parseForInit(Intent intent, ParamAction<TripleTuple<PlayerSource, PlaybackFactory, PlaybackSettings>> success) {
 		parseAction(intent, ACTION_INIT, () -> {
-			if (intent != null && intent.hasExtra(EXTRA_PLAYER_SOURCE) && intent.hasExtra(EXTRA_PLAYBACK_FACTORY)) {
+			if (intent.hasExtra(EXTRA_PLAYER_SOURCE) && intent.hasExtra(EXTRA_PLAYBACK_FACTORY)) {
 				success.execute(
-						(PlayerSource) intent.getSerializableExtra(EXTRA_PLAYER_SOURCE),
-						(PlaybackFactory) intent.getSerializableExtra(EXTRA_PLAYBACK_FACTORY));
+						new TripleTuple<>(
+								(PlayerSource) intent.getSerializableExtra(EXTRA_PLAYER_SOURCE),
+								(PlaybackFactory) intent.getSerializableExtra(EXTRA_PLAYBACK_FACTORY),
+								(PlaybackSettings) intent.getSerializableExtra(EXTRA_PLAYBACK_SETTINGS)));
 			}
 		});
 	}
 
 	public static Intent createPlay(Context context) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_PLAY);
-		return intent;
+		return create(context).putExtra(EXTRA_ACTION, ACTION_PLAY);
 	}
 
 	public static void parsePlay(Intent intent, Action success) {
@@ -61,9 +66,7 @@ public class PlaybackServiceIntentFactory {
 	}
 
 	public static Intent createPause(Context context) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_PAUSE);
-		return intent;
+		return create(context).putExtra(EXTRA_ACTION, ACTION_PAUSE);
 	}
 
 	public static void parsePause(Intent intent, Action success) {
@@ -71,9 +74,7 @@ public class PlaybackServiceIntentFactory {
 	}
 
 	public static Intent createStop(Context context) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_STOP);
-		return intent;
+		return create(context).putExtra(EXTRA_ACTION, ACTION_STOP);
 	}
 
 	public static void parseStop(Intent intent, Action success) {
@@ -87,24 +88,21 @@ public class PlaybackServiceIntentFactory {
 	}
 
 	public static Intent createSeekTo(Context context, int positionInMilliseconds) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_SEEK_TO);
-		intent.putExtra(EXTRA_SEEK_TO, positionInMilliseconds);
-		return intent;
+		return create(context)
+				.putExtra(EXTRA_ACTION, ACTION_SEEK_TO)
+				.putExtra(EXTRA_SEEK_TO, positionInMilliseconds);
 	}
 
 	public static void parseSeekTo(Intent intent, ParamAction<Integer> success) {
 		parseAction(intent, ACTION_SEEK_TO, () -> {
-			if (intent != null && intent.hasExtra(EXTRA_SEEK_TO)) {
+			if (intent.hasExtra(EXTRA_SEEK_TO)) {
 				success.execute(intent.getIntExtra(EXTRA_SEEK_TO, 0));
 			}
 		});
 	}
 
 	public static Intent createRepeat(Context context) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_REPEAT);
-		return intent;
+		return create(context).putExtra(EXTRA_ACTION, ACTION_REPEAT);
 	}
 
 	public static void parseRepeat(Intent intent, Action success) {
@@ -112,9 +110,7 @@ public class PlaybackServiceIntentFactory {
 	}
 
 	public static Intent createDoNotRepeat(Context context) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_DO_NOT_REPEAT);
-		return intent;
+		return create(context).putExtra(EXTRA_ACTION, ACTION_DO_NOT_REPEAT);
 	}
 
 	public static void parseDoNotRepeat(Intent intent, Action success) {
@@ -122,9 +118,7 @@ public class PlaybackServiceIntentFactory {
 	}
 
 	public static Intent createSimulateError(Context context) {
-		Intent intent = create(context);
-		intent.putExtra(EXTRA_ACTION, ACTION_SIMULATE_ERROR);
-		return intent;
+		return create(context).putExtra(EXTRA_ACTION, ACTION_SIMULATE_ERROR);
 	}
 
 	public static void parseSimulateError(Intent intent, Action success) {

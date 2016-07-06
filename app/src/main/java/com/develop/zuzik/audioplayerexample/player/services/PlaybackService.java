@@ -17,12 +17,24 @@ import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.null_objects.NullPlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
+
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPause;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPlay;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createStop;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseDoNotRepeat;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseForInit;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parsePause;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parsePlay;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseRepeat;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseSeekTo;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseSimulateError;
+import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseStop;
 
 /**
  * User: zuzik
@@ -37,35 +49,36 @@ public class PlaybackService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.i(getClass().getSimpleName(), "onCreate");
+		Log.d(getClass().getSimpleName(), "onCreate");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i(getClass().getSimpleName(), "onStartCommand");
-		PlaybackServiceIntentFactory.parseForSetSource(intent, (playerSource, playbackFactory) -> {
+		Log.d(getClass().getSimpleName(), "onStartCommand");
+		parseForInit(intent, tuple -> {
+			PlayerSource source = tuple.first;
+			PlaybackFactory factory = tuple.second;
+			PlaybackSettings settings = tuple.third;
 			if (this.playback.isPresent()) {
-				if (!this.playback.get().getPlaybackState().playerSource.equals(playerSource)) {
+				if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
 					this.playback.get().release();
-					initPlayback(playerSource, playbackFactory);
+					initPlayback(source, factory, settings);
 				}
 			} else {
-				initPlayback(playerSource, playbackFactory);
+				initPlayback(source, factory, settings);
 			}
 		});
-		PlaybackServiceIntentFactory.parsePlay(intent, () -> getPlayback(Playback::play));
-		PlaybackServiceIntentFactory.parsePause(intent, () -> getPlayback(Playback::pause));
-		PlaybackServiceIntentFactory.parseStop(intent, () -> getPlayback(Playback::stop));
-		PlaybackServiceIntentFactory.parseSeekTo(intent, value -> getPlayback(playback -> playback.seekTo(value)));
-		PlaybackServiceIntentFactory.parseRepeat(intent, () -> getPlayback(Playback::repeat));
-		PlaybackServiceIntentFactory.parseDoNotRepeat(intent, () -> getPlayback(Playback::doNotRepeat));
-		PlaybackServiceIntentFactory.parseSimulateError(intent, () -> getPlayback(Playback::simulateError));
+		parsePlay(intent, () -> getPlayback(Playback::play));
+		parsePause(intent, () -> getPlayback(Playback::pause));
+		parseStop(intent, () -> getPlayback(Playback::stop));
+		parseSeekTo(intent, value -> getPlayback(playback -> playback.seekTo(value)));
+		parseRepeat(intent, () -> getPlayback(Playback::repeat));
+		parseDoNotRepeat(intent, () -> getPlayback(Playback::doNotRepeat));
+		parseSimulateError(intent, () -> getPlayback(Playback::simulateError));
 		return START_STICKY;
 	}
 
-	private void initPlayback(PlayerSource source, PlaybackFactory factory) {
-		//TODO: do not create here but pass as argument
-		InMemoryPlaybackSettings settings = new InMemoryPlaybackSettings();
+	private void initPlayback(PlayerSource source, PlaybackFactory factory, PlaybackSettings settings) {
 		this.playback = Optional.of(factory.create(this, settings, source));
 		this.playback.get().setPlaybackListener(new PlaybackListener() {
 			@Override
@@ -98,9 +111,11 @@ public class PlaybackService extends Service {
 
 	@Override
 	public void onDestroy() {
+		Log.d(getClass().getSimpleName(), "onDestroy");
 		setPlaybackListener(null);
 		getPlayback(Playback::release);
 		this.playback = Optional.absent();
+		stopForeground(true);
 		super.onDestroy();
 	}
 
@@ -123,9 +138,9 @@ public class PlaybackService extends Service {
 				.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
 				.setProgress((Integer) playbackState.maxTimeInMilliseconds.or(100), playbackState.currentTimeInMilliseconds, false)
 				.setOngoing(true)
-				.addAction(0, "Play", PendingIntent.getService(getApplicationContext(), id, PlaybackServiceIntentFactory.createPlay(this), 0))
-				.addAction(0, "Pause", PendingIntent.getService(getApplicationContext(), id, PlaybackServiceIntentFactory.createPause(this), 0))
-				.addAction(0, "Stop", PendingIntent.getService(getApplicationContext(), id, PlaybackServiceIntentFactory.createStop(this), 0))
+				.addAction(0, "Play", PendingIntent.getService(getApplicationContext(), id, createPlay(this), 0))
+				.addAction(0, "Pause", PendingIntent.getService(getApplicationContext(), id, createPause(this), 0))
+				.addAction(0, "Stop", PendingIntent.getService(getApplicationContext(), id, createStop(this), 0))
 				.build();
 		startForeground(id, notification);
 	}

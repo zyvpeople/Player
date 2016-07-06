@@ -44,12 +44,13 @@ public class StartedPlayerState extends BasePlayerState {
 	@Override
 	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
+				.onErrorResumeNext(throwable -> Observable.just(0L))
 				.subscribe(aLong ->
 						getMediaPlayerSafely(value ->
 								saveMediaPlayerStateAndNotify(playerToState(value))));
 		this.playerStateContext
 				.requestFocus(
-						() -> player.start(),
+						player::start,
 						() -> {
 							throw new FailRequestAudioFocusException();
 						});

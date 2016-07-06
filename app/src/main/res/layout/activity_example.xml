@@ -64,14 +64,14 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Add left"/>
+                android:text="Add right"/>
 
             <Button
                 android:id="@+id/removeRight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Remove left"/>
+                android:text="Remove right"/>
 
         </LinearLayout>
 
