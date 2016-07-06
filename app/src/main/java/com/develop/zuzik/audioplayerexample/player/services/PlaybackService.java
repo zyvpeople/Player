@@ -37,6 +37,10 @@ import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServi
  */
 public class PlaybackService extends Service {
 
+	private static final int PENDING_INTENT_ID_PLAY = 1;
+	private static final int PENDING_INTENT_ID_PAUSE = 2;
+	private static final int PENDING_INTENT_ID_STOP = 3;
+
 	private final IBinder binder = new PlaybackServiceBinder();
 	private Optional<Playback> playback = Optional.absent();
 	private PlaybackListener playbackListener = new NullPlaybackListener<>();
@@ -125,9 +129,9 @@ public class PlaybackService extends Service {
 	}
 
 	private void showForegroundNotification(PlaybackState playbackState) {
-		PendingIntent playIntent = PendingIntent.getService(getApplicationContext(), 1, createPlay(this), 0);
-		PendingIntent pauseIntent = PendingIntent.getService(getApplicationContext(), 2, createPause(this), 0);
-		PendingIntent stopIntent = PendingIntent.getService(getApplicationContext(), 3, createStop(this), 0);
+		PendingIntent playIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY, createPlay(this), 0);
+		PendingIntent pauseIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PAUSE, createPause(this), 0);
+		PendingIntent stopIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_STOP, createStop(this), 0);
 
 		startForeground(this.notificationId, this.notificationFactory.create(this, playbackState, playIntent, pauseIntent, stopIntent));
 	}

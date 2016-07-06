@@ -13,6 +13,10 @@ import com.develop.zuzik.audioplayerexample.presentation.notifications.SongNotif
  * User: zuzik
  * Date: 6/22/16
  */
+//TODO: implement doze mode
+//TODO: implement sound volume when sms
+//TODO: implement sound volume when headphone is detached from device
+//TODO: create widget for launcher
 public class App extends Application {
 
 	private Player.Model<Song> model;
