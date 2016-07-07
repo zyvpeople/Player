@@ -1,16 +1,20 @@
-package com.develop.zuzik.audioplayerexample.player.multiple_playback;
+package com.develop.zuzik.audioplayerexample.player.multiple_playback.local;
 
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackState;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.NullMultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlayback;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
+import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;
@@ -21,7 +25,7 @@ import java.util.List;
  */
 //TODO: add logic for add and remove songs from list
 //TODO: add logic for start any song and not only next and previous
-public class MultiplePlayback<SourceInfo> {
+public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback {
 
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private Optional<LocalPlayback<SourceInfo>> currentPlayback;
@@ -31,7 +35,7 @@ public class MultiplePlayback<SourceInfo> {
 	private final PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory;
 	private final Context context;
 
-	public MultiplePlayback(
+	public LocalMultiplePlayback(
 			Context context,
 			List<PlayerSource<SourceInfo>> playerSources,
 			PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,

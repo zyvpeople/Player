@@ -6,7 +6,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Play
  * User: zuzik
  * Date: 5/29/16
  */
-public class AudioFocusLostTransientPausedPlayerState extends PausedPlayerState {
+class AudioFocusLostTransientPausedPlayerState extends PausedPlayerState {
 
 	public AudioFocusLostTransientPausedPlayerState(PlayerStateContext playerStateContext) {
 		super(playerStateContext);

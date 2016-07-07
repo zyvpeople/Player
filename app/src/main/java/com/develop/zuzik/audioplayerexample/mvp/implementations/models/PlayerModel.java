@@ -10,7 +10,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackL
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
+import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;

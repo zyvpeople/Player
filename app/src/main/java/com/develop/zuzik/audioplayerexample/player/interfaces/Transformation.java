@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.player_states.interfaces;
+package com.develop.zuzik.audioplayerexample.player.interfaces;
 
 /**
  * User: zuzik

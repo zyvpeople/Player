@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.strategies.factories.PlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import rx.subjects.PublishSubject;
  */
 public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<SourceInfo> {
 
-	private final MultiplePlayback<SourceInfo> playback;
+	private final LocalMultiplePlayback<SourceInfo> playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
 	private boolean repeat;
@@ -30,7 +30,7 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 							   List<PlayerSource<SourceInfo>> initializers,
 							   PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
 							   PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory) {
-		this.playback = new MultiplePlayback<>(context, initializers, nextPlayerSourceStrategyFactory, previousPlayerSourceStrategyFactory);
+		this.playback = new LocalMultiplePlayback<>(context, initializers, nextPlayerSourceStrategyFactory, previousPlayerSourceStrategyFactory);
 	}
 
 	@Override

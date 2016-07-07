@@ -6,7 +6,7 @@ import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFo
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.MediaPlayerStateException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Transformation;
+import com.develop.zuzik.audioplayerexample.player.interfaces.Transformation;
 
 /**
  * User: zuzik

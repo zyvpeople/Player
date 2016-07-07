@@ -16,7 +16,7 @@ import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackS
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.ParamAction;
+import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPause;

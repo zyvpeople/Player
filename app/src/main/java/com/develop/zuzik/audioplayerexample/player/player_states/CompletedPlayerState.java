@@ -12,7 +12,7 @@ import com.fernandocejas.arrow.optional.Optional;
  * User: zuzik
  * Date: 5/29/16
  */
-public class CompletedPlayerState extends BasePlayerState {
+class CompletedPlayerState extends BasePlayerState {
 
 	public CompletedPlayerState(PlayerStateContext playerStateContext) {
 		super(playerStateContext, true, true);

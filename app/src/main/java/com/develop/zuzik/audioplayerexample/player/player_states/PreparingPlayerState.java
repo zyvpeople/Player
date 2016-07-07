@@ -12,7 +12,7 @@ import com.fernandocejas.arrow.optional.Optional;
  * User: zuzik
  * Date: 5/29/16
  */
-public class PreparingPlayerState extends BasePlayerState {
+class PreparingPlayerState extends BasePlayerState {
 
 	public PreparingPlayerState(PlayerStateContext playerStateContext) {
 		super(playerStateContext, false, false);

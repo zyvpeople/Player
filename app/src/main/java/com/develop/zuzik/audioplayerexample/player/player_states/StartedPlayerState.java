@@ -19,7 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * User: zuzik
  * Date: 5/29/16
  */
-public class StartedPlayerState extends BasePlayerState {
+class StartedPlayerState extends BasePlayerState {
 
 	private final Observable<Long> checkPlayerProgressObservable = Observable
 			.interval(1, TimeUnit.SECONDS)
