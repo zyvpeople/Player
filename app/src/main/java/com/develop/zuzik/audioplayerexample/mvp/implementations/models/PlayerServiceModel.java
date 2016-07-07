@@ -36,12 +36,13 @@ import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServi
  * User: zuzik
  * Date: 6/4/16
  */
+@SuppressWarnings("Convert2Diamond")
 public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final List<Listener<SourceInfo>> listeners = new ArrayList();
+	private final List<Listener<SourceInfo>> listeners = new ArrayList<>();
 	private Optional<PlayerSource<SourceInfo>> source = Optional.absent();
 	private Optional<PlaybackService> boundedService = Optional.absent();
 	private final int notificationId;
@@ -82,7 +83,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 				return Optional.of(state);
 			}
 		}
-		return this.source.transform(source -> new PlaybackState<SourceInfo>(State.NONE, 0, Optional.absent(), this.playbackSettings.isRepeat(), source));
+		return this.source.transform(source -> new PlaybackState<>(State.NONE, 0, Optional.absent(), this.playbackSettings.isRepeat(), source));
 	}
 
 	@Override
@@ -144,8 +145,8 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 								this.notificationFactory)));
 	}
 
-	private ComponentName startService(Intent play) {
-		return this.context.startService(play);
+	private void startService(Intent play) {
+		this.context.startService(play);
 	}
 
 	private void notifyOnUpdate() {

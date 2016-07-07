@@ -2,10 +2,8 @@ package com.develop.zuzik.audioplayerexample.presentation.activities;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -20,7 +18,7 @@ import com.develop.zuzik.audioplayerexample.presentation.fragments.ExampleFragme
 
 public class ExampleActivity extends AppCompatActivity {
 
-	Player.Model.Listener<Song> listener;
+	private Player.Model.Listener<Song> listener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,26 +89,6 @@ public class ExampleActivity extends AppCompatActivity {
 
 			}
 		};
-//		getModel().addListener(listener);
-
-		registerReceiver(new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				getModel().play();
-			}
-		}, new IntentFilter("com.develop.zuzik.audioplayerexample.PLAY"));
-		registerReceiver(new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				getModel().pause();
-			}
-		}, new IntentFilter("com.develop.zuzik.audioplayerexample.PAUSE"));
-		registerReceiver(new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				getModel().stop();
-			}
-		}, new IntentFilter("com.develop.zuzik.audioplayerexample.STOP"));
 	}
 
 	@Override
@@ -119,7 +97,7 @@ public class ExampleActivity extends AppCompatActivity {
 		super.onDestroy();
 	}
 
-	public Player.Model<Song> getModel() {
+	private Player.Model<Song> getModel() {
 		return ((App) getApplicationContext()).getModel();
 	}
 }

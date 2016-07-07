@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.annotation.RawRes;
+import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
 
@@ -49,6 +50,7 @@ public class RawResourcePlayerSource<SourceInfo> implements PlayerSource<SourceI
 				try {
 					afd.close();
 				} catch (IOException e) {
+					Log.e(getClass().getSimpleName(), e.getMessage());
 				}
 			}
 		} catch (Resources.NotFoundException e) {

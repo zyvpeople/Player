@@ -29,7 +29,7 @@ public class MultiplePlaybackState<SourceInfo> {
 	}
 
 	public MultiplePlaybackState<SourceInfo> withRepeatSingle(boolean repeatSingle) {
-		return new MultiplePlaybackState<SourceInfo>(
+		return new MultiplePlaybackState<>(
 				this.playerSources,
 				this.currentPlaybackState,
 				repeatSingle,
@@ -37,7 +37,7 @@ public class MultiplePlaybackState<SourceInfo> {
 	}
 
 	public MultiplePlaybackState<SourceInfo> withShuffle(boolean shuffle) {
-		return new MultiplePlaybackState<SourceInfo>(
+		return new MultiplePlaybackState<>(
 				this.playerSources,
 				this.currentPlaybackState,
 				this.repeatSingle,
@@ -45,7 +45,7 @@ public class MultiplePlaybackState<SourceInfo> {
 	}
 
 	public MultiplePlaybackState<SourceInfo> withCurrentPlaybackState(Optional<PlaybackState<SourceInfo>> currentPlaybackState) {
-		return new MultiplePlaybackState<SourceInfo>(
+		return new MultiplePlaybackState<>(
 				this.playerSources,
 				currentPlaybackState,
 				this.repeatSingle,

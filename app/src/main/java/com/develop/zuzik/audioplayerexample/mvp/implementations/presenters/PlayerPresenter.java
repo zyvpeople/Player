@@ -41,7 +41,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	}
 
 	@Override
-	public void onCreated() {
+	public void onCreate() {
 	}
 
 	@Override

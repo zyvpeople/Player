@@ -71,7 +71,7 @@ public interface Player {
 	interface Presenter<SourceInfo> {
 		void setView(View<SourceInfo> view);
 
-		void onCreated();
+		void onCreate();
 
 		void onDestroy();
 

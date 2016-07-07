@@ -41,8 +41,8 @@ public class MultiplePlayback<SourceInfo> {
 		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
 		this.currentPlayback = playerSources.isEmpty()
 				? Optional.absent()
-				: Optional.of(new LocalPlayback<SourceInfo>(this.context, new InMemoryPlaybackSettings(), playerSources.get(0)));
-		this.multiplePlaybackState = new MultiplePlaybackState<SourceInfo>(
+				: Optional.of(new LocalPlayback<>(this.context, new InMemoryPlaybackSettings(), playerSources.get(0)));
+		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				playerSources,
 				this.currentPlayback.transform(LocalPlayback::getPlaybackState),
 				false,
@@ -128,7 +128,7 @@ public class MultiplePlayback<SourceInfo> {
 		}
 		int indexOfPlayerSource = this.multiplePlaybackState.playerSources.indexOf(playerSource);
 		Optional<LocalPlayback<SourceInfo>> newPlayback = indexOfPlayerSource != -1
-				? Optional.of(new LocalPlayback<SourceInfo>(this.context, new InMemoryPlaybackSettings(), this.multiplePlaybackState.playerSources.get(indexOfPlayerSource)))
+				? Optional.of(new LocalPlayback<>(this.context, new InMemoryPlaybackSettings(), this.multiplePlaybackState.playerSources.get(indexOfPlayerSource)))
 				: Optional.absent();
 		switchFromOldToNewPlayback(this.currentPlayback, newPlayback);
 	}

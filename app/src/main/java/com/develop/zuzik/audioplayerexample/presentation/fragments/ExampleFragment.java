@@ -26,7 +26,6 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	private Button play;
 	private Button pause;
 	private Button stop;
-	private Button fakeError;
 	private SeekBar seekBar;
 	private TextView maxDuration;
 	private TextView currentPosition;
@@ -36,17 +35,11 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 	private Player.Presenter<Song> presenter;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_example, container, false);
 
-		this.presenter = new PlayerPresenter<Song>(getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPresenterDestroyStrategy());
+		this.presenter = new PlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPresenterDestroyStrategy());
 		this.presenter.setView(this);
 		this.presenter.onSetSource(new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song));
 
@@ -54,7 +47,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 		this.play = (Button) view.findViewById(R.id.play);
 		this.pause = (Button) view.findViewById(R.id.pause);
 		this.stop = (Button) view.findViewById(R.id.stop);
-		this.fakeError = (Button) view.findViewById(R.id.fakeError);
+		Button fakeError = (Button) view.findViewById(R.id.fakeError);
 		this.seekBar = (SeekBar) view.findViewById(R.id.seekBar);
 		this.maxDuration = (TextView) view.findViewById(R.id.maxDuration);
 		this.currentPosition = (TextView) view.findViewById(R.id.currentPosition);
@@ -64,7 +57,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 		this.play.setOnClickListener(v -> this.presenter.onPlay());
 		this.pause.setOnClickListener(v -> this.presenter.onPause());
 		this.stop.setOnClickListener(v -> this.presenter.onStop());
-		this.fakeError.setOnClickListener(v -> this.presenter.simulateError());
+		fakeError.setOnClickListener(v -> this.presenter.simulateError());
 		this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -89,7 +82,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 			}
 		});
 
-		this.presenter.onCreated();
+		this.presenter.onCreate();
 
 		return view;
 	}
@@ -181,7 +174,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 
 	//endregion
 
-	public Player.Model<Song> getModel() {
+	private Player.Model<Song> getModel() {
 		return ((App) getActivity().getApplicationContext()).getModel();
 	}
 }

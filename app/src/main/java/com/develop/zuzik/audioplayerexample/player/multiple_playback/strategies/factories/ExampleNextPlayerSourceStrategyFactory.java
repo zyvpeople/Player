@@ -12,7 +12,7 @@ public class ExampleNextPlayerSourceStrategyFactory<SourceInfo> implements Playe
 	@Override
 	public PlayerSourceStrategy<SourceInfo> create(boolean shuffle) {
 		return shuffle
-				? new ShufflePlayerSourceStrategy<SourceInfo>()
-				: new EndedNextPlayerSourceStrategy<SourceInfo>();
+				? new ShufflePlayerSourceStrategy<>()
+				: new EndedNextPlayerSourceStrategy<>();
 	}
 }

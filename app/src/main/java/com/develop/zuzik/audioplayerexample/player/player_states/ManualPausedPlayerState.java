@@ -6,7 +6,7 @@ import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.Play
  * User: zuzik
  * Date: 5/29/16
  */
-public class ManualPausedPlayerState extends PausedPlayerState {
+class ManualPausedPlayerState extends PausedPlayerState {
 
 	public ManualPausedPlayerState(PlayerStateContext playerStateContext) {
 		super(playerStateContext);

@@ -57,7 +57,7 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 
 	@Override
 	public MultiplePlayerModelState<SourceInfo> getState() {
-		return new MultiplePlayerModelState<SourceInfo>(this.playback.getMultiplePlaybackState(), this.repeat, this.shuffle);
+		return new MultiplePlayerModelState<>(this.playback.getMultiplePlaybackState(), this.repeat, this.shuffle);
 	}
 
 	@Override

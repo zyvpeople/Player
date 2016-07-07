@@ -31,7 +31,7 @@ public class PlaybackState<SourceInfo> implements Serializable {
 	}
 
 	public PlaybackState<SourceInfo> withRepeat(boolean repeat) {
-		return new PlaybackState<SourceInfo>(
+		return new PlaybackState<>(
 				this.state,
 				this.currentTimeInMilliseconds,
 				this.maxTimeInMilliseconds,

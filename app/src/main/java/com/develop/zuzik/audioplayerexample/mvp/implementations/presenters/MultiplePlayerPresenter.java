@@ -27,9 +27,9 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
 
-	List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
-	List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
-	List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
+	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
+	private final List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
+	private final List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
 	public MultiplePlayerPresenter(MultiplePlayer.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;

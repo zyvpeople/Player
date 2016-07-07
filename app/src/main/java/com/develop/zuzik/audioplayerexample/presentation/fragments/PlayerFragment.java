@@ -71,7 +71,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.presenter = new MultiplePlayerPresenter<Song>(
+		this.presenter = new MultiplePlayerPresenter<>(
 				new MultiplePlayerModel<>(
 						getContext(),
 						Arrays.asList(

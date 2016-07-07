@@ -69,7 +69,7 @@ public class PlaybackServiceIntentFactory {
 		parseAction(intent, ACTION_STOP, success);
 	}
 
-	static void parseAction(Intent intent, String action, Action success) {
+	private static void parseAction(Intent intent, String action, Action success) {
 		if (intent != null && action.equals(intent.getAction())) {
 			success.execute();
 		}

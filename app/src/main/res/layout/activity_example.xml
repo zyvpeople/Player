@@ -25,6 +25,7 @@
             android:orientation="horizontal">
 
             <Button
+                style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/addLeft"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -32,6 +33,7 @@
                 android:text="Add left"/>
 
             <Button
+                style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/removeLeft"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -60,6 +62,7 @@
             android:orientation="horizontal">
 
             <Button
+                style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/addRight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -67,6 +70,7 @@
                 android:text="Add right"/>
 
             <Button
+                style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/removeRight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

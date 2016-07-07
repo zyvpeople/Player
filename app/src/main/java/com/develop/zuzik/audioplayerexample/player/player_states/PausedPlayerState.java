@@ -14,7 +14,7 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 abstract class PausedPlayerState extends BasePlayerState {
 
-	protected PausedPlayerState(PlayerStateContext playerStateContext) {
+	PausedPlayerState(PlayerStateContext playerStateContext) {
 		super(playerStateContext, true, true);
 	}
 

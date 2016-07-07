@@ -18,8 +18,8 @@ public class PlaybackServiceInitializeBundle<SourceInfo> implements Serializable
 	public final int notificationId;
 	public final NotificationFactory<SourceInfo> notificationFactory;
 
-	public PlaybackServiceInitializeBundle(PlayerSource playerSource,
-										   PlaybackFactory playbackFactory,
+	public PlaybackServiceInitializeBundle(PlayerSource<SourceInfo> playerSource,
+										   PlaybackFactory<SourceInfo> playbackFactory,
 										   PlaybackSettings playbackSettings,
 										   int notificationId,
 										   NotificationFactory<SourceInfo> notificationFactory) {

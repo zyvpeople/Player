@@ -25,7 +25,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final List<Listener<SourceInfo>> listeners = new ArrayList();
+	private final List<Listener<SourceInfo>> listeners = new ArrayList<>();
 	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 
 	public PlayerModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {

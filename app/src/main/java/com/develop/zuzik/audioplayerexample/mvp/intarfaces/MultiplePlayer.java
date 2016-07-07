@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
-import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;

@@ -19,7 +19,7 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 abstract class BasePlayerState implements PlayerState {
 
-	protected final PlayerStateContext playerStateContext;
+	final PlayerStateContext playerStateContext;
 	private final boolean allowSetRepeat;
 	private final boolean allowSeekToPosition;
 	private MediaPlayerState mediaPlayerState = new MediaPlayerState(State.NONE, 0, Optional.absent());
@@ -28,7 +28,7 @@ abstract class BasePlayerState implements PlayerState {
 
 	protected abstract void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException;
 
-	protected BasePlayerState(
+	BasePlayerState(
 			PlayerStateContext playerStateContext,
 			boolean allowSetRepeat,
 			boolean allowSeekToPosition) {
@@ -37,15 +37,15 @@ abstract class BasePlayerState implements PlayerState {
 		this.allowSeekToPosition = allowSeekToPosition;
 	}
 
-	protected final MediaPlayer getMediaPlayer() {
+	final MediaPlayer getMediaPlayer() {
 		return this.playerStateContext.getMediaPlayer();
 	}
 
-	protected final PlayerSource getPlayerInitializer() {
+	final PlayerSource getPlayerInitializer() {
 		return this.playerStateContext.getPlayerSource();
 	}
 
-	protected final void getMediaPlayerSafely(ParamAction<MediaPlayer> action) {
+	final void getMediaPlayerSafely(ParamAction<MediaPlayer> action) {
 		try {
 			action.execute(getMediaPlayer());
 		} catch (IllegalStateException e) {
@@ -54,30 +54,30 @@ abstract class BasePlayerState implements PlayerState {
 		}
 	}
 
-	protected final void applyState(PlayerState state) {
+	final void applyState(PlayerState state) {
 		this.playerStateContext.setPlayerState(state);
 	}
 
-	protected final void saveMediaPlayerState(MediaPlayerState mediaPlayerState) {
+	private void saveMediaPlayerState(MediaPlayerState mediaPlayerState) {
 		this.mediaPlayerState = mediaPlayerState;
 	}
 
-	protected final void saveMediaPlayerStateAndNotify(MediaPlayerState mediaPlayerState) {
+	final void saveMediaPlayerStateAndNotify(MediaPlayerState mediaPlayerState) {
 		saveMediaPlayerState(mediaPlayerState);
 		this.playerStateContext.onUpdate();
 	}
 
-	protected final void handleError(Throwable throwable) {
+	final void handleError(Throwable throwable) {
 		abandonAudioFocus();
 		getMediaPlayer().reset();
 		this.playerStateContext.onError(throwable);
 	}
 
-	protected final void abandonAudioFocus() {
+	final void abandonAudioFocus() {
 		this.playerStateContext.abandonAudioFocus();
 	}
 
-	protected final void stopPlayer() {
+	final void stopPlayer() {
 		getMediaPlayerSafely(value -> {
 			value.stop();
 			applyState(new IdlePlayerState(this.playerStateContext));
