@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackState;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 
 /**
  * User: zuzik

@@ -3,18 +3,18 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback.local;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackState;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.NullMultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.null_objects.NullMultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlayback;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;
@@ -25,12 +25,12 @@ import java.util.List;
  */
 //TODO: add logic for add and remove songs from list
 //TODO: add logic for start any song and not only next and previous
-public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback {
+public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<SourceInfo> {
 
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private Optional<LocalPlayback<SourceInfo>> currentPlayback;
 
-	private MultiplePlaybackListener listener = new NullMultiplePlaybackListener();
+	private MultiplePlaybackListener<SourceInfo> listener = new NullMultiplePlaybackListener<>();
 	private final PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory;
 	private final PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory;
 	private final Context context;
@@ -53,7 +53,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback {
 				false);
 	}
 
-	public void setListener(MultiplePlaybackListener listener) {
+	public void setListener(MultiplePlaybackListener<SourceInfo> listener) {
 		this.listener = listener != null
 				? listener
 				: new NullMultiplePlaybackListener();
@@ -70,23 +70,23 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback {
 	}
 
 	public void repeatSingle() {
-		this.multiplePlaybackState = this.multiplePlaybackState.withRepeatSingle(true);
+		this.multiplePlaybackState = this.multiplePlaybackState.builder().repeatSingle(true).build();
 		currentPlayback(LocalPlayback::repeat);
 	}
 
 	public void doNotRepeatSingle() {
-		this.multiplePlaybackState = this.multiplePlaybackState.withRepeatSingle(false);
+		this.multiplePlaybackState = this.multiplePlaybackState.builder().repeatSingle(false).build();
 		currentPlayback(LocalPlayback::doNotRepeat);
 	}
 
 	public void shuffle() {
-		this.multiplePlaybackState = this.multiplePlaybackState.withShuffle(true);
-		this.listener.onUpdate();
+		this.multiplePlaybackState = this.multiplePlaybackState.builder().shuffle(true).build();
+		this.listener.onUpdate(getMultiplePlaybackState());
 	}
 
 	public void doNotShuffle() {
-		this.multiplePlaybackState = this.multiplePlaybackState.withShuffle(false);
-		this.listener.onUpdate();
+		this.multiplePlaybackState = this.multiplePlaybackState.builder().shuffle(false).build();
+		this.listener.onUpdate(getMultiplePlaybackState());
 	}
 
 	//region Play
@@ -146,26 +146,34 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback {
 			this.currentPlayback = newPlayback;
 			initPlayback(newPlayback.get(), true);
 		}
-		this.multiplePlaybackState = this.multiplePlaybackState.withCurrentPlaybackState(
-				this.currentPlayback.transform(LocalPlayback::getPlaybackState));
+		this.multiplePlaybackState = this.multiplePlaybackState
+				.builder()
+				.currentPlaybackState(this.currentPlayback.transform(LocalPlayback::getPlaybackState))
+				.build();
 	}
 
 	private void initPlayback(LocalPlayback<SourceInfo> playback, boolean play) {
-		playback.setPlaybackListener(new PlaybackListener() {
+		playback.setPlaybackListener(new PlaybackListener<SourceInfo>() {
 
 			@Override
-			public void onUpdate(PlaybackState playbackState) {
-				PlaybackState<SourceInfo> bundle = playback.getPlaybackState();
-				multiplePlaybackState = multiplePlaybackState.withCurrentPlaybackState(Optional.of(bundle));
-				listener.onUpdate();
-				if (bundle.state == State.COMPLETED) {
+			public void onUpdate(PlaybackState<SourceInfo> playbackState) {
+				multiplePlaybackState = multiplePlaybackState
+						.builder()
+						.currentPlaybackState(Optional.of(playbackState))
+						.build();
+
+				listener.onUpdate(multiplePlaybackState);
+				if (playbackState.state == State.COMPLETED) {
 					skipNext();
 				}
 			}
 
 			@Override
 			public void onError(Throwable throwable) {
-				multiplePlaybackState = multiplePlaybackState.withCurrentPlaybackState(Optional.of(playback.getPlaybackState()));
+				multiplePlaybackState = multiplePlaybackState
+						.builder()
+						.currentPlaybackState(Optional.of(playback.getPlaybackState()))
+						.build();
 				listener.onError(throwable);
 				skipNext();
 			}

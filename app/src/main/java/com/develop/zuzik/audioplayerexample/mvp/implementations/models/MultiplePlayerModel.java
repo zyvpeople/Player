@@ -4,9 +4,10 @@ import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;
@@ -36,9 +37,9 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	@Override
 	public void init() {
 		this.playback.init();
-		this.playback.setListener(new MultiplePlaybackListener() {
+		this.playback.setListener(new MultiplePlaybackListener<SourceInfo>() {
 			@Override
-			public void onUpdate() {
+			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
 				playbackStateChangedPublishSubject.onNext(null);
 			}
 
