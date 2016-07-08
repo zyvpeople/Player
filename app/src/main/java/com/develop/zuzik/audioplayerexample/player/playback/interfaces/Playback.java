@@ -20,11 +20,11 @@ public interface Playback<SourceInfo> {
 
 	void stop();
 
+	void seekTo(int positionInMilliseconds);
+
 	void repeat();
 
 	void doNotRepeat();
-
-	void seekTo(int positionInMilliseconds);
 
 	void simulateError();
 

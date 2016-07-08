@@ -9,7 +9,7 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_sour
  * User: zuzik
  * Date: 6/18/16
  */
-public class ExampleNextPlayerSourceStrategyFactory<SourceInfo> implements PlayerSourceStrategyFactory<SourceInfo> {
+public class ExampleOnCompletePlayerSourceStrategyFactory<SourceInfo> implements PlayerSourceStrategyFactory<SourceInfo> {
 	@Override
 	public PlayerSourceStrategy<SourceInfo> create(boolean shuffle) {
 		return shuffle

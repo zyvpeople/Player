@@ -6,8 +6,11 @@ import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.settings.InMemoryMultiplePlaybackSettings;
+import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;
@@ -19,6 +22,7 @@ import rx.subjects.PublishSubject;
  * User: zuzik
  * Date: 6/4/16
  */
+
 public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<SourceInfo> {
 
 	private final LocalMultiplePlayback<SourceInfo> playback;
@@ -27,17 +31,26 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	private boolean repeat;
 	private boolean shuffle;
 
+	private List<PlayerSource<SourceInfo>> initializers;
+
 	public MultiplePlayerModel(Context context,
 							   List<PlayerSource<SourceInfo>> initializers,
-							   PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
-							   PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory) {
-		this.playback = new LocalMultiplePlayback<>(context, initializers, nextPlayerSourceStrategyFactory, previousPlayerSourceStrategyFactory);
+							   PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
+							   PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
+							   PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory) {
+		this.playback = new LocalMultiplePlayback<>(
+				context,
+				new LocalPlaybackFactory<>(),
+				new InMemoryMultiplePlaybackSettings(),
+				nextPlayerSourceStrategy,
+				previousPlayerSourceStrategy,
+				onCompletePlayerSourceStrategyFactory);
+		this.initializers = initializers;
 	}
 
 	@Override
 	public void init() {
-		this.playback.init();
-		this.playback.setListener(new MultiplePlaybackListener<SourceInfo>() {
+		this.playback.setMultiplePlaybackListener(new MultiplePlaybackListener<SourceInfo>() {
 			@Override
 			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
 				playbackStateChangedPublishSubject.onNext(null);
@@ -48,12 +61,13 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 				errorPlayingPublishSubject.onNext(throwable);
 			}
 		});
+		this.playback.setPlayerSources(this.initializers);
 	}
 
 	@Override
 	public void destroy() {
-		this.playback.setListener(null);
-		this.playback.release();
+		this.playback.setMultiplePlaybackListener(null);
+		this.playback.clear();
 	}
 
 	@Override
@@ -88,12 +102,12 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 
 	@Override
 	public void skipNext() {
-		this.playback.skipNext();
+		this.playback.playNextPlayerSource();
 	}
 
 	@Override
 	public void skipPrevious() {
-		this.playback.skipPrevious();
+		this.playback.playPreviousPlayerSource();
 	}
 
 	@Override
@@ -127,7 +141,7 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 
 	@Override
 	public void switchToSource(PlayerSource<SourceInfo> source) {
-		this.playback.switchToPlayerSource(source);
+		this.playback.playPlayerSource(source);
 	}
 
 	@Override

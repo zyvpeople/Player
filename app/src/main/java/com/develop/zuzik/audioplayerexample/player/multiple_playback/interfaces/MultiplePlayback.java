@@ -1,37 +1,20 @@
 package com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces;
 
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+
+import java.util.List;
+
 /**
  * User: zuzik
  * Date: 7/7/16
  */
 public interface MultiplePlayback<SourceInfo> {
 
-//	MultiplePlaybackState<SourceInfo> getMultiplePlaybackState();
+	MultiplePlaybackState<SourceInfo> getMultiplePlaybackState();
 
-//	void setMultiplePlaybackListener(MultiplePlaybackListener listener);
+	void setMultiplePlaybackListener(MultiplePlaybackListener<SourceInfo> multiplePlaybackListener);
 
-	//public void repeatSingle()
-	//public void doNotRepeatSingle() {
-	//	public void shuffle() {
-//	public void doNotShuffle() {
-//public void init()
-	//public void release()
-	//public void play()
-	//public void pause()
-	//public void stop()
-	//public void seekTo(int positionInMilliseconds)
-	//public void skipNext()
-	//	public void skipPrevious() {
-	//	public void switchToPlayerSource(PlayerSource<SourceInfo> playerSource) {
-//public void simulateError()
-
-	/*
-
-	void setPlaybackListener(PlaybackListener<SourceInfo> playbackListener);
-
-	void init();
-
-	void release();
+	void clear();
 
 	void play();
 
@@ -39,12 +22,28 @@ public interface MultiplePlayback<SourceInfo> {
 
 	void stop();
 
-	void repeat();
-
-	void doNotRepeat();
-
 	void seekTo(int positionInMilliseconds);
 
+	void repeatSingle();
+
+	void doNotRepeatSingle();
+
+	void shuffle();
+
+	void doNotShuffle();
+
 	void simulateError();
-	 */
+
+	void setPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
+
+	void addPlayerSource(PlayerSource<SourceInfo> playerSource);
+
+	void removePlayerSource(PlayerSource<SourceInfo> playerSource);
+
+	void playPlayerSource(PlayerSource<SourceInfo> playerSource);
+
+	void playNextPlayerSource();
+
+	void playPreviousPlayerSource();
+
 }

@@ -87,6 +87,11 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	}
 
 	@Override
+	public void seekTo(int positionInMilliseconds) {
+		this.playerState.seekTo(positionInMilliseconds);
+	}
+
+	@Override
 	public void repeat() {
 		this.settings.repeat();
 		repeat(true);
@@ -96,11 +101,6 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	public void doNotRepeat() {
 		this.settings.doNotRepeat();
 		repeat(false);
-	}
-
-	@Override
-	public void seekTo(int positionInMilliseconds) {
-		this.playerState.seekTo(positionInMilliseconds);
 	}
 
 	@Override

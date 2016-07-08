@@ -17,6 +17,10 @@ import com.develop.zuzik.audioplayerexample.presentation.notifications.SongNotif
 //TODO: implement sound volume when sms
 //TODO: implement sound volume when headphone is detached from device
 //TODO: create widget for launcher
+//TODO: rework PlaybackSettings -> playback must not depend on this class, settings must be only in model
+//TODO: for playbacks add multiple listeners instead of one
+//TODO: add static methods for null objects
+//TODO: try to create playback without init method and ability to set player source not in constructor
 public class App extends Application {
 
 	private Player.Model<Song> model;
