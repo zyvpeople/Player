@@ -46,6 +46,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 
 	@Override
 	public void onDestroy() {
+		//TODO: set null view ???
 		this.destroyStrategy.onDestroy(this.model);
 	}
 

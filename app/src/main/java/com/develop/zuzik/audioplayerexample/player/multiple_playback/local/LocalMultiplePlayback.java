@@ -76,8 +76,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	@Override
 	public void clear() {
-		currentPlayback(Playback::release);
-		this.currentPlayback = Optional.absent();
+		releaseCurrentPlaybackAndUpdateState();
 		this.multiplePlaybackListener = new NullMultiplePlaybackListener<>();
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<>(),
@@ -94,9 +93,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 					boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
 					if (hasPlayerSources) {
 						PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
-						this.currentPlayback = Optional.of(createPlayback(playerSource));
-						currentPlayback(Playback::init);
-						currentPlayback(Playback::play);
+						setAndInitAndPlayCurrentPlayback(playerSource);
 					}
 				});
 	}
@@ -159,14 +156,12 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 		if (playerSourcesEqual) {
 			return;
 		}
-		currentPlayback(Playback::release);
+		releaseCurrentPlaybackAndUpdateState();
 		this.multiplePlaybackState = this.multiplePlaybackState.builder().playerSources(playerSources).build();
 		boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
 		if (hasPlayerSources) {
 			PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
-			this.currentPlayback = Optional.of(createPlayback(playerSource));
-			currentPlayback(Playback::init);
-			currentPlayback(Playback::play);
+			setAndInitAndPlayCurrentPlayback(playerSource);
 		} else {
 			notifyStateChanged();
 		}
@@ -205,10 +200,8 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 		if (!playerSourceExists) {
 			return;
 		}
-		currentPlayback(Playback::release);
-		this.currentPlayback = Optional.of(createPlayback(playerSource));
-		currentPlayback(Playback::init);
-		currentPlayback(Playback::play);
+		releaseCurrentPlaybackAndUpdateState();
+		setAndInitAndPlayCurrentPlayback(playerSource);
 	}
 
 	@Override
@@ -219,17 +212,13 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 					if (!newPlayerSource.isPresent()) {
 						return;
 					}
-					currentPlayback(Playback::release);
-					this.currentPlayback = Optional.of(createPlayback(newPlayerSource.get()));
-					currentPlayback(Playback::init);
-					currentPlayback(Playback::play);
+					releaseCurrentPlaybackAndUpdateState();
+					setAndInitAndPlayCurrentPlayback(newPlayerSource.get());
 				}, () -> {
 					boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
 					if (hasPlayerSources) {
 						PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
-						this.currentPlayback = Optional.of(createPlayback(playerSource));
-						currentPlayback(Playback::init);
-						currentPlayback(Playback::play);
+						setAndInitAndPlayCurrentPlayback(playerSource);
 					}
 				});
 	}
@@ -242,17 +231,13 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 					if (!newPlayerSource.isPresent()) {
 						return;
 					}
-					currentPlayback(Playback::release);
-					this.currentPlayback = Optional.of(createPlayback(newPlayerSource.get()));
-					currentPlayback(Playback::init);
-					currentPlayback(Playback::play);
+					releaseCurrentPlaybackAndUpdateState();
+					setAndInitAndPlayCurrentPlayback(newPlayerSource.get());
 				}, () -> {
 					boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
 					if (hasPlayerSources) {
 						PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
-						this.currentPlayback = Optional.of(createPlayback(playerSource));
-						currentPlayback(Playback::init);
-						currentPlayback(Playback::play);
+						setAndInitAndPlayCurrentPlayback(playerSource);
 					}
 				});
 	}
@@ -268,19 +253,29 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 					if (!newPlayerSource.isPresent()) {
 						return;
 					}
-					currentPlayback(Playback::release);
-					this.currentPlayback = Optional.of(createPlayback(newPlayerSource.get()));
-					currentPlayback(Playback::init);
-					currentPlayback(Playback::play);
+					releaseCurrentPlaybackAndUpdateState();
+					setAndInitAndPlayCurrentPlayback(newPlayerSource.get());
 				}, () -> {
 					boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
 					if (hasPlayerSources) {
 						PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
-						this.currentPlayback = Optional.of(createPlayback(playerSource));
-						currentPlayback(Playback::init);
-						currentPlayback(Playback::play);
+						setAndInitAndPlayCurrentPlayback(playerSource);
 					}
 				});
+	}
+
+	private void setAndInitAndPlayCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
+		this.currentPlayback = Optional.of(createPlayback(playerSource));
+		currentPlayback(Playback::init);
+		currentPlayback(Playback::play);
+	}
+
+	private void releaseCurrentPlaybackAndUpdateState() {
+		currentPlayback(value -> {
+			value.release();
+			this.currentPlayback = Optional.absent();
+			this.multiplePlaybackState.builder().currentPlaybackState(Optional.absent());
+		});
 	}
 
 	private void currentPlayback(ParamAction<Playback<SourceInfo>> success) {

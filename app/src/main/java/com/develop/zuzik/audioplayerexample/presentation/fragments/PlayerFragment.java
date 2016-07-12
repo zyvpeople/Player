@@ -17,13 +17,10 @@ import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
+import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
 import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedNextPlayerSourceStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
@@ -72,19 +69,15 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.presenter = new MultiplePlayerPresenter<>(
-				new MultiplePlayerModel<>(
-						getContext(),
-						Arrays.asList(
-								new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
-								new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
-								new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
-								new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)),
-						new EndedNextPlayerSourceStrategy<>(),
-						new EndedPreviousPlayerSourceStrategy<>(),
-						new ExampleOnCompletePlayerSourceStrategyFactory<>()),
-				new ExamplePlayerExceptionMessageProvider());
-		this.presenter.onInit(this);
+		this.presenter = new MultiplePlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider());
+		this.presenter.setView(this);
+		this.presenter.onSetPlayerSources(
+				Arrays.asList(
+						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
+						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
+						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), Uri.parse("http://picosong.com/cdn/8768acb97f1c9333b01b1c545756ff81.mp3")),
+						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
+		this.presenter.onCreate();
 	}
 
 	@Override
@@ -315,5 +308,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	private void applyStateToShuffleButton(String tag, @DrawableRes int imageResId) {
 		this.shuffle.setTag(tag);
 		this.shuffle.setImageResource(imageResId);
+	}
+
+	private MultiplePlayer.Model<Song> getModel() {
+		return ((App) getActivity().getApplicationContext()).getMultiplePlayerModel();
 	}
 }

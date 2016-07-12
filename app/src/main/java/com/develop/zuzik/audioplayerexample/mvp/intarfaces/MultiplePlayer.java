@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
 
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;
@@ -12,11 +13,11 @@ import rx.Observable;
  */
 public interface MultiplePlayer {
 	interface Model<SourceInfo> {
-		void init();
+		void setSources(List<PlayerSource<SourceInfo>> sources);
 
-		void destroy();
+		void clear();
 
-		MultiplePlayerModelState<SourceInfo> getState();
+		MultiplePlaybackState<SourceInfo> getState();
 
 		Observable<Void> stateChangedObservable();
 
@@ -76,13 +77,17 @@ public interface MultiplePlayer {
 	}
 
 	interface Presenter<SourceInfo> {
-		void onInit(View<SourceInfo> view);
+		void setView(View<SourceInfo> view);
+
+		void onCreate();
 
 		void onDestroy();
 
 		void onAppear();
 
 		void onDisappear();
+
+		void onSetPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
 
 		void onPlay();
 

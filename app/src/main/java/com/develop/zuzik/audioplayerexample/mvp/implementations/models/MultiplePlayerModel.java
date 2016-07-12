@@ -3,14 +3,13 @@ package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.settings.InMemoryMultiplePlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
+import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;
@@ -28,28 +27,20 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	private final LocalMultiplePlayback<SourceInfo> playback;
 	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
 	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
-	private boolean repeat;
-	private boolean shuffle;
-
-	private List<PlayerSource<SourceInfo>> initializers;
 
 	public MultiplePlayerModel(Context context,
-							   List<PlayerSource<SourceInfo>> initializers,
+							   PlaybackFactory<SourceInfo> playbackFactory,
 							   PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
 							   PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
-							   PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory) {
+							   PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
+							   MultiplePlaybackSettings playbackSettings) {
 		this.playback = new LocalMultiplePlayback<>(
 				context,
-				new LocalPlaybackFactory<>(),
-				new InMemoryMultiplePlaybackSettings(),
+				playbackFactory,
+				playbackSettings,
 				nextPlayerSourceStrategy,
 				previousPlayerSourceStrategy,
 				onCompletePlayerSourceStrategyFactory);
-		this.initializers = initializers;
-	}
-
-	@Override
-	public void init() {
 		this.playback.setMultiplePlaybackListener(new MultiplePlaybackListener<SourceInfo>() {
 			@Override
 			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
@@ -61,18 +52,22 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 				errorPlayingPublishSubject.onNext(throwable);
 			}
 		});
-		this.playback.setPlayerSources(this.initializers);
 	}
 
 	@Override
-	public void destroy() {
+	public void setSources(List<PlayerSource<SourceInfo>> playerSources) {
+		this.playback.setPlayerSources(playerSources);
+	}
+
+	@Override
+	public void clear() {
 		this.playback.setMultiplePlaybackListener(null);
 		this.playback.clear();
 	}
 
 	@Override
-	public MultiplePlayerModelState<SourceInfo> getState() {
-		return new MultiplePlayerModelState<>(this.playback.getMultiplePlaybackState(), this.repeat, this.shuffle);
+	public MultiplePlaybackState<SourceInfo> getState() {
+		return this.playback.getMultiplePlaybackState();
 	}
 
 	@Override
@@ -117,25 +112,21 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 
 	@Override
 	public void repeatSingle() {
-		this.repeat = true;
 		this.playback.repeatSingle();
 	}
 
 	@Override
 	public void doNotRepeatSingle() {
-		this.repeat = false;
 		this.playback.doNotRepeatSingle();
 	}
 
 	@Override
 	public void shuffle() {
-		this.shuffle = true;
 		this.playback.shuffle();
 	}
 
 	@Override
 	public void doNotShuffle() {
-		this.shuffle = false;
 		this.playback.doNotShuffle();
 	}
 

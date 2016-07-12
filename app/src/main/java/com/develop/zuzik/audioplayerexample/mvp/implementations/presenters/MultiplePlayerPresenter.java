@@ -1,8 +1,8 @@
 package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayerModelState;
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.audioplayerexample.mvp.intarfaces.null_objects.NullMultiplePlayerView;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
@@ -22,7 +22,7 @@ import rx.Subscription;
 public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Presenter<SourceInfo> {
 
 	private final MultiplePlayer.Model<SourceInfo> model;
-	private MultiplePlayer.View<SourceInfo> view;
+	private MultiplePlayer.View<SourceInfo> view = new NullMultiplePlayerView<>();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private Subscription playbackStateChangedSubscription;
 	private Subscription errorPlayingSubscription;
@@ -37,15 +37,18 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	}
 
 	@Override
-	public void onInit(MultiplePlayer.View<SourceInfo> view) {
-		this.view = view;
-		this.model.init();
+	public void setView(MultiplePlayer.View<SourceInfo> view) {
+		this.view = view != null ? view : new NullMultiplePlayerView<>();
+	}
+
+	@Override
+	public void onCreate() {
 	}
 
 	@Override
 	public void onDestroy() {
-		this.view = null;
-		this.model.destroy();
+		//TODO: set null view???
+		//TODO: use destroy strategy like in PlayerPresenter
 	}
 
 	@Override
@@ -62,6 +65,11 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	public void onDisappear() {
 		this.playbackStateChangedSubscription.unsubscribe();
 		this.errorPlayingSubscription.unsubscribe();
+	}
+
+	@Override
+	public void onSetPlayerSources(List<PlayerSource<SourceInfo>> playerSources) {
+		this.model.setSources(playerSources);
 	}
 
 	@Override
@@ -116,12 +124,12 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	@Override
 	public void onRepeatAll() {
-
+		//TODO: implement
 	}
 
 	@Override
 	public void onDoNotRepeatAll() {
-
+		//TODO: implement
 	}
 
 	@Override
@@ -138,8 +146,8 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 		updateView(this.model.getState());
 	}
 
-	private void updateView(MultiplePlayerModelState<SourceInfo> state) {
-		if (state.repeat) {
+	private void updateView(MultiplePlaybackState<SourceInfo> state) {
+		if (state.repeatSingle) {
 			this.view.repeat();
 		} else {
 			this.view.doNotRepeat();
@@ -151,10 +159,9 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 			this.view.doNotShuffle();
 		}
 
-		MultiplePlaybackState<SourceInfo> bundle = state.bundle;
-		this.view.displaySources(bundle.playerSources);
-		if (bundle.currentPlaybackState.isPresent()) {
-			PlaybackState<SourceInfo> playbackState = bundle.currentPlaybackState.get();
+		this.view.displaySources(state.playerSources);
+		if (state.currentPlaybackState.isPresent()) {
+			PlaybackState<SourceInfo> playbackState = state.currentPlaybackState.get();
 
 			this.view.enablePlayControls(
 					this.allowedPlayButtonStates.contains(playbackState.state),
