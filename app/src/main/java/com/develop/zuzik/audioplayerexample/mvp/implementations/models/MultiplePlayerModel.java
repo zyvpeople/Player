@@ -37,14 +37,25 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 		this.playback = new LocalMultiplePlayback<>(
 				context,
 				playbackFactory,
-				playbackSettings,
 				nextPlayerSourceStrategy,
 				previousPlayerSourceStrategy,
-				onCompletePlayerSourceStrategyFactory);
+				onCompletePlayerSourceStrategyFactory,
+				playbackSettings.isRepeatSingle(),
+				playbackSettings.isShuffle());
 		this.playback.setMultiplePlaybackListener(new MultiplePlaybackListener<SourceInfo>() {
 			@Override
 			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
 				playbackStateChangedPublishSubject.onNext(null);
+				if (multiplePlaybackState.repeatSingle) {
+					playbackSettings.repeatSingle();
+				} else {
+					playbackSettings.doNotRepeatSingle();
+				}
+				if (multiplePlaybackState.shuffle) {
+					playbackSettings.shuffle();
+				} else {
+					playbackSettings.doNotShuffle();
+				}
 			}
 
 			@Override

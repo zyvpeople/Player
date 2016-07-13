@@ -7,7 +7,6 @@ import com.develop.zuzik.audioplayerexample.player.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
@@ -29,13 +28,11 @@ import java.util.List;
  * User: zuzik
  * Date: 6/4/16
  */
-//TODO: when release current playback -> update state in model
 public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<SourceInfo> {
 
 	private final Context context;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
 	private final PlaybackSettings playbackSettings = new InMemoryPlaybackSettings();
-	private final MultiplePlaybackSettings multiplePlaybackSettings;
 	private final PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy;
 	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
 	PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
@@ -45,21 +42,21 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	public LocalMultiplePlayback(Context context,
 								 PlaybackFactory<SourceInfo> playbackFactory,
-								 MultiplePlaybackSettings multiplePlaybackSettings,
 								 PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
 								 PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
-								 PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory) {
+								 PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
+								 boolean repeatSingle,
+								 boolean shuffle) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackFactory = playbackFactory;
-		this.multiplePlaybackSettings = multiplePlaybackSettings;
 		this.nextPlayerSourceStrategy = nextPlayerSourceStrategy;
 		this.previousPlayerSourceStrategy = previousPlayerSourceStrategy;
 		this.onCompletePlayerSourceStrategyFactory = onCompletePlayerSourceStrategyFactory;
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<>(),
 				Optional.absent(),
-				multiplePlaybackSettings.isRepeatSingle(),
-				multiplePlaybackSettings.isShuffle());
+				repeatSingle,
+				shuffle);
 	}
 
 	@Override
@@ -115,7 +112,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	@Override
 	public void repeatSingle() {
-		this.multiplePlaybackSettings.repeatSingle();
 		this.multiplePlaybackState = this.multiplePlaybackState.builder().repeatSingle(true).build();
 		currentPlayback(
 				Playback::repeat,
@@ -124,7 +120,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	@Override
 	public void doNotRepeatSingle() {
-		this.multiplePlaybackSettings.doNotRepeatSingle();
 		this.multiplePlaybackState = this.multiplePlaybackState.builder().repeatSingle(false).build();
 		currentPlayback(
 				Playback::doNotRepeat,
@@ -133,14 +128,12 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	@Override
 	public void shuffle() {
-		this.multiplePlaybackSettings.shuffle();
 		this.multiplePlaybackState = this.multiplePlaybackState.builder().shuffle(true).build();
 		notifyStateChanged();
 	}
 
 	@Override
 	public void doNotShuffle() {
-		this.multiplePlaybackSettings.doNotShuffle();
 		this.multiplePlaybackState = this.multiplePlaybackState.builder().shuffle(false).build();
 		notifyStateChanged();
 	}
@@ -249,7 +242,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private void switchToNewPlayerSource() {
 		currentPlayback(
 				playback -> {
-					Optional<PlayerSource<SourceInfo>> newPlayerSource = this.onCompletePlayerSourceStrategyFactory.create(this.multiplePlaybackSettings.isShuffle()).determine(getMultiplePlaybackState().playerSources, playback.getPlaybackState().playerSource);
+					Optional<PlayerSource<SourceInfo>> newPlayerSource = this.onCompletePlayerSourceStrategyFactory.create(getMultiplePlaybackState().shuffle).determine(getMultiplePlaybackState().playerSources, playback.getPlaybackState().playerSource);
 					if (!newPlayerSource.isPresent()) {
 						return;
 					}
@@ -309,7 +302,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private final PlaybackListener<SourceInfo> playbackListener = new PlaybackListener<SourceInfo>() {
 		@Override
 		public void onUpdate(PlaybackState<SourceInfo> playbackState) {
-			//TODO: save playback repeat state?
 			multiplePlaybackState = multiplePlaybackState
 					.builder()
 					.currentPlaybackState(Optional.of(playbackState))
