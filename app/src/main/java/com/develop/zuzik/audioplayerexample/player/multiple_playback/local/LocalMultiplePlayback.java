@@ -296,7 +296,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	private Playback<SourceInfo> createPlayback(PlayerSource<SourceInfo> playerSource) {
-		Playback<SourceInfo> playback = this.playbackFactory.create(this.context, this.playbackSettings, playerSource);
+		Playback<SourceInfo> playback = this.playbackFactory.create(this.context, this.playbackSettings.isRepeat(), playerSource);
 		playback.setPlaybackListener(this.playbackListener);
 		if (getMultiplePlaybackState().repeatSingle) {
 			playback.repeat();
@@ -309,6 +309,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private final PlaybackListener<SourceInfo> playbackListener = new PlaybackListener<SourceInfo>() {
 		@Override
 		public void onUpdate(PlaybackState<SourceInfo> playbackState) {
+			//TODO: save playback repeat state?
 			multiplePlaybackState = multiplePlaybackState
 					.builder()
 					.currentPlaybackState(Optional.of(playbackState))

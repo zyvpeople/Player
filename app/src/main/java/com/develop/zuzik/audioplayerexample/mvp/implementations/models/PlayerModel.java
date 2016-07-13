@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
+		this.listeners.add(this.updateSettingsListener);
 	}
 
 	@Override
@@ -113,7 +114,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	private void initPlayback(PlayerSource<SourceInfo> source) {
-		this.playback = Optional.of(this.playbackFactory.create(this.context, this.playbackSettings, source));
+		this.playback = Optional.of(this.playbackFactory.create(this.context, this.playbackSettings.isRepeat(), source));
 		this.playback.get().init();
 		this.playback.get().setPlaybackListener(new PlaybackListener<SourceInfo>() {
 			@Override
@@ -136,4 +137,20 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		playback.setPlaybackListener(null);
 		playback.release();
 	}
+
+	private final Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
+		@Override
+		public void onUpdate(PlaybackState<SourceInfo> state) {
+			if (state.repeat) {
+				playbackSettings.repeat();
+			} else {
+				playbackSettings.doNotRepeat();
+			}
+		}
+
+		@Override
+		public void onError(Throwable error) {
+
+		}
+	};
 }

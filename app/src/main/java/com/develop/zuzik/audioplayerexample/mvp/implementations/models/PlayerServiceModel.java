@@ -58,6 +58,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 		this.playbackFactory = playbackFactory;
 		this.notificationId = notificationId;
 		this.notificationFactory = notificationFactory;
+		this.listeners.add(this.updateSettingsListener);
 	}
 
 	@Override
@@ -140,7 +141,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 						new PlaybackServiceInitializeBundle<>(
 								source,
 								this.playbackFactory,
-								this.playbackSettings,
+								this.playbackSettings.isRepeat(),
 								this.notificationId,
 								this.notificationFactory)));
 	}
@@ -186,6 +187,22 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 		public void onServiceDisconnected(ComponentName name) {
 			boundedService = Optional.absent();
 			notifyOnUpdate();
+		}
+	};
+
+	private final Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
+		@Override
+		public void onUpdate(PlaybackState<SourceInfo> state) {
+			if (state.repeat) {
+				playbackSettings.repeat();
+			} else {
+				playbackSettings.doNotRepeat();
+			}
+		}
+
+		@Override
+		public void onError(Throwable error) {
+
 		}
 	};
 }

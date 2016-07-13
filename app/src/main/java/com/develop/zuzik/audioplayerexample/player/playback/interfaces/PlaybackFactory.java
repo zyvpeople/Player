@@ -12,5 +12,5 @@ import java.io.Serializable;
  */
 public interface PlaybackFactory<SourceInfo> extends Serializable {
 
-	Playback<SourceInfo> create(Context context, PlaybackSettings settings, PlayerSource<SourceInfo> playerSource);
+	Playback<SourceInfo> create(Context context, boolean repeat, PlayerSource<SourceInfo> playerSource);
 }

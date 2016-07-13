@@ -9,9 +9,9 @@ import android.util.Log;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.PlayerInitializeException;
+import com.develop.zuzik.audioplayerexample.player.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.playback.null_objects.NullPlaybackListener;
@@ -19,7 +19,6 @@ import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_states.IdlePlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.MediaPlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.NullPlayerState;
-import com.develop.zuzik.audioplayerexample.player.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerState;
 import com.develop.zuzik.audioplayerexample.player.player_states.interfaces.PlayerStateContext;
 import com.fernandocejas.arrow.optional.Optional;
@@ -31,18 +30,16 @@ import com.fernandocejas.arrow.optional.Optional;
 public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerStateContext<SourceInfo> {
 
 	private final Context context;
-	private final PlaybackSettings settings;
 	private final AudioManager audioManager;
 	private PlaybackState<SourceInfo> playbackState;
 	private PlaybackListener<SourceInfo> playbackListener = new NullPlaybackListener<>();
 	private PlayerState playerState = new NullPlayerState();
 	private MediaPlayer mediaPlayer;
 
-	public LocalPlayback(Context context, PlaybackSettings settings, PlayerSource<SourceInfo> playerSource) {
+	public LocalPlayback(Context context, boolean repeat, PlayerSource<SourceInfo> playerSource) {
 		this.context = new ContextWrapper(context).getApplicationContext();
-		this.settings = settings;
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		this.playbackState = new PlaybackState<>(State.NONE, 0, Optional.absent(), this.settings.isRepeat(), playerSource);
+		this.playbackState = new PlaybackState<>(State.NONE, 0, Optional.absent(), repeat, playerSource);
 	}
 
 	//region Playback
@@ -93,13 +90,11 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 
 	@Override
 	public void repeat() {
-		this.settings.repeat();
 		repeat(true);
 	}
 
 	@Override
 	public void doNotRepeat() {
-		this.settings.doNotRepeat();
 		repeat(false);
 	}
 

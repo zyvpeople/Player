@@ -8,15 +8,14 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPause;
@@ -59,16 +58,16 @@ public class PlaybackService extends Service {
 		parseForInit(intent, bundle -> {
 			PlayerSource source = bundle.playerSource;
 			PlaybackFactory factory = bundle.playbackFactory;
-			PlaybackSettings settings = bundle.playbackSettings;
+			boolean repeat = bundle.repeat;
 			this.notificationId = bundle.notificationId;
 			this.notificationFactory = bundle.notificationFactory;
 			if (this.playback.isPresent()) {
 				if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
 					this.playback.get().release();
-					initPlayback(source, factory, settings);
+					initPlayback(source, factory, repeat);
 				}
 			} else {
-				initPlayback(source, factory, settings);
+				initPlayback(source, factory, repeat);
 			}
 		});
 		parsePlay(intent, () -> getPlayback(Playback::play));
@@ -81,8 +80,8 @@ public class PlaybackService extends Service {
 		return START_STICKY;
 	}
 
-	private void initPlayback(PlayerSource source, PlaybackFactory factory, PlaybackSettings settings) {
-		this.playback = Optional.of(factory.create(this, settings, source));
+	private void initPlayback(PlayerSource source, PlaybackFactory factory, boolean repeat) {
+		this.playback = Optional.of(factory.create(this, repeat, source));
 		this.playback.get().setPlaybackListener(new PlaybackListener() {
 			@Override
 			public void onUpdate(PlaybackState playbackState) {
