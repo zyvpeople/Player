@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import rx.Subscription;
-
 /**
  * User: zuzik
  * Date: 6/4/16
@@ -24,8 +22,6 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	private final MultiplePlayer.Model<SourceInfo> model;
 	private MultiplePlayer.View<SourceInfo> view = new NullMultiplePlayerView<>();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
-	private Subscription playbackStateChangedSubscription;
-	private Subscription errorPlayingSubscription;
 
 	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
 	private final List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
@@ -54,17 +50,12 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	@Override
 	public void onAppear() {
 		updateView();
-		this.playbackStateChangedSubscription = this.model.stateChangedObservable()
-				.subscribe(aVoid -> updateView());
-		this.errorPlayingSubscription = this.model.errorPlayingObservable()
-				.map(this.exceptionToMessageTransformation::transform)
-				.subscribe(this.view::showError);
+		this.model.addListener(this.listener);
 	}
 
 	@Override
 	public void onDisappear() {
-		this.playbackStateChangedSubscription.unsubscribe();
-		this.errorPlayingSubscription.unsubscribe();
+		this.model.removeListener(this.listener);
 	}
 
 	@Override
@@ -197,4 +188,16 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 				TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
 						TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
 	}
+
+	private final MultiplePlayer.Model.Listener<SourceInfo> listener = new MultiplePlayer.Model.Listener<SourceInfo>() {
+		@Override
+		public void onUpdate(MultiplePlaybackState<SourceInfo> state) {
+			updateView();
+		}
+
+		@Override
+		public void onError(Throwable error) {
+			view.showError(exceptionToMessageTransformation.transform(error));
+		}
+	};
 }

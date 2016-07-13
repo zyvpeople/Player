@@ -5,8 +5,6 @@ import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;
 
-import rx.Observable;
-
 /**
  * User: zuzik
  * Date: 6/4/16
@@ -19,9 +17,9 @@ public interface MultiplePlayer {
 
 		MultiplePlaybackState<SourceInfo> getState();
 
-		Observable<Void> stateChangedObservable();
+		void addListener(Listener<SourceInfo> listener);
 
-		Observable<Throwable> errorPlayingObservable();
+		void removeListener(Listener<SourceInfo> listener);
 
 		void play();
 
@@ -46,6 +44,12 @@ public interface MultiplePlayer {
 		void switchToSource(PlayerSource<SourceInfo> source);
 
 		void simulateError();
+
+		interface Listener<SourceInfo> {
+			void onUpdate(MultiplePlaybackState<SourceInfo> state);
+
+			void onError(Throwable error);
+		}
 	}
 
 	interface View<SourceInfo> {

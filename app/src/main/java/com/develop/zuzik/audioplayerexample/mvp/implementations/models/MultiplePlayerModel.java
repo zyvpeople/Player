@@ -12,10 +12,8 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.Local
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import rx.Observable;
-import rx.subjects.PublishSubject;
 
 /**
  * User: zuzik
@@ -25,8 +23,7 @@ import rx.subjects.PublishSubject;
 public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<SourceInfo> {
 
 	private final LocalMultiplePlayback<SourceInfo> playback;
-	private final PublishSubject<Void> playbackStateChangedPublishSubject = PublishSubject.create();
-	private final PublishSubject<Throwable> errorPlayingPublishSubject = PublishSubject.create();
+	private final List<Listener<SourceInfo>> listeners = new ArrayList<>();
 
 	public MultiplePlayerModel(Context context,
 							   PlaybackFactory<SourceInfo> playbackFactory,
@@ -42,16 +39,15 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 				onCompletePlayerSourceStrategyFactory,
 				playbackSettings.isRepeatSingle(),
 				playbackSettings.isShuffle());
-		this.playback.setMultiplePlaybackListener(new MultiplePlaybackListener<SourceInfo>() {
+		addListener(new Listener<SourceInfo>() {
 			@Override
-			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
-				playbackStateChangedPublishSubject.onNext(null);
-				if (multiplePlaybackState.repeatSingle) {
+			public void onUpdate(MultiplePlaybackState<SourceInfo> state) {
+				if (state.repeatSingle) {
 					playbackSettings.repeatSingle();
 				} else {
 					playbackSettings.doNotRepeatSingle();
 				}
-				if (multiplePlaybackState.shuffle) {
+				if (state.shuffle) {
 					playbackSettings.shuffle();
 				} else {
 					playbackSettings.doNotShuffle();
@@ -59,8 +55,22 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 			}
 
 			@Override
+			public void onError(Throwable error) {
+			}
+		});
+		this.playback.setMultiplePlaybackListener(new MultiplePlaybackListener<SourceInfo>() {
+			@Override
+			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
+				for (Listener<SourceInfo> listener : listeners) {
+					listener.onUpdate(multiplePlaybackState);
+				}
+			}
+
+			@Override
 			public void onError(Throwable throwable) {
-				errorPlayingPublishSubject.onNext(throwable);
+				for (Listener<SourceInfo> listener : listeners) {
+					listener.onError(throwable);
+				}
 			}
 		});
 	}
@@ -82,13 +92,15 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	}
 
 	@Override
-	public Observable<Void> stateChangedObservable() {
-		return this.playbackStateChangedPublishSubject.asObservable();
+	public void addListener(Listener<SourceInfo> listener) {
+		if (!this.listeners.contains(listener)) {
+			this.listeners.add(listener);
+		}
 	}
 
 	@Override
-	public Observable<Throwable> errorPlayingObservable() {
-		return this.errorPlayingPublishSubject.asObservable();
+	public void removeListener(Listener<SourceInfo> listener) {
+		this.listeners.remove(listener);
 	}
 
 	@Override
