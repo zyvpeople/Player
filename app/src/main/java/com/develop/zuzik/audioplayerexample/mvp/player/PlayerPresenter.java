@@ -1,8 +1,8 @@
 package com.develop.zuzik.audioplayerexample.mvp.player;
 
-import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.PlayerPresenterDestroyStrategy;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.PlayerPresenterDestroyStrategy;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
@@ -45,7 +45,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 
 	@Override
 	public void onDestroy() {
-		//TODO: set null view ???
+		this.view = new NullPlayerView<>();
 		this.destroyStrategy.onDestroy(this.model);
 	}
 

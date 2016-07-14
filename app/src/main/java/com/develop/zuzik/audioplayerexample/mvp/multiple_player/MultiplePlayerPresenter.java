@@ -49,7 +49,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	@Override
 	public void onDestroy() {
-		//TODO: set null view???
+		this.view = new NullMultiplePlayerView<>();
 		this.destroyStrategy.onDestroy(this.model);
 	}
 
