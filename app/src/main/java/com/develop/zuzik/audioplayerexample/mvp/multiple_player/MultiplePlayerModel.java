@@ -1,8 +1,8 @@
-package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
+package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;

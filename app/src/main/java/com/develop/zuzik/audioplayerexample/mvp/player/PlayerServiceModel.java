@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
+package com.develop.zuzik.audioplayerexample.mvp.player;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;

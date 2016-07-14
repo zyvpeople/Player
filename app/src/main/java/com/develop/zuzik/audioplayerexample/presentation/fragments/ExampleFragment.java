@@ -14,9 +14,9 @@ import android.widget.Toast;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.PlayerPresenter;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.presenter_destroy_strategy.DoNothingPresenterDestroyStrategy;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.player.PlayerPresenter;
+import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.DoNothingPlayerPresenterDestroyStrategy;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 
@@ -39,7 +39,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song> {
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_example, container, false);
 
-		this.presenter = new PlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPresenterDestroyStrategy());
+		this.presenter = new PlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPlayerPresenterDestroyStrategy());
 		this.presenter.setView(this);
 		this.presenter.onSetSource(new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1), R.raw.song));
 

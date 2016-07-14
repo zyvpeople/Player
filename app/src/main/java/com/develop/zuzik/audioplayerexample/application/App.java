@@ -4,10 +4,10 @@ import android.app.Application;
 
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.models.MultiplePlayerModel;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.models.PlayerServiceModel;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerModel;
+import com.develop.zuzik.audioplayerexample.mvp.player.PlayerServiceModel;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.settings.InMemoryMultiplePlaybackSettings;

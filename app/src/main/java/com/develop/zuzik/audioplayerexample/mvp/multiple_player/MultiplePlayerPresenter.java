@@ -1,8 +1,9 @@
-package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
+package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessageProvider;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.null_objects.NullMultiplePlayerView;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.audioplayerexample.mvp.multiple_player.presenter_destroy_strategy.MultiplePlayerPresenterDestroyStrategy;
+import com.develop.zuzik.audioplayerexample.mvp.player.ExceptionToMessageTransformation;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
@@ -26,9 +27,14 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
 	private final List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
 	private final List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
+	private MultiplePlayerPresenterDestroyStrategy destroyStrategy;
 
-	public MultiplePlayerPresenter(MultiplePlayer.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider) {
+	public MultiplePlayerPresenter(
+			MultiplePlayer.Model<SourceInfo> model,
+			MultiplePlayerPresenterDestroyStrategy destroyStrategy,
+			PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;
+		this.destroyStrategy = destroyStrategy;
 		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
 	}
 
@@ -44,7 +50,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	@Override
 	public void onDestroy() {
 		//TODO: set null view???
-		//TODO: use destroy strategy like in PlayerPresenter
+		this.destroyStrategy.onDestroy(this.model);
 	}
 
 	@Override

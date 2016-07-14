@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.intarfaces;
+package com.develop.zuzik.audioplayerexample.mvp.interfaces;
 
 /**
  * User: zuzik

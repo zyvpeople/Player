@@ -1,6 +1,6 @@
-package com.develop.zuzik.audioplayerexample.mvp.intarfaces.null_objects;
+package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 import java.util.List;

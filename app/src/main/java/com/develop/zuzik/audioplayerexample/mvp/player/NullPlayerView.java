@@ -1,6 +1,6 @@
-package com.develop.zuzik.audioplayerexample.mvp.intarfaces.null_objects;
+package com.develop.zuzik.audioplayerexample.mvp.player;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
 
 /**
  * User: zuzik

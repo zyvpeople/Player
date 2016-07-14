@@ -19,8 +19,9 @@ import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.MultiplePlayerPresenter;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerPresenter;
+import com.develop.zuzik.audioplayerexample.mvp.multiple_player.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
@@ -69,7 +70,10 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.presenter = new MultiplePlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider());
+		this.presenter = new MultiplePlayerPresenter<>(
+				getModel(),
+				new DoNothingMultiplePlayerPresenterDestroyStrategy(),
+				new ExamplePlayerExceptionMessageProvider());
 		this.presenter.setView(this);
 		this.presenter.onSetPlayerSources(
 				Arrays.asList(

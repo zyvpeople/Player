@@ -1,9 +1,9 @@
-package com.develop.zuzik.audioplayerexample.mvp.implementations.models;
+package com.develop.zuzik.audioplayerexample.mvp.player;
 
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;

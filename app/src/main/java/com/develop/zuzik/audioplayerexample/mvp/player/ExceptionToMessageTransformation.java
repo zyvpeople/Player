@@ -1,6 +1,6 @@
-package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
+package com.develop.zuzik.audioplayerexample.mvp.player;
 
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.audioplayerexample.player.exceptions.AudioFocusLostException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FailRequestAudioFocusException;
 import com.develop.zuzik.audioplayerexample.player.exceptions.FakeMediaPlayerException;
@@ -16,7 +16,7 @@ public class ExceptionToMessageTransformation implements Transformation<Throwabl
 
 	private final PlayerExceptionMessageProvider provider;
 
-	ExceptionToMessageTransformation(PlayerExceptionMessageProvider provider) {
+	public ExceptionToMessageTransformation(PlayerExceptionMessageProvider provider) {
 		this.provider = provider;
 	}
 

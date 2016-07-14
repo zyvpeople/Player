@@ -1,9 +1,8 @@
-package com.develop.zuzik.audioplayerexample.mvp.implementations.presenters;
+package com.develop.zuzik.audioplayerexample.mvp.player;
 
-import com.develop.zuzik.audioplayerexample.mvp.implementations.presenters.presenter_destroy_strategy.PresenterDestroyStrategy;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.Player;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.PlayerExceptionMessageProvider;
-import com.develop.zuzik.audioplayerexample.mvp.intarfaces.null_objects.NullPlayerView;
+import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.PlayerPresenterDestroyStrategy;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
@@ -21,13 +20,13 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	private final Player.Model<SourceInfo> model;
 	private Player.View<SourceInfo> view = new NullPlayerView<>();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
-	private final PresenterDestroyStrategy destroyStrategy;
+	private final PlayerPresenterDestroyStrategy destroyStrategy;
 
 	private List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
 	private List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
 	private List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
-	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider, PresenterDestroyStrategy destroyStrategy) {
+	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider, PlayerPresenterDestroyStrategy destroyStrategy) {
 		this.model = model;
 		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
 		this.destroyStrategy = destroyStrategy;
