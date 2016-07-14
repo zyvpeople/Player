@@ -9,14 +9,14 @@ import android.support.v4.app.NotificationCompat;
 
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
+import com.develop.zuzik.audioplayerexample.player.notification.PlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 
 /**
  * User: zuzik
  * Date: 7/6/16
  */
-public class SongNotificationFactory implements NotificationFactory<Song> {
+public class SongPlayerNotificationFactory implements PlayerNotificationFactory<Song> {
 	@Override
 	public Notification create(Context context,
 							   PlaybackState<Song> playbackState,

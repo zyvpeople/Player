@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.services;
+package com.develop.zuzik.audioplayerexample.player.services.playback;
 
 import android.content.Context;
 import android.content.Intent;

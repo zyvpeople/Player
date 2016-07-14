@@ -1,6 +1,6 @@
-package com.develop.zuzik.audioplayerexample.player.services;
+package com.develop.zuzik.audioplayerexample.player.services.playback;
 
-import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
+import com.develop.zuzik.audioplayerexample.player.notification.PlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
@@ -15,17 +15,17 @@ public class PlaybackServiceInitializeBundle<SourceInfo> implements Serializable
 	public final PlaybackFactory<SourceInfo> playbackFactory;
 	public final boolean repeat;
 	public final int notificationId;
-	public final NotificationFactory<SourceInfo> notificationFactory;
+	public final PlayerNotificationFactory<SourceInfo> playerNotificationFactory;
 
 	public PlaybackServiceInitializeBundle(PlayerSource<SourceInfo> playerSource,
 										   PlaybackFactory<SourceInfo> playbackFactory,
 										   boolean repeat,
 										   int notificationId,
-										   NotificationFactory<SourceInfo> notificationFactory) {
+										   PlayerNotificationFactory<SourceInfo> playerNotificationFactory) {
 		this.playerSource = playerSource;
 		this.playbackFactory = playbackFactory;
 		this.repeat = repeat;
 		this.notificationId = notificationId;
-		this.notificationFactory = notificationFactory;
+		this.playerNotificationFactory = playerNotificationFactory;
 	}
 }

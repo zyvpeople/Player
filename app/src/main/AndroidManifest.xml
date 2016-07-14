@@ -24,7 +24,7 @@
         </activity>
 
         <service
-            android:name=".player.services.PlaybackService"
+            android:name=".player.services.playback.PlaybackService"
             android:exported="false"/>
     </application>
 

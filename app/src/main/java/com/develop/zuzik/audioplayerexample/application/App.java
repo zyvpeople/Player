@@ -4,16 +4,16 @@ import android.app.Application;
 
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerModel;
-import com.develop.zuzik.audioplayerexample.mvp.player.PlayerServiceModel;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerModel;
+import com.develop.zuzik.audioplayerexample.mvp.player.PlayerServiceModel;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
-import com.develop.zuzik.audioplayerexample.presentation.notifications.SongNotificationFactory;
+import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 
 /**
  * User: zuzik
@@ -30,6 +30,10 @@ import com.develop.zuzik.audioplayerexample.presentation.notifications.SongNotif
 //TODO: use index of current playback instead playerSource because there is an possibility to set same object to queue few times
 //TODO: remove rx from multiple playback
 //TODO: create strategy of bool parameter - when setPlayerSources - play right now or do not play
+//TODO: replace settings to mvp package
+//TODO: refactor packages
+//TODO: create android library for player
+//FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
 public class App extends Application {
 
 	private Player.Model<Song> model;
@@ -47,7 +51,7 @@ public class App extends Application {
 	public void onCreate() {
 		super.onCreate();
 //		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
-		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500, new SongNotificationFactory());
+		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500, new SongPlayerNotificationFactory());
 
 		this.multiplePlayerModel = new MultiplePlayerModel<>(
 				this,

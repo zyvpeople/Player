@@ -12,7 +12,7 @@ import java.io.Serializable;
  * User: zuzik
  * Date: 7/6/16
  */
-public interface NotificationFactory<SourceInfo> extends Serializable {
+public interface PlayerNotificationFactory<SourceInfo> extends Serializable {
 	Notification create(Context context,
 						PlaybackState<SourceInfo> playbackState,
 						PendingIntent playIntent,

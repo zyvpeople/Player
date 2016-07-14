@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.services;
+package com.develop.zuzik.audioplayerexample.player.services.playback;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
-import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
+import com.develop.zuzik.audioplayerexample.player.notification.PlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
@@ -17,18 +17,6 @@ import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackS
 import com.develop.zuzik.audioplayerexample.player.playback.null_objects.NullPlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
-
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPause;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPlay;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createStop;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseDoNotRepeat;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseForInit;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parsePause;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parsePlay;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseRepeat;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseSeekTo;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseSimulateError;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.parseStop;
 
 /**
  * User: zuzik
@@ -44,7 +32,7 @@ public class PlaybackService extends Service {
 	private Optional<Playback> playback = Optional.absent();
 	private PlaybackListener playbackListener = new NullPlaybackListener<>();
 	private int notificationId;
-	private NotificationFactory notificationFactory;
+	private PlayerNotificationFactory playerNotificationFactory;
 
 	@Override
 	public void onCreate() {
@@ -55,12 +43,12 @@ public class PlaybackService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(getClass().getSimpleName(), "onStartCommand");
-		parseForInit(intent, bundle -> {
+		PlaybackServiceIntentFactory.parseForInit(intent, bundle -> {
 			PlayerSource source = bundle.playerSource;
 			PlaybackFactory factory = bundle.playbackFactory;
 			boolean repeat = bundle.repeat;
 			this.notificationId = bundle.notificationId;
-			this.notificationFactory = bundle.notificationFactory;
+			this.playerNotificationFactory = bundle.playerNotificationFactory;
 			if (this.playback.isPresent()) {
 				if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
 					this.playback.get().release();
@@ -70,13 +58,13 @@ public class PlaybackService extends Service {
 				initPlayback(source, factory, repeat);
 			}
 		});
-		parsePlay(intent, () -> getPlayback(Playback::play));
-		parsePause(intent, () -> getPlayback(Playback::pause));
-		parseStop(intent, () -> getPlayback(Playback::stop));
-		parseSeekTo(intent, value -> getPlayback(playback -> playback.seekTo(value)));
-		parseRepeat(intent, () -> getPlayback(Playback::repeat));
-		parseDoNotRepeat(intent, () -> getPlayback(Playback::doNotRepeat));
-		parseSimulateError(intent, () -> getPlayback(Playback::simulateError));
+		PlaybackServiceIntentFactory.parsePlay(intent, () -> getPlayback(Playback::play));
+		PlaybackServiceIntentFactory.parsePause(intent, () -> getPlayback(Playback::pause));
+		PlaybackServiceIntentFactory.parseStop(intent, () -> getPlayback(Playback::stop));
+		PlaybackServiceIntentFactory.parseSeekTo(intent, value -> getPlayback(playback -> playback.seekTo(value)));
+		PlaybackServiceIntentFactory.parseRepeat(intent, () -> getPlayback(Playback::repeat));
+		PlaybackServiceIntentFactory.parseDoNotRepeat(intent, () -> getPlayback(Playback::doNotRepeat));
+		PlaybackServiceIntentFactory.parseSimulateError(intent, () -> getPlayback(Playback::simulateError));
 		return START_STICKY;
 	}
 
@@ -128,11 +116,11 @@ public class PlaybackService extends Service {
 	}
 
 	private void showForegroundNotification(PlaybackState playbackState) {
-		PendingIntent playIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY, createPlay(this), 0);
-		PendingIntent pauseIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PAUSE, createPause(this), 0);
-		PendingIntent stopIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_STOP, createStop(this), 0);
+		PendingIntent playIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY, PlaybackServiceIntentFactory.createPlay(this), 0);
+		PendingIntent pauseIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PAUSE, PlaybackServiceIntentFactory.createPause(this), 0);
+		PendingIntent stopIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_STOP, PlaybackServiceIntentFactory.createStop(this), 0);
 
-		startForeground(this.notificationId, this.notificationFactory.create(this, playbackState, playIntent, pauseIntent, stopIntent));
+		startForeground(this.notificationId, this.playerNotificationFactory.create(this, playbackState, playIntent, pauseIntent, stopIntent));
 	}
 
 	public final class PlaybackServiceBinder extends Binder {

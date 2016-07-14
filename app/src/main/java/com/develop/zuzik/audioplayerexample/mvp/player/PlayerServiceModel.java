@@ -8,29 +8,29 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.notification.NotificationFactory;
+import com.develop.zuzik.audioplayerexample.player.notification.PlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.services.PlaybackService;
-import com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceInitializeBundle;
+import com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackService;
+import com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceInitializeBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.create;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createDoNotRepeat;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createForInit;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPause;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createPlay;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createRepeat;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createSeekTo;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createSimulateError;
-import static com.develop.zuzik.audioplayerexample.player.services.PlaybackServiceIntentFactory.createStop;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.create;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createDoNotRepeat;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createForInit;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createPause;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createPlay;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createRepeat;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createSeekTo;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createSimulateError;
+import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createStop;
 
 /**
  * User: zuzik
@@ -46,18 +46,18 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private Optional<PlayerSource<SourceInfo>> source = Optional.absent();
 	private Optional<PlaybackService> boundedService = Optional.absent();
 	private final int notificationId;
-	private final NotificationFactory<SourceInfo> notificationFactory;
+	private final PlayerNotificationFactory<SourceInfo> playerNotificationFactory;
 
 	public PlayerServiceModel(Context context,
 							  PlaybackSettings playbackSettings,
 							  PlaybackFactory<SourceInfo> playbackFactory,
 							  int notificationId,
-							  NotificationFactory<SourceInfo> notificationFactory) {
+							  PlayerNotificationFactory<SourceInfo> playerNotificationFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
 		this.notificationId = notificationId;
-		this.notificationFactory = notificationFactory;
+		this.playerNotificationFactory = playerNotificationFactory;
 		this.listeners.add(this.updateSettingsListener);
 	}
 
@@ -143,7 +143,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 								this.playbackFactory,
 								this.playbackSettings.isRepeat(),
 								this.notificationId,
-								this.notificationFactory)));
+								this.playerNotificationFactory)));
 	}
 
 	private void startService(Intent play) {
