@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.develop.zuzik.audioplayerexample.player.interfaces.Action;
 import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
+import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 
 /**
  * User: zuzik
@@ -14,6 +15,7 @@ public class MultiplePlaybackServiceIntentFactory {
 
 	private static final String EXTRA_MULTIPLE_PLAYBACK_SERVICE_INITIALIZE_BUNDLE = "EXTRA_MULTIPLE_PLAYBACK_SERVICE_INITIALIZE_BUNDLE";
 	private static final String EXTRA_SEEK_TO = "EXTRA_SEEK_TO";
+	private static final String EXTRA_SWITCH_TO_SOURCE = "EXTRA_SWITCH_TO_SOURCE";
 	private static final String ACTION_INIT = "ACTION_INIT";
 	private static final String ACTION_PLAY = "ACTION_PLAY";
 	private static final String ACTION_PAUSE = "ACTION_PAUSE";
@@ -21,6 +23,7 @@ public class MultiplePlaybackServiceIntentFactory {
 	private static final String ACTION_PLAY_NEXT = "ACTION_PLAY_NEXT";
 	private static final String ACTION_PLAY_PREVIOUS = "ACTION_PLAY_PREVIOUS";
 	private static final String ACTION_SEEK_TO = "ACTION_SEEK_TO";
+	private static final String ACTION_SWITCH_TO_SOURCE = "ACTION_SWITCH_TO_SOURCE";
 	private static final String ACTION_REPEAT_SINGLE = "ACTION_REPEAT_SINGLE";
 	private static final String ACTION_DO_NOT_REPEAT_SINGLE = "ACTION_DO_NOT_REPEAT_SINGLE";
 	private static final String ACTION_SHUFFLE = "ACTION_SHUFFLE";
@@ -103,6 +106,18 @@ public class MultiplePlaybackServiceIntentFactory {
 		parseAction(intent, ACTION_SEEK_TO, () -> {
 			if (intent.hasExtra(EXTRA_SEEK_TO)) {
 				success.execute(intent.getIntExtra(EXTRA_SEEK_TO, 0));
+			}
+		});
+	}
+
+	public static Intent createSwitchToSource(Context context, PlayerSource source) {
+		return createWithAction(context, ACTION_SWITCH_TO_SOURCE).putExtra(EXTRA_SWITCH_TO_SOURCE, source);
+	}
+
+	static void parseSwitchToSource(Intent intent, ParamAction<PlayerSource> success) {
+		parseAction(intent, ACTION_SWITCH_TO_SOURCE, () -> {
+			if (intent.hasExtra(EXTRA_SWITCH_TO_SOURCE)) {
+				success.execute((PlayerSource) intent.getSerializableExtra(EXTRA_SWITCH_TO_SOURCE));
 			}
 		});
 	}

@@ -3,14 +3,13 @@ package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,23 +21,13 @@ import java.util.List;
 
 public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<SourceInfo> {
 
-	private final LocalMultiplePlayback<SourceInfo> playback;
+	private final MultiplePlayback<SourceInfo> playback;
 	private final List<Listener<SourceInfo>> listeners = new ArrayList<>();
 
 	public MultiplePlayerModel(Context context,
-							   PlaybackFactory<SourceInfo> playbackFactory,
-							   PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
-							   PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
-							   PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
+							   MultiplePlaybackFactory<SourceInfo> multiplePlaybackFactory,
 							   MultiplePlaybackSettings playbackSettings) {
-		this.playback = new LocalMultiplePlayback<>(
-				context,
-				playbackFactory,
-				nextPlayerSourceStrategy,
-				previousPlayerSourceStrategy,
-				onCompletePlayerSourceStrategyFactory,
-				playbackSettings.isRepeatSingle(),
-				playbackSettings.isShuffle());
+		this.playback = multiplePlaybackFactory.create(context);
 		addListener(new Listener<SourceInfo>() {
 			@Override
 			public void onUpdate(MultiplePlaybackState<SourceInfo> state) {
@@ -87,8 +76,8 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	}
 
 	@Override
-	public MultiplePlaybackState<SourceInfo> getState() {
-		return this.playback.getMultiplePlaybackState();
+	public Optional<MultiplePlaybackState<SourceInfo>> getState() {
+		return Optional.of(this.playback.getMultiplePlaybackState());
 	}
 
 	@Override

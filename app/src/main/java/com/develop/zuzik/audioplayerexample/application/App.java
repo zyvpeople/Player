@@ -6,13 +6,15 @@ import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
-import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerModel;
+import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerServiceModel;
 import com.develop.zuzik.audioplayerexample.mvp.player.PlayerServiceModel;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
+import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 
 /**
@@ -34,6 +36,8 @@ import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlaye
 //TODO: refactor packages
 //TODO: create android library for player
 //FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
+//TODO: service - communicate with binder
+//TODO: UriPlayerSource - Uri is not serializable
 public class App extends Application {
 
 	private Player.Model<Song> model;
@@ -53,12 +57,28 @@ public class App extends Application {
 //		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
 		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500, new SongPlayerNotificationFactory());
 
-		this.multiplePlayerModel = new MultiplePlayerModel<>(
+		InMemoryMultiplePlaybackSettings playbackSettings = new InMemoryMultiplePlaybackSettings();
+//		this.multiplePlayerModel = new MultiplePlayerModel<>(
+//				this,
+//				new LocalMultiplePlaybackFactory<>(
+//						new LocalPlaybackFactory<>(),
+//						new EndedNextPlayerSourceStrategy<>(),
+//						new EndedPreviousPlayerSourceStrategy<>(),
+//						new ExampleOnCompletePlayerSourceStrategyFactory<>(),
+//						playbackSettings.isRepeatSingle(),
+//						playbackSettings.isShuffle()),
+//				playbackSettings);
+		this.multiplePlayerModel = new MultiplePlayerServiceModel<>(
 				this,
-				new LocalPlaybackFactory<>(),
-				new EndedNextPlayerSourceStrategy<>(),
-				new EndedPreviousPlayerSourceStrategy<>(),
-				new ExampleOnCompletePlayerSourceStrategyFactory<>(),
-				new InMemoryMultiplePlaybackSettings());
+				playbackSettings,
+				new LocalMultiplePlaybackFactory<>(
+						new LocalPlaybackFactory<>(),
+						new EndedNextPlayerSourceStrategy<>(),
+						new EndedPreviousPlayerSourceStrategy<>(),
+						new ExampleOnCompletePlayerSourceStrategyFactory<>(),
+						playbackSettings.isRepeatSingle(),
+						playbackSettings.isShuffle()),
+				100500,
+				new SongMultiplePlayerNotificationFactory());
 	}
 }

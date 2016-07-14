@@ -65,6 +65,7 @@ public class MultiplePlaybackService extends Service {
 		MultiplePlaybackServiceIntentFactory.parsePlayNext(intent, () -> getMultiplePlayback(MultiplePlayback::playNextPlayerSource));
 		MultiplePlaybackServiceIntentFactory.parsePlayPrevious(intent, () -> getMultiplePlayback(MultiplePlayback::playPreviousPlayerSource));
 		MultiplePlaybackServiceIntentFactory.parseSeekTo(intent, value -> getMultiplePlayback(playback -> playback.seekTo(value)));
+		MultiplePlaybackServiceIntentFactory.parseSwitchToSource(intent, value -> getMultiplePlayback(playback -> playback.playPlayerSource(value)));
 		MultiplePlaybackServiceIntentFactory.parseRepeatSingle(intent, () -> getMultiplePlayback(MultiplePlayback::repeatSingle));
 		MultiplePlaybackServiceIntentFactory.parseDoNotRepeatSingle(intent, () -> getMultiplePlayback(MultiplePlayback::doNotRepeatSingle));
 		MultiplePlaybackServiceIntentFactory.parseShuffle(intent, () -> getMultiplePlayback(MultiplePlayback::shuffle));

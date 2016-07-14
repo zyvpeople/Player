@@ -146,8 +146,8 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 								this.playerNotificationFactory)));
 	}
 
-	private void startService(Intent play) {
-		this.context.startService(play);
+	private void startService(Intent intent) {
+		this.context.startService(intent);
 	}
 
 	private void notifyOnUpdate() {

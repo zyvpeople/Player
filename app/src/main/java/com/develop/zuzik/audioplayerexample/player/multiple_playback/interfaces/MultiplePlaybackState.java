@@ -4,13 +4,14 @@ import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackS
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * User: zuzik
  * Date: 6/4/16
  */
-public class MultiplePlaybackState<SourceInfo> {
+public class MultiplePlaybackState<SourceInfo> implements Serializable {
 
 	public final List<PlayerSource<SourceInfo>> playerSources;
 	public final Optional<PlaybackState<SourceInfo>> currentPlaybackState;

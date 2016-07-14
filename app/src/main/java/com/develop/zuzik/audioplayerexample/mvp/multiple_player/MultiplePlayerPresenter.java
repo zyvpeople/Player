@@ -8,7 +8,9 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
 import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
 import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.fernandocejas.arrow.optional.Optional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -143,22 +145,32 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 		updateView(this.model.getState());
 	}
 
-	private void updateView(MultiplePlaybackState<SourceInfo> state) {
-		if (state.repeatSingle) {
+	private void updateView(Optional<MultiplePlaybackState<SourceInfo>> state) {
+		boolean repeatSingle = false;
+		boolean shuffle = false;
+		List<PlayerSource<SourceInfo>> sources = new ArrayList<>();
+
+		if (state.isPresent()) {
+			repeatSingle = state.get().repeatSingle;
+			shuffle = state.get().shuffle;
+			sources = state.get().playerSources;
+		}
+
+		if (repeatSingle) {
 			this.view.repeat();
 		} else {
 			this.view.doNotRepeat();
 		}
 
-		if (state.shuffle) {
+		if (shuffle) {
 			this.view.shuffle();
 		} else {
 			this.view.doNotShuffle();
 		}
 
-		this.view.displaySources(state.playerSources);
-		if (state.currentPlaybackState.isPresent()) {
-			PlaybackState<SourceInfo> playbackState = state.currentPlaybackState.get();
+		this.view.displaySources(sources);
+		if (state.transform(input -> input.currentPlaybackState.isPresent()).or(false)) {
+			PlaybackState<SourceInfo> playbackState = state.get().currentPlaybackState.get();
 
 			this.view.enablePlayControls(
 					this.allowedPlayButtonStates.contains(playbackState.state),

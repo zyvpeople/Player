@@ -26,6 +26,9 @@
         <service
             android:name=".player.services.playback.PlaybackService"
             android:exported="false"/>
+        <service
+            android:name=".player.services.multiple_playback.MultiplePlaybackService"
+            android:exported="false"/>
     </application>
 
 </manifest>
