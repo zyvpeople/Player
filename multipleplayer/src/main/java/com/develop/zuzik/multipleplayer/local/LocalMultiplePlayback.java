@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.multiple_playback.local;
+package com.develop.zuzik.multipleplayer.local;
 
 import android.content.Context;
 import android.content.ContextWrapper;

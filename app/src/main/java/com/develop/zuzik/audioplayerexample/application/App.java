@@ -8,7 +8,7 @@ import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerServiceModel;
 import com.develop.zuzik.audioplayerexample.mvp.player.PlayerServiceModel;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlaybackFactory;
+import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.InMemoryMultiplePlaybackSettings;
