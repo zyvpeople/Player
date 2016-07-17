@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -22,9 +21,8 @@ import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.player_source.RawResourcePlayerSource;
-import com.develop.zuzik.audioplayerexample.player.player_source.UriPlayerSource;
+import com.develop.zuzik.player.source.PlayerSource;
+import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 

@@ -5,9 +5,9 @@ import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessag
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.presenter_destroy_strategy.MultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.audioplayerexample.mvp.player.ExceptionToMessageTransformation;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;

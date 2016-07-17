@@ -13,7 +13,7 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.notification.MultiplePlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackService;
 import com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceInitializeBundle;
 import com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory;

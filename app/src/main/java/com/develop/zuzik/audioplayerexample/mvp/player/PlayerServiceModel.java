@@ -8,29 +8,29 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.notification.PlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackService;
-import com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceInitializeBundle;
+import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
+import com.develop.zuzik.player.interfaces.PlaybackFactory;
+import com.develop.zuzik.player.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackSettings;
+import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.source.PlayerSource;
+import com.develop.zuzik.player.service.PlaybackService;
+import com.develop.zuzik.player.service.PlaybackServiceInitializeBundle;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.create;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createDoNotRepeat;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createForInit;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createPause;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createPlay;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createRepeat;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createSeekTo;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createSimulateError;
-import static com.develop.zuzik.audioplayerexample.player.services.playback.PlaybackServiceIntentFactory.createStop;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.create;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createDoNotRepeat;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createForInit;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createPause;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createPlay;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createRepeat;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createSeekTo;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createSimulateError;
+import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createStop;
 
 /**
  * User: zuzik

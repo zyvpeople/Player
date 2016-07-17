@@ -2,7 +2,7 @@ package com.develop.zuzik.audioplayerexample.player.services.multiple_playback;
 
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.notification.MultiplePlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.source.PlayerSource;
 
 import java.io.Serializable;
 import java.util.List;

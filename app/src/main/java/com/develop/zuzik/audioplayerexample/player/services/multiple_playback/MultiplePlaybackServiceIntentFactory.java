@@ -3,9 +3,9 @@ package com.develop.zuzik.audioplayerexample.player.services.multiple_playback;
 import android.content.Context;
 import android.content.Intent;
 
-import com.develop.zuzik.audioplayerexample.player.interfaces.Action;
-import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.source.PlayerSource;
 
 /**
  * User: zuzik

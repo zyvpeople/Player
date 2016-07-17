@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.squareup.picasso.Picasso;
 
 public class SongFragment extends Fragment {

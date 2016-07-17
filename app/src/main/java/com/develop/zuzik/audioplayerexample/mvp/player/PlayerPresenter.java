@@ -3,9 +3,9 @@ package com.develop.zuzik.audioplayerexample.mvp.player;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.PlayerPresenterDestroyStrategy;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.Arrays;

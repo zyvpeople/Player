@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.ContextWrapper;
 
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
-import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.Playback;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.Playback;
+import com.develop.zuzik.player.interfaces.PlaybackFactory;
+import com.develop.zuzik.player.interfaces.PlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.playback.PlaybackSettings;
+import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;

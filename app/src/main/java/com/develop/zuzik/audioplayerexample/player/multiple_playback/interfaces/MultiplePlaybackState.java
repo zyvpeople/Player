@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces;
 
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackState;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.io.Serializable;

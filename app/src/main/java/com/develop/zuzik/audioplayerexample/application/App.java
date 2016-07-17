@@ -12,8 +12,8 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.Local
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.settings.InMemoryMultiplePlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.playback.local.LocalPlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.settings.InMemoryPlaybackSettings;
+import com.develop.zuzik.player.local.LocalPlaybackFactory;
+import com.develop.zuzik.audioplayerexample.player.playback.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 
@@ -38,6 +38,7 @@ import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlaye
 //FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
 //TODO: service - communicate with binder
 //TODO: UriPlayerSource - Uri is not serializable
+//TODO: use jack for lambda
 public class App extends Application {
 
 	private Player.Model<Song> model;

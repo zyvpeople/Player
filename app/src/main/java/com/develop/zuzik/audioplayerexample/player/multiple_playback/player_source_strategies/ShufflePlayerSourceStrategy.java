@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies;
 
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;

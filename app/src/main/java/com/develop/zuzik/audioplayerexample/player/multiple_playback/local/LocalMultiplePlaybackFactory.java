@@ -6,7 +6,7 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.playback.interfaces.PlaybackFactory;
+import com.develop.zuzik.player.interfaces.PlaybackFactory;
 
 /**
  * User: zuzik

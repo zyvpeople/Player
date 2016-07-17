@@ -8,15 +8,15 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.develop.zuzik.audioplayerexample.player.interfaces.Action;
-import com.develop.zuzik.audioplayerexample.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.null_objects.NullMultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.notification.MultiplePlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.player.player_source.PlayerSource;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;
