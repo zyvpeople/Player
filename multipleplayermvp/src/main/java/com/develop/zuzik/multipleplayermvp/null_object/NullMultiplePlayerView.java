@@ -1,6 +1,6 @@
-package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
+package com.develop.zuzik.multipleplayermvp.null_object;
 
-import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.player.source.PlayerSource;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
+package com.develop.zuzik.multipleplayermvp.model;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackSettings;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
+import com.develop.zuzik.player.service.PlaybackService;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackService;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceInitializeBundle;
@@ -177,7 +179,11 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 	}
 
 	private void startService(Intent intent) {
-		this.context.startService(intent);
+		ComponentName expectedServiceName = new ComponentName(this.context, MultiplePlaybackService.class);
+		ComponentName serviceName = this.context.startService(intent);
+		if (!expectedServiceName.equals(serviceName)) {
+			throw new ServiceIsNotDeclaredInManifestException(MultiplePlaybackService.class);
+		}
 	}
 
 	private void notifyOnUpdate() {

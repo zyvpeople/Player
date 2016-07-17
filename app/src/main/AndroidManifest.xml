@@ -13,14 +13,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".presentation.activities.ExampleActivity">
+
+        </activity>
+        <activity android:name=".presentation.activities.PlayerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".presentation.activities.PlayerActivity">
-
         </activity>
 
         <service
@@ -29,6 +29,7 @@
         <service
             android:name="com.develop.zuzik.multipleplayer.service.MultiplePlaybackService"
             android:exported="false"/>
+
     </application>
 
 </manifest>

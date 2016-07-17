@@ -1,8 +1,9 @@
-package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
+package com.develop.zuzik.multipleplayermvp.presenter;
 
-import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerView;
 import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
-import com.develop.zuzik.audioplayerexample.mvp.multiple_player.presenter_destroy_strategy.MultiplePlayerPresenterDestroyStrategy;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.player.interfaces.PlaybackState;

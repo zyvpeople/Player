@@ -1,6 +1,6 @@
-package com.develop.zuzik.audioplayerexample.player.multiple_playback;
+package com.develop.zuzik.multipleplayermvp.settings;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackSettings;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 
 /**
  * User: zuzik

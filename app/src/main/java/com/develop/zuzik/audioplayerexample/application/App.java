@@ -4,11 +4,12 @@ import android.app.Application;
 
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerServiceModel;
-import com.develop.zuzik.playermvp.model.PlayerServiceModel;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
+import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
+import com.develop.zuzik.playermvp.model.PlayerServiceModel;
+import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
@@ -37,6 +38,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: service - communicate with binder
 //TODO: UriPlayerSource - Uri is not serializable
 //TODO: use jack for lambda
+//TODO: create CompositeListener for Model listener
 public class App extends Application {
 
 	private Player.Model<Song> model;

@@ -1,6 +1,7 @@
-package com.develop.zuzik.audioplayerexample.mvp.multiple_player.presenter_destroy_strategy;
+package com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy;
 
-import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDestroyStrategy;
 
 /**
  * User: zuzik
