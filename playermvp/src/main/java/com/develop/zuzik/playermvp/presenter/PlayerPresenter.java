@@ -11,6 +11,7 @@ import com.develop.zuzik.playermvp.null_object.NullPlayerView;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,9 +25,9 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private final PlayerPresenterDestroyStrategy destroyStrategy;
 
-	private List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
-	private List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
-	private List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
+	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
+	private final List<State> allowedPauseButtonStates = Collections.singletonList(State.PLAYING);
+	private final List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
 	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider, PlayerPresenterDestroyStrategy destroyStrategy) {
 		this.model = model;

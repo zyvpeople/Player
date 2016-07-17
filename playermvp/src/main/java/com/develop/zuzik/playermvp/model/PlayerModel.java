@@ -30,7 +30,22 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
-		this.compositeListener.addListener(this.updateSettingsListener);
+		Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
+			@Override
+			public void onUpdate(PlaybackState<SourceInfo> state) {
+				if (state.repeat) {
+					playbackSettings.repeat();
+				} else {
+					playbackSettings.doNotRepeat();
+				}
+			}
+
+			@Override
+			public void onError(Throwable error) {
+
+			}
+		};
+		this.compositeListener.addListener(updateSettingsListener);
 	}
 
 	@Override
@@ -130,19 +145,4 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		playback.release();
 	}
 
-	private final Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
-		@Override
-		public void onUpdate(PlaybackState<SourceInfo> state) {
-			if (state.repeat) {
-				playbackSettings.repeat();
-			} else {
-				playbackSettings.doNotRepeat();
-			}
-		}
-
-		@Override
-		public void onError(Throwable error) {
-
-		}
-	};
 }

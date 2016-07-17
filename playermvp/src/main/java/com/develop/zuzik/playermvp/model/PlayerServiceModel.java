@@ -56,7 +56,22 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 		this.playbackFactory = playbackFactory;
 		this.notificationId = notificationId;
 		this.playerNotificationFactory = playerNotificationFactory;
-		this.compositeListener.addListener(this.updateSettingsListener);
+		Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
+			@Override
+			public void onUpdate(PlaybackState<SourceInfo> state) {
+				if (state.repeat) {
+					playbackSettings.repeat();
+				} else {
+					playbackSettings.doNotRepeat();
+				}
+			}
+
+			@Override
+			public void onError(Throwable error) {
+
+			}
+		};
+		this.compositeListener.addListener(updateSettingsListener);
 	}
 
 	@Override
@@ -186,19 +201,4 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 		}
 	};
 
-	private final Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
-		@Override
-		public void onUpdate(PlaybackState<SourceInfo> state) {
-			if (state.repeat) {
-				playbackSettings.repeat();
-			} else {
-				playbackSettings.doNotRepeat();
-			}
-		}
-
-		@Override
-		public void onError(Throwable error) {
-
-		}
-	};
 }

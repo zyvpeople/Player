@@ -49,7 +49,7 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 		});
 		this.playback.setMultiplePlaybackListener(new MultiplePlaybackListener<SourceInfo>() {
 			@Override
-			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
+			public void onUpdate(MultiplePlaybackState<SourceInfo> multiplePlaybackState) {
 				compositeListener.onUpdate(multiplePlaybackState);
 			}
 

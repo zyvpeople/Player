@@ -13,6 +13,7 @@ import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -28,9 +29,9 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 
 	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
-	private final List<State> allowedPauseButtonStates = Arrays.asList(State.PLAYING);
+	private final List<State> allowedPauseButtonStates = Collections.singletonList(State.PLAYING);
 	private final List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
-	private MultiplePlayerPresenterDestroyStrategy destroyStrategy;
+	private final MultiplePlayerPresenterDestroyStrategy destroyStrategy;
 
 	public MultiplePlayerPresenter(
 			MultiplePlayer.Model<SourceInfo> model,

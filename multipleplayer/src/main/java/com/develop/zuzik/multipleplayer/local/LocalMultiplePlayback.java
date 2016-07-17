@@ -32,7 +32,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private final PlaybackFactory<SourceInfo> playbackFactory;
 	private final PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy;
 	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
-	PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
+	private final PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	private Optional<Playback<SourceInfo>> currentPlayback = Optional.absent();

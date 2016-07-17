@@ -63,7 +63,26 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		this.playbackFactory = playbackFactory;
 		this.notificationId = notificationId;
 		this.playerNotificationFactory = playerNotificationFactory;
-		this.compositeListener.addListener(this.updateSettingsListener);
+		Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
+			@Override
+			public void onUpdate(MultiplePlaybackState<SourceInfo> state) {
+				if (state.repeatSingle) {
+					playbackSettings.repeatSingle();
+				} else {
+					playbackSettings.doNotRepeatSingle();
+				}
+				if (state.shuffle) {
+					playbackSettings.shuffle();
+				} else {
+					playbackSettings.doNotShuffle();
+				}
+			}
+
+			@Override
+			public void onError(Throwable error) {
+			}
+		};
+		this.compositeListener.addListener(updateSettingsListener);
 	}
 
 	@Override
@@ -219,23 +238,4 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		}
 	};
 
-	private final Listener<SourceInfo> updateSettingsListener = new Listener<SourceInfo>() {
-		@Override
-		public void onUpdate(MultiplePlaybackState<SourceInfo> state) {
-			if (state.repeatSingle) {
-				playbackSettings.repeatSingle();
-			} else {
-				playbackSettings.doNotRepeatSingle();
-			}
-			if (state.shuffle) {
-				playbackSettings.shuffle();
-			} else {
-				playbackSettings.doNotShuffle();
-			}
-		}
-
-		@Override
-		public void onError(Throwable error) {
-		}
-	};
 }

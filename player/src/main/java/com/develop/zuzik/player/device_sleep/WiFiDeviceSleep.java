@@ -29,7 +29,7 @@ public class WiFiDeviceSleep implements DeviceSleep {
 					? Optional.of(wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL, getClass().getSimpleName()))
 					: Optional.absent();
 		}
-		if (!this.wifiLock.transform(input -> input.isHeld()).or(true)) {
+		if (!this.wifiLock.transform(WifiManager.WifiLock::isHeld).or(true)) {
 			this.wifiLock.get().acquire();
 			Log.i(getClass().getSimpleName(), "allow");
 		}
@@ -37,7 +37,7 @@ public class WiFiDeviceSleep implements DeviceSleep {
 
 	@Override
 	public void deny() {
-		if (this.wifiLock.transform(input -> input.isHeld()).or(false)) {
+		if (this.wifiLock.transform(WifiManager.WifiLock::isHeld).or(false)) {
 			this.wifiLock.get().release();
 			Log.i(getClass().getSimpleName(), "deny");
 		}
