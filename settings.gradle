@@ -1,1 +1,1 @@
-include ':app', ':player', ':multipleplayer'
+include ':app', ':player', ':multipleplayer', ':playermvp'
