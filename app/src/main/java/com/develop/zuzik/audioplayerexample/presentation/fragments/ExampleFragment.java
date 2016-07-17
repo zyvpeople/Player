@@ -16,7 +16,7 @@ import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.mvp.player.PlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.DoNothingPlayerPresenterDestroyStrategy;
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
+import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 

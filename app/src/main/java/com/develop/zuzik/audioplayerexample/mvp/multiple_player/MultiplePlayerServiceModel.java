@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackSettings;

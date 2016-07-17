@@ -1,7 +1,7 @@
 package com.develop.zuzik.audioplayerexample.mvp.player;
 
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.playermvp.interfaces.Player;
+import com.develop.zuzik.playermvp.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.PlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;

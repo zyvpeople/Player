@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.player;
 
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
+import com.develop.zuzik.playermvp.interfaces.Player;
 
 /**
  * User: zuzik

@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.mvp.player;
 
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.playermvp.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.player.exception.AudioFocusLostException;
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.FakeMediaPlayerException;

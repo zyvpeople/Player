@@ -4,8 +4,8 @@ import android.app.Application;
 
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
+import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
+import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerServiceModel;
 import com.develop.zuzik.audioplayerexample.mvp.player.PlayerServiceModel;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.LocalMultiplePlaybackFactory;

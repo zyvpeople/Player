@@ -3,7 +3,7 @@ package com.develop.zuzik.audioplayerexample.mvp.player;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
+import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;

@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.interfaces;
+package com.develop.zuzik.audioplayerexample.mvp;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.player.source.PlayerSource;

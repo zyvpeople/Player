@@ -2,7 +2,7 @@ package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
 
 import android.content.Context;
 
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;

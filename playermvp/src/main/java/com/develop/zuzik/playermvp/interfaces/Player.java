@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.interfaces;
+package com.develop.zuzik.playermvp.interfaces;
 
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.source.PlayerSource;

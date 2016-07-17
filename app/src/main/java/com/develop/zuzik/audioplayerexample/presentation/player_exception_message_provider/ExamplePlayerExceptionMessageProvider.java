@@ -1,6 +1,6 @@
 package com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider;
 
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.playermvp.interfaces.PlayerExceptionMessageProvider;
 
 /**
  * User: zuzik

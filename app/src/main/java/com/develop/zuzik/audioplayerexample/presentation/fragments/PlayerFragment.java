@@ -18,7 +18,7 @@ import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerPresenter;
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.source.PlayerSource;
