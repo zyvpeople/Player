@@ -24,10 +24,8 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: implement sound volume when sms
 //TODO: implement sound volume when headphone is detached from device
 //TODO: create widget for launcher
-//TODO: try to create playback without init method and ability to set player source not in constructor
 //TODO: use index of current playback instead playerSource because there is an possibility to set same object to queue few times
 //FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
-//TODO: UriPlayerSource - Uri is not serializable
 //TODO: use jack for lambda
 public class App extends Application {
 
