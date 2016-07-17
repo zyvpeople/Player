@@ -102,7 +102,7 @@ public class PlaybackService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.d(getClass().getSimpleName(), "onDestroy");
-		setPlaybackListener(null);
+		setPlaybackListener(NullPlaybackListener.getInstance());
 		getPlayback(Playback::release);
 		this.playback = Optional.absent();
 		stopForeground(true);
