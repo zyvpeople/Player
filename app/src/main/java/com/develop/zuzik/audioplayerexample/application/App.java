@@ -29,7 +29,6 @@ import com.develop.zuzik.player.local.LocalPlaybackFactory;
 //TODO: for playbacks add multiple listeners instead of one
 //TODO: try to create playback without init method and ability to set player source not in constructor
 //TODO: use index of current playback instead playerSource because there is an possibility to set same object to queue few times
-//TODO: remove rx from multiple playback
 //TODO: create strategy of bool parameter - when setPlayerSources - play right now or do not play
 //TODO: replace settings to mvp package
 //TODO: refactor packages
