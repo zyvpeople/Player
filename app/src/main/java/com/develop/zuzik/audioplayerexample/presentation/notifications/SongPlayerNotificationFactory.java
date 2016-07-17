@@ -8,7 +8,7 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 import com.develop.zuzik.audioplayerexample.R;
-import com.develop.zuzik.audioplayerexample.entities.Song;
+import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 

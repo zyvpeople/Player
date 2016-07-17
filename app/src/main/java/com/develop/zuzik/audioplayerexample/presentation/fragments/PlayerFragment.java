@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
-import com.develop.zuzik.audioplayerexample.entities.Song;
+import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter;
 import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;

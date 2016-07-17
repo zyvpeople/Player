@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
-import com.develop.zuzik.audioplayerexample.entities.Song;
+import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.playermvp.presenter.PlayerPresenter;
 import com.develop.zuzik.playermvp.presenter_destroy_strategy.DoNothingPlayerPresenterDestroyStrategy;
 import com.develop.zuzik.playermvp.interfaces.Player;

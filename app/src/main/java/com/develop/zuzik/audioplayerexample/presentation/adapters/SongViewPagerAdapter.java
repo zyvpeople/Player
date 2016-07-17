@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.develop.zuzik.audioplayerexample.entities.Song;
+import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.audioplayerexample.presentation.fragments.SongFragment;
 

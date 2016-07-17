@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.entities;
+package com.develop.zuzik.audioplayerexample.domain;
 
 import android.support.annotation.DrawableRes;
 

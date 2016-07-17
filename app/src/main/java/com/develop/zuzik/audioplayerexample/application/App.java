@@ -2,11 +2,10 @@ package com.develop.zuzik.audioplayerexample.application;
 
 import android.app.Application;
 
-import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.domain.Song;
+import com.develop.zuzik.audioplayerexample.domain.ExampleOnCompletePlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.playermvp.model.PlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;

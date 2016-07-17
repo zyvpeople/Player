@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.example.factories;
+package com.develop.zuzik.audioplayerexample.domain;
 
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
