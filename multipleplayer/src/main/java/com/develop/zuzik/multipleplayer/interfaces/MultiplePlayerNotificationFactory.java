@@ -16,6 +16,6 @@ public interface MultiplePlayerNotificationFactory<SourceInfo> extends Serializa
 						PendingIntent playIntent,
 						PendingIntent pauseIntent,
 						PendingIntent stopIntent,
-						PendingIntent playNext,
-						PendingIntent playPrevious);
+						PendingIntent playNextIntent,
+						PendingIntent playPreviousIntent);
 }

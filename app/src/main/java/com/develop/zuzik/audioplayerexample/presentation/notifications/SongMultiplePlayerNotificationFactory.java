@@ -25,8 +25,8 @@ public class SongMultiplePlayerNotificationFactory implements MultiplePlayerNoti
 			PendingIntent playIntent,
 			PendingIntent pauseIntent,
 			PendingIntent stopIntent,
-			PendingIntent playNext,
-			PendingIntent playPrevious) {
+			PendingIntent playNextIntent,
+			PendingIntent playPreviousIntent) {
 		Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
 		return new NotificationCompat.Builder(context)
 				.setStyle(new android.support.v7.app.NotificationCompat.MediaStyle())
@@ -41,11 +41,9 @@ public class SongMultiplePlayerNotificationFactory implements MultiplePlayerNoti
 						false)
 				.setOngoing(true)
 				.setAutoCancel(true)
-				.addAction(R.drawable.ic_stop, "<", playPrevious)
-				.addAction(R.drawable.ic_play, "Play", playIntent)
-				.addAction(R.drawable.ic_pause, "Pause", pauseIntent)
+				.addAction(R.drawable.ic_play, "Play prev", playPreviousIntent)
 				.addAction(R.drawable.ic_stop, "Stop", stopIntent)
-				.addAction(R.drawable.ic_stop, ">", playNext)
+				.addAction(R.drawable.ic_play, "Play next", playNextIntent)
 				.build();
 	}
 }

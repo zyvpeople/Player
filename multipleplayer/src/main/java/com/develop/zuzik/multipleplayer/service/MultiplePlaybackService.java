@@ -8,14 +8,14 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.develop.zuzik.player.interfaces.Action;
-import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
+import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -132,8 +132,8 @@ public class MultiplePlaybackService extends Service {
 		PendingIntent playIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY, MultiplePlaybackServiceIntentFactory.createPlay(this), 0);
 		PendingIntent pauseIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PAUSE, MultiplePlaybackServiceIntentFactory.createPause(this), 0);
 		PendingIntent stopIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_STOP, MultiplePlaybackServiceIntentFactory.createStop(this), 0);
-		PendingIntent playNextIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY_NEXT, MultiplePlaybackServiceIntentFactory.createStop(this), 0);
-		PendingIntent playPreviousIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY_PREVIOUS, MultiplePlaybackServiceIntentFactory.createStop(this), 0);
+		PendingIntent playNextIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY_NEXT, MultiplePlaybackServiceIntentFactory.createPlayNext(this), 0);
+		PendingIntent playPreviousIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY_PREVIOUS, MultiplePlaybackServiceIntentFactory.createPlayPrevious(this), 0);
 
 		startForeground(this.notificationId, this.multiplePlayerNotificationFactory.create(this, multiplePlaybackState, playIntent, pauseIntent, stopIntent, playNextIntent, playPreviousIntent));
 	}

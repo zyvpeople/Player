@@ -151,7 +151,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 		boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
 		if (hasPlayerSources) {
 			PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
-			setAndInitAndPlayCurrentPlayback(playerSource);
+			setAndInitCurrentPlayback(playerSource);
 		} else {
 			notifyStateChanged();
 		}
@@ -254,9 +254,13 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 				});
 	}
 
-	private void setAndInitAndPlayCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
+	private void setAndInitCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
 		this.currentPlayback = Optional.of(createPlayback(playerSource));
 		currentPlayback(Playback::init);
+	}
+
+	private void setAndInitAndPlayCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
+		setAndInitCurrentPlayback(playerSource);
 		currentPlayback(Playback::play);
 	}
 
