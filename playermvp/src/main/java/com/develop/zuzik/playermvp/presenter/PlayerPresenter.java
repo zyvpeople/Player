@@ -1,11 +1,13 @@
-package com.develop.zuzik.audioplayerexample.mvp.player;
+package com.develop.zuzik.playermvp.presenter;
 
+import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
 import com.develop.zuzik.playermvp.interfaces.Player;
-import com.develop.zuzik.playermvp.interfaces.PlayerExceptionMessageProvider;
-import com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy.PlayerPresenterDestroyStrategy;
+import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.playermvp.interfaces.PlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.source.PlayerSource;
+import com.develop.zuzik.playermvp.null_object.NullPlayerView;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.Arrays;
@@ -105,7 +107,6 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	}
 
 	private void updateView(Optional<PlaybackState<SourceInfo>> state) {
-
 		boolean repeat = false;
 		int currentTimeInMilliseconds = 0;
 		int totalTimeInMilliseconds = 100;

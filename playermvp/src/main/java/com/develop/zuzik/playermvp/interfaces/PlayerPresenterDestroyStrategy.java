@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.player.presenter_destroy_strategy;
+package com.develop.zuzik.playermvp.interfaces;
 
 import com.develop.zuzik.playermvp.interfaces.Player;
 

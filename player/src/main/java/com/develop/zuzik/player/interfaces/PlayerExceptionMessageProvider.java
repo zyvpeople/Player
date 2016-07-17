@@ -1,4 +1,4 @@
-package com.develop.zuzik.playermvp.interfaces;
+package com.develop.zuzik.player.interfaces;
 
 /**
  * User: zuzik

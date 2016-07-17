@@ -5,17 +5,17 @@ import android.app.Application;
 import com.develop.zuzik.audioplayerexample.entities.Song;
 import com.develop.zuzik.audioplayerexample.example.factories.ExampleOnCompletePlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.mvp.MultiplePlayer;
-import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.audioplayerexample.mvp.multiple_player.MultiplePlayerServiceModel;
-import com.develop.zuzik.audioplayerexample.mvp.player.PlayerServiceModel;
+import com.develop.zuzik.playermvp.model.PlayerServiceModel;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.InMemoryMultiplePlaybackSettings;
+import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
+import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.InMemoryMultiplePlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.playback.InMemoryPlaybackSettings;
-import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;
+import com.develop.zuzik.playermvp.interfaces.Player;
+import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 
 /**
  * User: zuzik

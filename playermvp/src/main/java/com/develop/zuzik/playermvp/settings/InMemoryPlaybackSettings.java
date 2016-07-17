@@ -1,4 +1,6 @@
-package com.develop.zuzik.audioplayerexample.player.playback;
+package com.develop.zuzik.playermvp.settings;
+
+import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
 
 /**
  * User: zuzik

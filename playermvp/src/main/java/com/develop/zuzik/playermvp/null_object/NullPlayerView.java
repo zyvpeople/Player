@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.player;
+package com.develop.zuzik.playermvp.null_object;
 
 import com.develop.zuzik.playermvp.interfaces.Player;
 

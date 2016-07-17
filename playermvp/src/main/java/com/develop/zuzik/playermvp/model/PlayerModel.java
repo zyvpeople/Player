@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.player;
+package com.develop.zuzik.playermvp.model;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -8,7 +8,7 @@ import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackSettings;
+import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;

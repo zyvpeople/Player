@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.mvp.player;
+package com.develop.zuzik.playermvp.model;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,16 +7,17 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.develop.zuzik.playermvp.interfaces.Player;
-import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
+import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackSettings;
 import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
 import com.develop.zuzik.player.interfaces.State;
-import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.service.PlaybackService;
 import com.develop.zuzik.player.service.PlaybackServiceInitializeBundle;
+import com.develop.zuzik.player.source.PlayerSource;
+import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
+import com.develop.zuzik.playermvp.interfaces.Player;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.crea
  * User: zuzik
  * Date: 6/4/16
  */
-@SuppressWarnings("Convert2Diamond")
 public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	private final Context context;
@@ -147,7 +147,11 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	private void startService(Intent intent) {
-		this.context.startService(intent);
+		ComponentName expectedServiceName = new ComponentName(this.context, PlaybackService.class);
+		ComponentName serviceName = this.context.startService(intent);
+		if (!expectedServiceName.equals(serviceName)) {
+			throw new ServiceIsNotDeclaredInManifestException(PlaybackService.class);
+		}
 	}
 
 	private void notifyOnUpdate() {

@@ -1,12 +1,12 @@
-package com.develop.zuzik.audioplayerexample.mvp.player;
+package com.develop.zuzik.player.transformation;
 
-import com.develop.zuzik.playermvp.interfaces.PlayerExceptionMessageProvider;
+import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.player.exception.AudioFocusLostException;
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.FakeMediaPlayerException;
 import com.develop.zuzik.player.exception.MediaPlayerStateException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
-import com.develop.zuzik.audioplayerexample.player.Transformation;
+import com.develop.zuzik.player.interfaces.Transformation;
 
 /**
  * User: zuzik
