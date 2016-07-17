@@ -33,7 +33,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	private final AudioManager audioManager;
 	private PlaybackState<SourceInfo> playbackState;
 	private PlaybackListener<SourceInfo> playbackListener = NullPlaybackListener.getInstance();
-	private PlayerState playerState = new NullPlayerState();
+	private PlayerState playerState = NullPlayerState.INSTANCE;
 	private MediaPlayer mediaPlayer;
 
 	public LocalPlayback(Context context, boolean repeat, PlayerSource<SourceInfo> playerSource) {

@@ -35,7 +35,7 @@ public class MultiplePlaybackService extends Service {
 
 	private final IBinder binder = new MultiplePlaybackServiceBinder();
 	private Optional<MultiplePlayback> multiplePlayback = Optional.absent();
-	private MultiplePlaybackListener multiplePlaybackListener = new NullMultiplePlaybackListener<>();
+	private MultiplePlaybackListener multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	private int notificationId;
 	private MultiplePlayerNotificationFactory multiplePlayerNotificationFactory;
 
@@ -96,7 +96,7 @@ public class MultiplePlaybackService extends Service {
 	}
 
 	public void setMultiplePlaybackListener(MultiplePlaybackListener multiplePlaybackListener) {
-		this.multiplePlaybackListener = multiplePlaybackListener != null ? multiplePlaybackListener : new NullMultiplePlaybackListener<>();
+		this.multiplePlaybackListener = multiplePlaybackListener != null ? multiplePlaybackListener : NullMultiplePlaybackListener.getInstance();
 	}
 
 	private void getMultiplePlayback(ParamAction<MultiplePlayback> success) {

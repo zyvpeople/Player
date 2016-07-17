@@ -18,7 +18,7 @@ import java.util.List;
 public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo> {
 
 	private final Player.Model<SourceInfo> model;
-	private Player.View<SourceInfo> view = new NullPlayerView<>();
+	private Player.View<SourceInfo> view = NullPlayerView.getInstance();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private final PlayerPresenterDestroyStrategy destroyStrategy;
 
@@ -36,7 +36,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	public void setView(Player.View<SourceInfo> view) {
 		this.view = view != null
 				? view
-				: new NullPlayerView<>();
+				: NullPlayerView.getInstance();
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 
 	@Override
 	public void onDestroy() {
-		this.view = new NullPlayerView<>();
+		this.view = NullPlayerView.getInstance();
 		this.destroyStrategy.onDestroy(this.model);
 	}
 

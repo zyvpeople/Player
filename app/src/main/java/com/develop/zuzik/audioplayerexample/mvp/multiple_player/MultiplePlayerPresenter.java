@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Presenter<SourceInfo> {
 
 	private final MultiplePlayer.Model<SourceInfo> model;
-	private MultiplePlayer.View<SourceInfo> view = new NullMultiplePlayerView<>();
+	private MultiplePlayer.View<SourceInfo> view = NullMultiplePlayerView.getInstance();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 
 	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
@@ -42,7 +42,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	@Override
 	public void setView(MultiplePlayer.View<SourceInfo> view) {
-		this.view = view != null ? view : new NullMultiplePlayerView<>();
+		this.view = view != null ? view : NullMultiplePlayerView.getInstance();
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	@Override
 	public void onDestroy() {
-		this.view = new NullMultiplePlayerView<>();
+		this.view = NullMultiplePlayerView.getInstance();
 		this.destroyStrategy.onDestroy(this.model);
 	}
 

@@ -37,7 +37,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
 	PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
-	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = new NullMultiplePlaybackListener<>();
+	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	private Optional<Playback<SourceInfo>> currentPlayback = Optional.absent();
 
 	public LocalMultiplePlayback(Context context,
@@ -68,13 +68,13 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	public void setMultiplePlaybackListener(MultiplePlaybackListener<SourceInfo> multiplePlaybackListener) {
 		this.multiplePlaybackListener = multiplePlaybackListener != null
 				? multiplePlaybackListener
-				: new NullMultiplePlaybackListener<>();
+				: NullMultiplePlaybackListener.getInstance();
 	}
 
 	@Override
 	public void clear() {
 		releaseCurrentPlaybackAndUpdateState();
-		this.multiplePlaybackListener = new NullMultiplePlaybackListener<>();
+		this.multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<>(),
 				Optional.absent(),

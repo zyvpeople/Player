@@ -10,6 +10,16 @@ import java.util.List;
  * Date: 7/12/16
  */
 public class NullMultiplePlayerView<SourceInfo> implements MultiplePlayer.View<SourceInfo> {
+
+	private static final NullMultiplePlayerView INSTANCE = new NullMultiplePlayerView();
+
+	public static <SourceInfo> NullMultiplePlayerView<SourceInfo> getInstance() {
+		return INSTANCE;
+	}
+
+	private NullMultiplePlayerView() {
+	}
+
 	@Override
 	public void repeat() {
 

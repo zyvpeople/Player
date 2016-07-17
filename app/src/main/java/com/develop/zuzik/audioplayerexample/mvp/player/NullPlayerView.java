@@ -7,6 +7,16 @@ import com.develop.zuzik.audioplayerexample.mvp.interfaces.Player;
  * Date: 6/22/16
  */
 public class NullPlayerView<SourceInfo> implements Player.View<SourceInfo> {
+
+	private static final NullPlayerView INSTANCE = new NullPlayerView();
+
+	public static <SourceInfo> NullPlayerView<SourceInfo> getInstance() {
+		return INSTANCE;
+	}
+
+	private NullPlayerView() {
+	}
+
 	@Override
 	public void setRepeat() {
 

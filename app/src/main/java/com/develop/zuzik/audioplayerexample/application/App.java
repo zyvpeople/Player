@@ -12,10 +12,10 @@ import com.develop.zuzik.audioplayerexample.player.multiple_playback.local.Local
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.audioplayerexample.player.multiple_playback.settings.InMemoryMultiplePlaybackSettings;
-import com.develop.zuzik.player.local.LocalPlaybackFactory;
 import com.develop.zuzik.audioplayerexample.player.playback.InMemoryPlaybackSettings;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
+import com.develop.zuzik.player.local.LocalPlaybackFactory;
 
 /**
  * User: zuzik
@@ -27,7 +27,6 @@ import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlaye
 //TODO: create widget for launcher
 //TODO: rework PlaybackSettings -> playback must not depend on this class, settings must be only in model
 //TODO: for playbacks add multiple listeners instead of one
-//TODO: add static methods for null objects
 //TODO: try to create playback without init method and ability to set player source not in constructor
 //TODO: use index of current playback instead playerSource because there is an possibility to set same object to queue few times
 //TODO: remove rx from multiple playback

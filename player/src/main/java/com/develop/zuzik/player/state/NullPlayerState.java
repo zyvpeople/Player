@@ -11,6 +11,11 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class NullPlayerState implements PlayerState {
 
+	public static final NullPlayerState INSTANCE = new NullPlayerState();
+
+	private NullPlayerState() {
+	}
+
 	@Override
 	public MediaPlayerState getMediaPlayerState() {
 		return new MediaPlayerState(
