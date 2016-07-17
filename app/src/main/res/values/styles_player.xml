@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TimeContainerViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="TimeTextViewStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="TimeTextViewStyle.Current">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">16dp</item>
+    </style>
+
+    <style name="TimeTextViewStyle.Total">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">72dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
+
+    <style name="SongProgressStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">72dp</item>
+    </style>
+
+    <style name="InfoContainerViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">72dp</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="TrackTextViewStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
+
+    <style name="TrackTextViewStyle.Singer">
+        <item name="android:gravity">left|bottom</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TrackTextViewStyle.Song">
+        <item name="android:gravity">left|top</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="ControlsPanelViewStyle">
+        <item name="android:background">#2e2f2e</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ControlsCardViewStyle">
+        <item name="cardBackgroundColor">#424242</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:layout_margin">16dp</item>
+    </style>
+
+    <style name="ControlsContainerViewStyle">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="PrimaryButtonViewStyle">
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="fabSize">normal</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="SecondaryButtonViewStyle">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+    </style>
+
+    <style name="SecondaryButtonViewStyle.Repeat">
+        <item name="srcCompat">@drawable/ic_repeat_on</item>
+    </style>
+
+    <style name="SecondaryButtonViewStyle.SkipPrevious">
+        <item name="srcCompat">@drawable/ic_skip_previous</item>
+    </style>
+
+    <style name="SecondaryButtonViewStyle.SkipNext">
+        <item name="srcCompat">@drawable/ic_skip_next</item>
+    </style>
+
+    <style name="SecondaryButtonViewStyle.Shuffle">
+        <item name="srcCompat">@drawable/ic_shuffle_on</item>
+    </style>
+
+    <style name="SecondaryButtonContainerViewStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+</resources>

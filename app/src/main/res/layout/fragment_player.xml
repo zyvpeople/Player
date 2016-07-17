@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/infoContainer"
+            style="@style/InfoContainerViewStyle"
+            android:layout_alignParentBottom="true">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/singer"
+                style="@style/TrackTextViewStyle.Singer"
+                tools:text="Of monsters and men"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/song"
+                style="@style/TrackTextViewStyle.Song"
+                tools:text="Little talks"/>
+
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/infoContainer"
+            android:layout_alignParentTop="true"/>
+
+        <LinearLayout
+            android:id="@+id/timeContainerView"
+            style="@style/TimeContainerViewStyle"
+            android:layout_above="@id/infoContainer">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/currentTime"
+                style="@style/TimeTextViewStyle.Current"
+                tools:text="10:58"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/totalTime"
+                style="@style/TimeTextViewStyle.Total"
+                tools:text="123:26"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatSeekBar
+            android:id="@+id/progress"
+            style="@style/SongProgressStyle"
+            android:layout_alignTop="@id/timeContainerView"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/ControlsPanelViewStyle">
+
+        <android.support.v7.widget.CardView
+            style="@style/ControlsCardViewStyle">
+
+            <LinearLayout
+                style="@style/ControlsContainerViewStyle">
+
+                <LinearLayout
+                    style="@style/SecondaryButtonContainerViewStyle">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/repeat"
+                        style="@style/SecondaryButtonViewStyle.Repeat"
+                        tools:srcCompat="@drawable/ic_repeat_on"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SecondaryButtonContainerViewStyle">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/skipPrevious"
+                        style="@style/SecondaryButtonViewStyle.SkipPrevious"/>
+                </LinearLayout>
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/playPause"
+                    style="@style/PrimaryButtonViewStyle"/>
+
+                <LinearLayout
+                    style="@style/SecondaryButtonContainerViewStyle">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/skipNext"
+                        style="@style/SecondaryButtonViewStyle.SkipNext"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/SecondaryButtonContainerViewStyle">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/shuffle"
+                        style="@style/SecondaryButtonViewStyle.Shuffle"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</LinearLayout>
