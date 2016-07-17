@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.services.multiple_playback;
+package com.develop.zuzik.multipleplayer.service;
 
 import android.content.Context;
 import android.content.Intent;

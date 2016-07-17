@@ -9,8 +9,8 @@ import android.support.v4.app.NotificationCompat;
 
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.entities.Song;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.audioplayerexample.player.notification.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
 
 /**
  * User: zuzik

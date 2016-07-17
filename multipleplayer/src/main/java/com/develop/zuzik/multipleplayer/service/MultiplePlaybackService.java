@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.services.multiple_playback;
+package com.develop.zuzik.multipleplayer.service;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -10,12 +10,12 @@ import android.util.Log;
 
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.null_objects.NullMultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.notification.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 

@@ -1,10 +1,8 @@
-package com.develop.zuzik.audioplayerexample.player.notification;
+package com.develop.zuzik.multipleplayer.interfaces;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
-
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
 
 import java.io.Serializable;
 

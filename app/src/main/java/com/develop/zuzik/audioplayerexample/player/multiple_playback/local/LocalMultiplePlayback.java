@@ -5,12 +5,12 @@ import android.content.ContextWrapper;
 
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.null_objects.NullMultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
+import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;

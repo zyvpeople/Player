@@ -1,9 +1,9 @@
 package com.develop.zuzik.audioplayerexample.example.factories;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.EndedNextPlayerSourceStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies.ShufflePlayerSourceStrategy;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
+import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
+import com.develop.zuzik.multipleplayer.player_source_strategy.ShufflePlayerSourceStrategy;
 
 /**
  * User: zuzik

@@ -3,11 +3,11 @@ package com.develop.zuzik.audioplayerexample.mvp.multiple_player;
 import android.content.Context;
 
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlayback;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackSettings;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 

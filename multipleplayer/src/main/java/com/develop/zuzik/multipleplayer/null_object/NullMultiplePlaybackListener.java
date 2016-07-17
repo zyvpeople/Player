@@ -1,7 +1,7 @@
-package com.develop.zuzik.audioplayerexample.player.multiple_playback.null_objects;
+package com.develop.zuzik.multipleplayer.null_object;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 
 /**
  * User: zuzik

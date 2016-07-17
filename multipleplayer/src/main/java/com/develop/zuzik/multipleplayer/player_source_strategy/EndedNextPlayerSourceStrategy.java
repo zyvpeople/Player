@@ -1,6 +1,6 @@
-package com.develop.zuzik.audioplayerexample.player.multiple_playback.player_source_strategies;
+package com.develop.zuzik.multipleplayer.player_source_strategy;
 
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.PlayerSourceStrategy;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 

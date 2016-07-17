@@ -8,33 +8,33 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.develop.zuzik.audioplayerexample.mvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackFactory;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackSettings;
-import com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.audioplayerexample.player.notification.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.audioplayerexample.player.multiple_playback.MultiplePlaybackSettings;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
 import com.develop.zuzik.player.source.PlayerSource;
-import com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackService;
-import com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceInitializeBundle;
-import com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory;
+import com.develop.zuzik.multipleplayer.service.MultiplePlaybackService;
+import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceInitializeBundle;
+import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.create;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createDoNotRepeatSingle;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createDoNotShuffle;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createPause;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createPlay;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createPlayNext;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createPlayPrevious;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createRepeatSingle;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createSeekTo;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createShuffle;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createSimulateError;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createStop;
-import static com.develop.zuzik.audioplayerexample.player.services.multiple_playback.MultiplePlaybackServiceIntentFactory.createSwitchToSource;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.create;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createDoNotRepeatSingle;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createDoNotShuffle;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createPause;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createPlay;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createPlayNext;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createPlayPrevious;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createRepeatSingle;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createSeekTo;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createShuffle;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createSimulateError;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createStop;
+import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.createSwitchToSource;
 
 /**
  * User: zuzik

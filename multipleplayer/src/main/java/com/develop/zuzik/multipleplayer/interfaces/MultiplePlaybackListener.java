@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.multiple_playback.interfaces;
+package com.develop.zuzik.multipleplayer.interfaces;
 
 /**
  * User: zuzik

@@ -27,7 +27,7 @@
             android:name="com.develop.zuzik.player.service.PlaybackService"
             android:exported="false"/>
         <service
-            android:name=".player.services.multiple_playback.MultiplePlaybackService"
+            android:name="com.develop.zuzik.multipleplayer.service.MultiplePlaybackService"
             android:exported="false"/>
     </application>
 
