@@ -30,11 +30,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: try to create playback without init method and ability to set player source not in constructor
 //TODO: use index of current playback instead playerSource because there is an possibility to set same object to queue few times
 //TODO: create strategy of bool parameter - when setPlayerSources - play right now or do not play
-//TODO: replace settings to mvp package
-//TODO: refactor packages
-//TODO: create android library for player
 //FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
-//TODO: service - communicate with binder
 //TODO: UriPlayerSource - Uri is not serializable
 //TODO: use jack for lambda
 //TODO: create CompositeListener for Model listener
