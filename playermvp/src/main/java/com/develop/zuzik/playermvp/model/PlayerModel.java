@@ -3,18 +3,16 @@ package com.develop.zuzik.playermvp.model;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
-import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.source.PlayerSource;
+import com.develop.zuzik.playermvp.composite.CompositeListener;
+import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
+import com.develop.zuzik.playermvp.interfaces.Player;
 import com.fernandocejas.arrow.optional.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: zuzik
@@ -25,14 +23,14 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final List<Listener<SourceInfo>> listeners = new ArrayList<>();
+	private final CompositeListener<SourceInfo> compositeListener = new CompositeListener<>();
 	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 
 	public PlayerModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
-		this.listeners.add(this.updateSettingsListener);
+		this.compositeListener.addListener(this.updateSettingsListener);
 	}
 
 	@Override
@@ -62,14 +60,12 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	@Override
 	public void addListener(Listener<SourceInfo> listener) {
-		if (!this.listeners.contains(listener)) {
-			this.listeners.add(listener);
-		}
+		this.compositeListener.addListener(listener);
 	}
 
 	@Override
 	public void removeListener(Listener<SourceInfo> listener) {
-		this.listeners.remove(listener);
+		this.compositeListener.removeListener(listener);
 	}
 
 	@Override
@@ -119,16 +115,12 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 		this.playback.get().setPlaybackListener(new PlaybackListener<SourceInfo>() {
 			@Override
 			public void onUpdate(PlaybackState<SourceInfo> playbackState) {
-				for (Listener<SourceInfo> listener : listeners) {
-					listener.onUpdate(playbackState);
-				}
+				compositeListener.onUpdate(playbackState);
 			}
 
 			@Override
 			public void onError(Throwable throwable) {
-				for (Listener<SourceInfo> listener : listeners) {
-					listener.onError(throwable);
-				}
+				compositeListener.onError(throwable);
 			}
 		});
 	}

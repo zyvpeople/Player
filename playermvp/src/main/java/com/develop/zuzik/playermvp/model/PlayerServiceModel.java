@@ -16,12 +16,10 @@ import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.service.PlaybackService;
 import com.develop.zuzik.player.service.PlaybackServiceInitializeBundle;
 import com.develop.zuzik.player.source.PlayerSource;
+import com.develop.zuzik.playermvp.composite.CompositeListener;
 import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.fernandocejas.arrow.optional.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.create;
 import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createDoNotRepeat;
@@ -42,7 +40,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private final Context context;
 	private final PlaybackSettings playbackSettings;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final List<Listener<SourceInfo>> listeners = new ArrayList<>();
+	private final CompositeListener<SourceInfo> compositeListener = new CompositeListener<>();
 	private Optional<PlayerSource<SourceInfo>> source = Optional.absent();
 	private Optional<PlaybackService> boundedService = Optional.absent();
 	private final int notificationId;
@@ -58,7 +56,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 		this.playbackFactory = playbackFactory;
 		this.notificationId = notificationId;
 		this.playerNotificationFactory = playerNotificationFactory;
-		this.listeners.add(this.updateSettingsListener);
+		this.compositeListener.addListener(this.updateSettingsListener);
 	}
 
 	@Override
@@ -89,14 +87,12 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 
 	@Override
 	public void addListener(Listener<SourceInfo> listener) {
-		if (!this.listeners.contains(listener)) {
-			this.listeners.add(listener);
-		}
+		this.compositeListener.addListener(listener);
 	}
 
 	@Override
 	public void removeListener(Listener<SourceInfo> listener) {
-		this.listeners.remove(listener);
+		this.compositeListener.removeListener(listener);
 	}
 
 	@Override
@@ -161,9 +157,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	private void notifyOnUpdate(PlaybackState playbackState) {
-		for (Listener<SourceInfo> listener : this.listeners) {
-			listener.onUpdate(playbackState);
-		}
+		this.compositeListener.onUpdate(playbackState);
 	}
 
 	private final ServiceConnection serviceConnection = new ServiceConnection() {
@@ -179,9 +173,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 
 				@Override
 				public void onError(Throwable throwable) {
-					for (Listener<SourceInfo> listener : listeners) {
-						listener.onError(throwable);
-					}
+					compositeListener.onError(throwable);
 				}
 			});
 			notifyOnUpdate();

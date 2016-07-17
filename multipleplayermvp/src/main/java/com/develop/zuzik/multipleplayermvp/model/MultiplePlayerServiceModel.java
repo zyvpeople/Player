@@ -7,21 +7,20 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
-import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
-import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
-import com.develop.zuzik.player.service.PlaybackService;
-import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackService;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceInitializeBundle;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory;
+import com.develop.zuzik.multipleplayermvp.composite.CompositeListener;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
+import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.create;
@@ -47,7 +46,7 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 	private final Context context;
 	private final MultiplePlaybackSettings playbackSettings;
 	private final MultiplePlaybackFactory<SourceInfo> playbackFactory;
-	private final List<Listener<SourceInfo>> listeners = new ArrayList<>();
+	private final CompositeListener<SourceInfo> compositeListener = new CompositeListener<>();
 	private Optional<List<PlayerSource<SourceInfo>>> sources = Optional.absent();
 	private Optional<MultiplePlaybackService> boundedService = Optional.absent();
 	private final int notificationId;
@@ -64,7 +63,7 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		this.playbackFactory = playbackFactory;
 		this.notificationId = notificationId;
 		this.playerNotificationFactory = playerNotificationFactory;
-		this.listeners.add(this.updateSettingsListener);
+		this.compositeListener.addListener(this.updateSettingsListener);
 	}
 
 	@Override
@@ -97,14 +96,12 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 
 	@Override
 	public void addListener(Listener<SourceInfo> listener) {
-		if (!this.listeners.contains(listener)) {
-			this.listeners.add(listener);
-		}
+		this.compositeListener.addListener(listener);
 	}
 
 	@Override
 	public void removeListener(Listener<SourceInfo> listener) {
-		this.listeners.remove(listener);
+		this.compositeListener.removeListener(listener);
 	}
 
 	@Override
@@ -193,9 +190,7 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 	}
 
 	private void notifyOnUpdate(MultiplePlaybackState<SourceInfo> playbackState) {
-		for (MultiplePlayer.Model.Listener<SourceInfo> listener : this.listeners) {
-			listener.onUpdate(playbackState);
-		}
+		this.compositeListener.onUpdate(playbackState);
 	}
 
 	private final ServiceConnection serviceConnection = new ServiceConnection() {
@@ -211,9 +206,7 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 
 				@Override
 				public void onError(Throwable throwable) {
-					for (MultiplePlayer.Model.Listener<SourceInfo> listener : listeners) {
-						listener.onError(throwable);
-					}
+					compositeListener.onError(throwable);
 				}
 			});
 			notifyOnUpdate();
