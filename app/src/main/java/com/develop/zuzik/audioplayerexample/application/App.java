@@ -31,7 +31,6 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
 //TODO: UriPlayerSource - Uri is not serializable
 //TODO: use jack for lambda
-//TODO: create CompositeListener for Model listener
 public class App extends Application {
 
 	private Player.Model<Song> model;
