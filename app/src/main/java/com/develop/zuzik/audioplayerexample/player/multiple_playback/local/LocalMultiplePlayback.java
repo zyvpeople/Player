@@ -3,21 +3,19 @@ package com.develop.zuzik.audioplayerexample.player.multiple_playback.local;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.develop.zuzik.player.interfaces.Action;
-import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
+import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
-import com.develop.zuzik.audioplayerexample.player.playback.PlaybackSettings;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
-import com.develop.zuzik.audioplayerexample.player.playback.InMemoryPlaybackSettings;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -32,7 +30,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	private final Context context;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final PlaybackSettings playbackSettings = new InMemoryPlaybackSettings();
 	private final PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy;
 	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
 	PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
@@ -289,7 +286,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	private Playback<SourceInfo> createPlayback(PlayerSource<SourceInfo> playerSource) {
-		Playback<SourceInfo> playback = this.playbackFactory.create(this.context, this.playbackSettings.isRepeat(), playerSource);
+		Playback<SourceInfo> playback = this.playbackFactory.create(this.context, this.multiplePlaybackState.repeatSingle, playerSource);
 		playback.setPlaybackListener(this.playbackListener);
 		if (getMultiplePlaybackState().repeatSingle) {
 			playback.repeat();
