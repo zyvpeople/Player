@@ -3,14 +3,15 @@ package com.develop.zuzik.player.state;
 import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.develop.zuzik.player.device_sleep.DeviceSleep;
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.MediaPlayerStateException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.state.interfaces.PlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerStateContext;
-import com.develop.zuzik.player.interfaces.ParamAction;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -39,6 +40,18 @@ abstract class BasePlayerState implements PlayerState {
 
 	final MediaPlayer getMediaPlayer() {
 		return this.playerStateContext.getMediaPlayer();
+	}
+
+	final void allowDeviceSleep() {
+		getDeviceSleep().allow();
+	}
+
+	final void denyDeviceSleep() {
+		getDeviceSleep().deny();
+	}
+
+	private DeviceSleep getDeviceSleep() {
+		return this.playerStateContext.getDeviceSleep();
 	}
 
 	final PlayerSource getPlayerInitializer() {
@@ -70,6 +83,7 @@ abstract class BasePlayerState implements PlayerState {
 	final void handleError(Throwable throwable) {
 		abandonAudioFocus();
 		getMediaPlayer().reset();
+		allowDeviceSleep();
 		this.playerStateContext.onError(throwable);
 	}
 
@@ -167,6 +181,7 @@ abstract class BasePlayerState implements PlayerState {
 
 	@Override
 	public final void release() {
+		allowDeviceSleep();
 		getMediaPlayer().release();
 	}
 

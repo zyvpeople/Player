@@ -8,7 +8,9 @@ import android.media.MediaPlayer;
 import android.support.annotation.RawRes;
 import android.util.Log;
 
+import com.develop.zuzik.player.device_sleep.DeviceSleep;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
+import com.develop.zuzik.player.null_object.NullDeviceSleep;
 
 import java.io.IOException;
 
@@ -16,7 +18,7 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class RawResourcePlayerSource<SourceInfo> implements PlayerSource<SourceInfo> {
+public final class RawResourcePlayerSource<SourceInfo> implements PlayerSource<SourceInfo> {
 
 	private final SourceInfo sourceInfo;
 	@RawRes
@@ -56,6 +58,11 @@ public class RawResourcePlayerSource<SourceInfo> implements PlayerSource<SourceI
 		} catch (Resources.NotFoundException e) {
 			throw new PlayerInitializeException();
 		}
+	}
+
+	@Override
+	public DeviceSleep createDeviceSleep(Context context) {
+		return NullDeviceSleep.INSTANCE;
 	}
 
 	@Override

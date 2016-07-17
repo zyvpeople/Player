@@ -3,6 +3,7 @@ package com.develop.zuzik.player.state.interfaces;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.develop.zuzik.player.device_sleep.DeviceSleep;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.source.PlayerSource;
 
@@ -15,6 +16,8 @@ public interface PlayerStateContext<SourceInfo> {
 	MediaPlayer getMediaPlayer();
 
 	PlayerSource<SourceInfo> getPlayerSource();
+
+	DeviceSleep getDeviceSleep();
 
 	boolean isRepeat();
 

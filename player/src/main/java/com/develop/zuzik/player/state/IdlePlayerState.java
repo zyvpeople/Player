@@ -29,6 +29,7 @@ public class IdlePlayerState extends BasePlayerState {
 	@Override
 	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		player.reset();
+		allowDeviceSleep();
 	}
 
 	@Override

@@ -32,6 +32,7 @@ abstract class PausedPlayerState extends BasePlayerState {
 	@Override
 	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		player.pause();
+		allowDeviceSleep();
 	}
 
 	@Override

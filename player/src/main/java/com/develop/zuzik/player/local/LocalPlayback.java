@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.PowerManager;
 import android.util.Log;
 
+import com.develop.zuzik.player.device_sleep.DeviceSleep;
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.FakeMediaPlayerException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
@@ -14,6 +16,7 @@ import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.null_object.NullDeviceSleep;
 import com.develop.zuzik.player.null_object.NullPlaybackListener;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.state.IdlePlayerState;
@@ -35,6 +38,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	private PlaybackListener<SourceInfo> playbackListener = NullPlaybackListener.getInstance();
 	private PlayerState playerState = NullPlayerState.INSTANCE;
 	private MediaPlayer mediaPlayer;
+	private DeviceSleep deviceSleep = NullDeviceSleep.INSTANCE;
 
 	public LocalPlayback(Context context, boolean repeat, PlayerSource<SourceInfo> playerSource) {
 		this.context = new ContextWrapper(context).getApplicationContext();
@@ -57,6 +61,8 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	@Override
 	public void init() {
 		this.mediaPlayer = new MediaPlayer();
+		this.mediaPlayer.setWakeMode(this.context, PowerManager.PARTIAL_WAKE_LOCK);
+		this.deviceSleep = getPlayerSource().createDeviceSleep(this.context);
 		setPlayerState(new IdlePlayerState(this));
 	}
 
@@ -120,6 +126,11 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	@Override
 	public PlayerSource<SourceInfo> getPlayerSource() {
 		return this.playbackState.playerSource;
+	}
+
+	@Override
+	public DeviceSleep getDeviceSleep() {
+		return this.deviceSleep;
 	}
 
 	@Override

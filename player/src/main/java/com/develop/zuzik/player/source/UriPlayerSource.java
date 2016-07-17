@@ -4,8 +4,9 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.annotation.RawRes;
 
+import com.develop.zuzik.player.device_sleep.DeviceSleep;
+import com.develop.zuzik.player.device_sleep.WiFiDeviceSleep;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
 
 import java.io.IOException;
@@ -14,13 +15,12 @@ import java.io.IOException;
  * User: zuzik
  * Date: 5/29/16
  */
-public class UriPlayerSource<SourceInfo> implements PlayerSource<SourceInfo> {
+public final class UriPlayerSource<SourceInfo> implements PlayerSource<SourceInfo> {
 
 	private final SourceInfo sourceInfo;
-	@RawRes
-	private final Uri uri;
+	private final String uri;
 
-	public UriPlayerSource(SourceInfo sourceInfo, Uri uri) {
+	public UriPlayerSource(SourceInfo sourceInfo, String uri) {
 		this.sourceInfo = sourceInfo;
 		this.uri = uri;
 	}
@@ -34,10 +34,15 @@ public class UriPlayerSource<SourceInfo> implements PlayerSource<SourceInfo> {
 	public void initializePlayerWithSource(Context context, MediaPlayer player) throws PlayerInitializeException {
 		player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
-			player.setDataSource(context, this.uri);
-		} catch (IOException | IllegalArgumentException | SecurityException | IllegalStateException e) {
+			player.setDataSource(context, Uri.parse(this.uri));
+		} catch (IOException | IllegalArgumentException | SecurityException | IllegalStateException | NullPointerException e) {
 			throw new PlayerInitializeException();
 		}
+	}
+
+	@Override
+	public DeviceSleep createDeviceSleep(Context context) {
+		return new WiFiDeviceSleep(context);
 	}
 
 	@Override

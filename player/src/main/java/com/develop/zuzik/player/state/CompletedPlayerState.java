@@ -30,6 +30,7 @@ class CompletedPlayerState extends BasePlayerState {
 	@Override
 	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		abandonAudioFocus();
+		allowDeviceSleep();
 	}
 
 	@Override

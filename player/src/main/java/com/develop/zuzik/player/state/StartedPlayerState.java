@@ -43,6 +43,7 @@ class StartedPlayerState extends BasePlayerState {
 
 	@Override
 	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
+		denyDeviceSleep();
 		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
 				.onErrorResumeNext(throwable -> Observable.just(0L))
 				.subscribe(aLong ->
