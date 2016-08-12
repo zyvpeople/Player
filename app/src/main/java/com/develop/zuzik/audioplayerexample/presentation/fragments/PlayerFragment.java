@@ -76,6 +76,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.presenter.setView(this);
 		this.presenter.onSetPlayerSources(
 				Arrays.asList(
+						new RawResourcePlayerSource<>(new Song("Video", "video", R.drawable.enter_shikari_1), R.raw.video),
 						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
 						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
 						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
