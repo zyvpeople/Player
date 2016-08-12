@@ -21,12 +21,11 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
  * User: zuzik
  * Date: 6/22/16
  */
-//TODO: implement sound volume when sms
-//TODO: implement sound volume when headphone is detached from device
 //TODO: create widget for launcher
 //TODO: use index of current playback instead playerSource because there is an possibility to set same object to queue few times
 //FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
 //TODO: use jack for lambda
+//TODO: in notification display X to close notification
 public class App extends Application {
 
 	private Player.Model<Song> model;
