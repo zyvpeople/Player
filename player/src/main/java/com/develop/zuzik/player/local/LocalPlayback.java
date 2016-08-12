@@ -32,6 +32,9 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerStateContext<SourceInfo> {
 
+	private static final float FOCUS_GAIN_VOLUME_LEVEL = 1f;
+	private static final float FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL = 0.1f;
+
 	private final Context context;
 	private final AudioManager audioManager;
 	private PlaybackState<SourceInfo> playbackState;
@@ -202,11 +205,11 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 			this.playerState.audioFocusLossTransient();
 		} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
 			this.playerState.audioFocusGain();
-			//TODO: in this place we should restore volume to previous normal state
+			this.mediaPlayer.setVolume(FOCUS_GAIN_VOLUME_LEVEL, FOCUS_GAIN_VOLUME_LEVEL);
 		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
 			this.playerState.audioFocusLoss();
 		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-			//TODO: in this place we should made volume level lower
+			this.mediaPlayer.setVolume(FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL, FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL);
 		}
 	};
 
