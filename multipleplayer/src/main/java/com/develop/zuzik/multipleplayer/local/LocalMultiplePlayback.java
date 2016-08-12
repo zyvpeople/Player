@@ -9,6 +9,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
+import com.develop.zuzik.player.broadcast_receiver.PlaybackBroadcastReceiver;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
@@ -36,6 +37,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	private Optional<Playback<SourceInfo>> currentPlayback = Optional.absent();
+	private Optional<PlaybackBroadcastReceiver> broadcastReceiver = Optional.absent();
 
 	public LocalMultiplePlayback(Context context,
 								 PlaybackFactory<SourceInfo> playbackFactory,
@@ -257,6 +259,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private void setAndInitCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
 		this.currentPlayback = Optional.of(createPlayback(playerSource));
 		currentPlayback(Playback::init);
+		this.broadcastReceiver = Optional.of(PlaybackBroadcastReceiver.register(this.context, this.currentPlayback.get()));
 	}
 
 	private void setAndInitAndPlayCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
@@ -270,6 +273,10 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 			this.currentPlayback = Optional.absent();
 			this.multiplePlaybackState.builder().currentPlaybackState(Optional.absent());
 		});
+		if (this.broadcastReceiver.isPresent()) {
+			this.context.unregisterReceiver(this.broadcastReceiver.get());
+			this.broadcastReceiver = Optional.absent();
+		}
 	}
 
 	private void currentPlayback(ParamAction<Playback<SourceInfo>> success) {
