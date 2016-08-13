@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,8 @@ import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingM
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.source.UriPlayerSource;
+import com.develop.zuzik.player.video.Listener;
+import com.develop.zuzik.player.video.SurfaceViewWrapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,8 +66,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	private ImageView shuffle;
 	private ImageView playPause;
 
-	private SurfaceView surfaceView;
-	private SurfaceHolder surfaceHolder;
+	private SurfaceViewWrapper surfaceViewWrapper;
 
 	private SongViewPagerAdapter adapter;
 
@@ -114,8 +114,19 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.shuffle = (ImageView) view.findViewById(R.id.shuffle);
 		this.playPause = (ImageView) view.findViewById(R.id.playPause);
 
-		this.surfaceView = (SurfaceView) view.findViewById(R.id.surfaceView);
-		this.surfaceHolder = this.surfaceView.getHolder();
+		this.surfaceViewWrapper = new SurfaceViewWrapper(
+				(SurfaceView) view.findViewById(R.id.surfaceView),
+				new Listener() {
+					@Override
+					public void onCreated() {
+						presenter.onVideoViewCreated();
+					}
+
+					@Override
+					public void onDestroyed() {
+						presenter.onVideoViewDestroyed();
+					}
+				});
 
 		this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<>());
 		this.viewPager.setAdapter(this.adapter);
@@ -284,10 +295,12 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 
 	@Override
 	public void setVideoView(MediaPlayer player) {
-		if (!this.surfaceHolder.isCreating()) {
-			player.setDisplay(this.surfaceHolder);
-		}
-//		player.setDisplay();
+		this.surfaceViewWrapper.setVideoView(player);
+	}
+
+	@Override
+	public void clearVideoView(MediaPlayer player) {
+		this.surfaceViewWrapper.clearVideoView(player);
 	}
 
 	//endregion

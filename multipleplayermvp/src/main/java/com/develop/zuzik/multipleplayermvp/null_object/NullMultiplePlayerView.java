@@ -91,4 +91,9 @@ public class NullMultiplePlayerView<SourceInfo> implements MultiplePlayer.View<S
 	public void setVideoView(MediaPlayer player) {
 
 	}
+
+	@Override
+	public void clearVideoView(MediaPlayer player) {
+
+	}
 }

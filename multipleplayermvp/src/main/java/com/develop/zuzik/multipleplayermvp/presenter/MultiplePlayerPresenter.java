@@ -143,6 +143,16 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 		this.model.simulateError();
 	}
 
+	@Override
+	public void onVideoViewCreated() {
+		this.model.initializedPlayer(this.view::setVideoView);
+	}
+
+	@Override
+	public void onVideoViewDestroyed() {
+		this.model.initializedPlayer(this.view::clearVideoView);
+	}
+
 	private void updateView() {
 		updateView(this.model.getState());
 		this.model.initializedPlayer(this.view::setVideoView);
