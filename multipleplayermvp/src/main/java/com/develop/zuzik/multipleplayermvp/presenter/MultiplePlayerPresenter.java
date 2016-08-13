@@ -145,6 +145,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	private void updateView() {
 		updateView(this.model.getState());
+		this.model.initializedPlayer(this.view::setVideoView);
 	}
 
 	private void updateView(Optional<MultiplePlaybackState<SourceInfo>> state) {

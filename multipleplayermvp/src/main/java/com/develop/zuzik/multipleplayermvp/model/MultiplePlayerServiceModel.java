@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.MediaPlayer;
 import android.os.IBinder;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
@@ -18,6 +19,7 @@ import com.develop.zuzik.multipleplayermvp.composite.CompositeListener;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -111,6 +113,13 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		}
 		return this.sources.transform(input ->
 				new MultiplePlaybackState<>(input, Optional.absent(), this.playbackSettings.isRepeatSingle(), this.playbackSettings.isShuffle()));
+	}
+
+	@Override
+	public void initializedPlayer(ParamAction<MediaPlayer> success) {
+		if (this.boundedService.isPresent()) {
+			this.boundedService.get().initializedPlayer(success);
+		}
 	}
 
 	@Override

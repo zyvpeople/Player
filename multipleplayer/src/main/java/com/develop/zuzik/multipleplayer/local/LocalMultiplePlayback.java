@@ -2,6 +2,7 @@ package com.develop.zuzik.multipleplayer.local;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.media.MediaPlayer;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
@@ -61,6 +62,13 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	@Override
 	public MultiplePlaybackState<SourceInfo> getMultiplePlaybackState() {
 		return this.multiplePlaybackState;
+	}
+
+	@Override
+	public void initializedPlayer(ParamAction<MediaPlayer> success) {
+		if (this.currentPlayback.isPresent()) {
+			this.currentPlayback.get().initializedPlayer(success);
+		}
 	}
 
 	@Override

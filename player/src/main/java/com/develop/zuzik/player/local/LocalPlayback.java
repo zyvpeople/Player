@@ -12,6 +12,7 @@ import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.FakeMediaPlayerException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
 import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
@@ -54,6 +55,13 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	@Override
 	public PlaybackState<SourceInfo> getPlaybackState() {
 		return this.playbackState;
+	}
+
+	@Override
+	public void initializedPlayer(ParamAction<MediaPlayer> success) {
+		if (this.mediaPlayer != null) {
+			success.execute(this.mediaPlayer);
+		}
 	}
 
 	@Override

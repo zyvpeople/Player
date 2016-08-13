@@ -1,5 +1,6 @@
 package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -7,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -62,6 +65,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	private ImageView shuffle;
 	private ImageView playPause;
 
+	private SurfaceView surfaceView;
+	private SurfaceHolder surfaceHolder;
+
 	private SongViewPagerAdapter adapter;
 
 	private MultiplePlayer.Presenter<Song> presenter;
@@ -107,6 +113,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.skipNext = (ImageView) view.findViewById(R.id.skipNext);
 		this.shuffle = (ImageView) view.findViewById(R.id.shuffle);
 		this.playPause = (ImageView) view.findViewById(R.id.playPause);
+
+		this.surfaceView = (SurfaceView) view.findViewById(R.id.surfaceView);
+		this.surfaceHolder = this.surfaceView.getHolder();
 
 		this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<>());
 		this.viewPager.setAdapter(this.adapter);
@@ -271,6 +280,14 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 			this.adapter.setSongs(playerSources);
 			this.adapter.notifyDataSetChanged();
 		}
+	}
+
+	@Override
+	public void setVideoView(MediaPlayer player) {
+		if (!this.surfaceHolder.isCreating()) {
+			player.setDisplay(this.surfaceHolder);
+		}
+//		player.setDisplay();
 	}
 
 	//endregion
