@@ -10,6 +10,7 @@ import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;

@@ -26,15 +26,15 @@ public class CompositeListener<SourceInfo> implements MultiplePlayer.Model.Liste
 
 	@Override
 	public void onUpdate(MultiplePlaybackState<SourceInfo> state) {
-		for (MultiplePlayer.Model.Listener<SourceInfo> listener : this.listeners) {
-			listener.onUpdate(state);
+		for (int i = 0; i < this.listeners.size(); i++) {
+			this.listeners.get(i).onUpdate(state);
 		}
 	}
 
 	@Override
 	public void onError(Throwable error) {
-		for (MultiplePlayer.Model.Listener<SourceInfo> listener : this.listeners) {
-			listener.onError(error);
+		for (int i = 0; i < this.listeners.size(); i++) {
+			this.listeners.get(i).onError(error);
 		}
 	}
 }

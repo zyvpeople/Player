@@ -5,7 +5,12 @@
              tools:context=".presentation.fragments.SongFragment">
 
     <android.support.v7.widget.AppCompatImageView
-        style="@style/SongImageViewStyle"
-        android:id="@+id/image"/>
+        android:id="@+id/image"
+        style="@style/SongImageViewStyle"/>
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"/>
 
 </FrameLayout>

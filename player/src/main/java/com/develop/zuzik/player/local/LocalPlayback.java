@@ -57,6 +57,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 		return this.playbackState;
 	}
 
+	//TODO: setDisplay to player in state or create VideoHolder interface and set it to playback
 	@Override
 	public void initializedPlayer(ParamAction<MediaPlayer> success) {
 		if (this.mediaPlayer != null) {
