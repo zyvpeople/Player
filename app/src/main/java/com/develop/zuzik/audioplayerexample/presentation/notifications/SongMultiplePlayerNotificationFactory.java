@@ -41,9 +41,9 @@ public class SongMultiplePlayerNotificationFactory implements MultiplePlayerNoti
 						false)
 				.setOngoing(true)
 				.setAutoCancel(true)
-				.addAction(R.drawable.ic_play, "Play prev", playPreviousIntent)
+				.addAction(R.drawable.ic_play, "Play", playIntent)
+				.addAction(R.drawable.ic_pause, "Pause", pauseIntent)
 				.addAction(R.drawable.ic_stop, "Stop", stopIntent)
-				.addAction(R.drawable.ic_play, "Play next", playNextIntent)
 				.build();
 	}
 }
