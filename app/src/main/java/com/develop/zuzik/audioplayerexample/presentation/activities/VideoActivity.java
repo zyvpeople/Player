@@ -2,7 +2,6 @@ package com.develop.zuzik.audioplayerexample.presentation.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.SurfaceView;
@@ -13,6 +12,7 @@ import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerVideoPresenter;
 import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.video.Listener;
 import com.develop.zuzik.player.video.SurfaceViewWrapper;
 
@@ -88,15 +88,14 @@ public class VideoActivity extends AppCompatActivity implements MultiplePlayer.V
 	}
 
 	@Override
-	public void setVideoView(MediaPlayer player) {
-		this.surfaceViewWrapper.setVideoView(player);
+	public void setVideoView(VideoViewSetter setter) {
+		this.surfaceViewWrapper.setVideoView(setter);
 	}
 
 	@Override
-	public void clearVideoView(MediaPlayer player) {
-		this.surfaceViewWrapper.clearVideoView(player);
+	public void clearVideoView(VideoViewSetter setter) {
+		this.surfaceViewWrapper.clearVideoView(setter);
 	}
-
 
 	//endregion
 }

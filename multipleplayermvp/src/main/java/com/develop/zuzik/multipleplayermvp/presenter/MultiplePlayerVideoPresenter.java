@@ -4,7 +4,6 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerVideoView;
 import com.develop.zuzik.player.interfaces.PlaybackState;
-import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -64,7 +63,7 @@ public class MultiplePlayerVideoPresenter<SourceInfo> implements MultiplePlayer.
 			if(modelState.currentPlaybackState.isPresent()){
 				PlaybackState<SourceInfo> playbackState = modelState.currentPlaybackState.get();
 				if(this.sourceInfo.equals(playbackState.playerSource.getSourceInfo())){
-					this.model.initializedPlayer(this.view::setVideoView);
+					this.model.videoViewSetter(value -> this.view.setVideoView(value));
 					this.view.setVideoViewAvailable();
 					return;
 				}

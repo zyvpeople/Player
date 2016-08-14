@@ -3,7 +3,6 @@ package com.develop.zuzik.multipleplayer.service;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -17,6 +16,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFac
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -96,9 +96,9 @@ public class MultiplePlaybackService extends Service {
 		return this.multiplePlayback.transform(MultiplePlayback::getMultiplePlaybackState);
 	}
 
-	public void initializedPlayer(ParamAction<MediaPlayer> success) {
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
 		if (this.multiplePlayback.isPresent()) {
-			this.multiplePlayback.get().initializedPlayer(success);
+			this.multiplePlayback.get().videoViewSetter(success);
 		}
 	}
 

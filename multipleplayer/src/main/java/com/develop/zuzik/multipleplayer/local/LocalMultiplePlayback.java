@@ -2,7 +2,6 @@ package com.develop.zuzik.multipleplayer.local;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.media.MediaPlayer;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
@@ -18,6 +17,7 @@ import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -65,9 +65,9 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	@Override
-	public void initializedPlayer(ParamAction<MediaPlayer> success) {
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
 		if (this.currentPlayback.isPresent()) {
-			this.currentPlayback.get().initializedPlayer(success);
+			this.currentPlayback.get().videoViewSetter(success);
 		}
 	}
 

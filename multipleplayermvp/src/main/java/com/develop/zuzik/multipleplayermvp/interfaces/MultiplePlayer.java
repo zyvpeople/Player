@@ -1,9 +1,8 @@
 package com.develop.zuzik.multipleplayermvp.interfaces;
 
-import android.media.MediaPlayer;
-
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -21,7 +20,7 @@ public interface MultiplePlayer {
 
 		Optional<MultiplePlaybackState<SourceInfo>> getState();
 
-		void initializedPlayer(ParamAction<MediaPlayer> success);
+		void videoViewSetter(ParamAction<VideoViewSetter> success);
 
 		void addListener(Listener<SourceInfo> listener);
 
@@ -136,9 +135,9 @@ public interface MultiplePlayer {
 
 		void setVideoViewUnavailable();
 
-		void setVideoView(MediaPlayer player);
+		void setVideoView(VideoViewSetter setter);
 
-		void clearVideoView(MediaPlayer player);
+		void clearVideoView(VideoViewSetter setter);
 	}
 
 	interface VideoPresenter<SourceInfo> {

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.MediaPlayer;
 import android.os.IBinder;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
@@ -20,6 +19,7 @@ import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
 import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -116,9 +116,9 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 	}
 
 	@Override
-	public void initializedPlayer(ParamAction<MediaPlayer> success) {
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
 		if (this.boundedService.isPresent()) {
-			this.boundedService.get().initializedPlayer(success);
+			this.boundedService.get().videoViewSetter(success);
 		}
 	}
 

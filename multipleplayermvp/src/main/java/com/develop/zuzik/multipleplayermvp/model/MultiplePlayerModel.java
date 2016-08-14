@@ -1,7 +1,6 @@
 package com.develop.zuzik.multipleplayermvp.model;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
@@ -11,6 +10,7 @@ import com.develop.zuzik.multipleplayermvp.composite.CompositeListener;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -79,8 +79,8 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	}
 
 	@Override
-	public void initializedPlayer(ParamAction<MediaPlayer> success) {
-		this.playback.initializedPlayer(success);
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		this.playback.videoViewSetter(success);
 	}
 
 	@Override

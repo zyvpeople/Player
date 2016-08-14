@@ -4,6 +4,8 @@ import android.media.MediaPlayer;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
+
 /**
  * User: zuzik
  * Date: 8/13/16
@@ -36,28 +38,28 @@ public class SurfaceViewWrapper {
 		});
 	}
 
-	public void setVideoView(MediaPlayer player) {
-		this.strategy.setVideoView(player);
+	public void setVideoView(VideoViewSetter setter) {
+		this.strategy.setVideoView(setter);
 	}
 
-	public void clearVideoView(MediaPlayer player) {
-		player.setDisplay(null);
+	public void clearVideoView(VideoViewSetter setter) {
+		setter.setVideoView(null);
 	}
 
 	private interface Strategy {
-		void setVideoView(MediaPlayer player);
+		void setVideoView(VideoViewSetter setter);
 	}
 
 	private class AvailableHolderStrategy implements Strategy {
 		@Override
-		public void setVideoView(MediaPlayer player) {
-			player.setDisplay(holder);
+		public void setVideoView(VideoViewSetter setter) {
+			setter.setVideoView(holder);
 		}
 	}
 
 	private class UnavailableHolderStrategy implements Strategy {
 		@Override
-		public void setVideoView(MediaPlayer player) {
+		public void setVideoView(VideoViewSetter setter) {
 		}
 	}
 }

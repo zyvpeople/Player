@@ -1,7 +1,6 @@
 package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import com.develop.zuzik.audioplayerexample.presentation.activities.VideoActivit
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerVideoPresenter;
 import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.video.Listener;
 import com.develop.zuzik.player.video.SurfaceViewWrapper;
 import com.squareup.picasso.Picasso;
@@ -110,13 +110,13 @@ public class SongFragment extends Fragment implements MultiplePlayer.VideoView<S
 	}
 
 	@Override
-	public void setVideoView(MediaPlayer player) {
-		this.surfaceViewWrapper.setVideoView(player);
+	public void setVideoView(VideoViewSetter setter) {
+		this.surfaceViewWrapper.setVideoView(setter);
 	}
 
 	@Override
-	public void clearVideoView(MediaPlayer player) {
-		this.surfaceViewWrapper.clearVideoView(player);
+	public void clearVideoView(VideoViewSetter setter) {
+		this.surfaceViewWrapper.clearVideoView(setter);
 	}
 
 

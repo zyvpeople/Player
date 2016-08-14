@@ -17,6 +17,7 @@ import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.null_object.NullDeviceSleep;
 import com.develop.zuzik.player.null_object.NullPlaybackListener;
 import com.develop.zuzik.player.source.PlayerSource;
@@ -25,6 +26,7 @@ import com.develop.zuzik.player.state.MediaPlayerState;
 import com.develop.zuzik.player.state.NullPlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerStateContext;
+import com.develop.zuzik.player.video_view_setter.MediaPlayerVideoViewSetter;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -57,11 +59,14 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 		return this.playbackState;
 	}
 
-	//TODO: setDisplay to player in state or create VideoHolder interface and set it to playback
 	@Override
-	public void initializedPlayer(ParamAction<MediaPlayer> success) {
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
 		if (this.mediaPlayer != null) {
-			success.execute(this.mediaPlayer);
+			success.execute(new MediaPlayerVideoViewSetter(value -> {
+				if (this.mediaPlayer != null) {
+					this.mediaPlayer.setDisplay(value);
+				}
+			}));
 		}
 	}
 
