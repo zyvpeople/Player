@@ -1,6 +1,5 @@
 package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -262,14 +261,6 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 			this.adapter.setSongs(playerSources);
 			this.adapter.notifyDataSetChanged();
 		}
-	}
-
-	@Override
-	public void setVideoView(MediaPlayer player) {
-	}
-
-	@Override
-	public void clearVideoView(MediaPlayer player) {
 	}
 
 	//endregion

@@ -29,7 +29,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: in notification display X to close notification
 //TODO: do not use optional from library
 //TODO: split presenter and view to presenter and videoPresenter etc
-//TODO: add video to Player 	
+//TODO: add video to Player
 public class App extends Application {
 
 	private Player.Model<Song> model;

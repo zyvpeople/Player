@@ -85,9 +85,6 @@ public interface MultiplePlayer {
 
 		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
 
-		void setVideoView(MediaPlayer player);
-
-		void clearVideoView(MediaPlayer player);
 	}
 
 	interface Presenter<SourceInfo> {
@@ -131,9 +128,6 @@ public interface MultiplePlayer {
 
 		void simulateError();
 
-		void onVideoViewCreated();
-
-		void onVideoViewDestroyed();
 	}
 
 	interface VideoView<SourceInfo> {

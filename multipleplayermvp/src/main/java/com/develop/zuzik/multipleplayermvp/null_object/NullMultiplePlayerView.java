@@ -1,7 +1,5 @@
 package com.develop.zuzik.multipleplayermvp.null_object;
 
-import android.media.MediaPlayer;
-
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.player.source.PlayerSource;
 
@@ -87,13 +85,4 @@ public class NullMultiplePlayerView<SourceInfo> implements MultiplePlayer.View<S
 
 	}
 
-	@Override
-	public void setVideoView(MediaPlayer player) {
-
-	}
-
-	@Override
-	public void clearVideoView(MediaPlayer player) {
-
-	}
 }
