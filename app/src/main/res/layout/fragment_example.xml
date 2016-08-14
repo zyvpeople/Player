@@ -118,6 +118,13 @@
 
             </LinearLayout>
 
+            <SurfaceView
+                android:id="@id/surfaceView"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"/>
+
         </LinearLayout>
 
         <RelativeLayout

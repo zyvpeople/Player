@@ -8,12 +8,13 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.null_object.NullPlaybackListener;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
@@ -87,6 +88,12 @@ public class PlaybackService extends Service {
 
 	public Optional<PlaybackState> getPlaybackState() {
 		return this.playback.transform(Playback::getPlaybackState);
+	}
+
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.playback.isPresent()) {
+			this.playback.get().videoViewSetter(success);
+		}
 	}
 
 	public void setPlaybackListener(PlaybackListener playbackListener) {

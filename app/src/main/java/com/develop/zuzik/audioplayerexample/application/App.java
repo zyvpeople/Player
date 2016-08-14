@@ -15,6 +15,7 @@ import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;
 import com.develop.zuzik.playermvp.interfaces.Player;
+import com.develop.zuzik.playermvp.model.PlayerModel;
 import com.develop.zuzik.playermvp.model.PlayerServiceModel;
 import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 
@@ -28,8 +29,6 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: use jack for lambda
 //TODO: in notification display X to close notification
 //TODO: do not use optional from library
-//TODO: split presenter and view to presenter and videoPresenter etc
-//TODO: add video to Player
 public class App extends Application {
 
 	private Player.Model<Song> model;

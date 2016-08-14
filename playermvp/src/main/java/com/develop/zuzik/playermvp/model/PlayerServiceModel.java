@@ -8,11 +8,13 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.service.PlaybackService;
 import com.develop.zuzik.player.service.PlaybackServiceInitializeBundle;
 import com.develop.zuzik.player.source.PlayerSource;
@@ -98,6 +100,13 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 			}
 		}
 		return this.source.transform(source -> new PlaybackState<>(State.NONE, 0, Optional.absent(), this.playbackSettings.isRepeat(), source));
+	}
+
+	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.boundedService.isPresent()) {
+			this.boundedService.get().videoViewSetter(success);
+		}
 	}
 
 	@Override
