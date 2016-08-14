@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".presentation.activities.ExampleActivity">
-
         </activity>
         <activity android:name=".presentation.activities.PlayerActivity">
             <intent-filter>
@@ -27,6 +26,8 @@
             android:name="com.develop.zuzik.multipleplayer.service.MultiplePlaybackService"
             android:exported="false"/>
 
+        <activity android:name=".presentation.activities.VideoActivity">
+        </activity>
     </application>
 
 </manifest>
