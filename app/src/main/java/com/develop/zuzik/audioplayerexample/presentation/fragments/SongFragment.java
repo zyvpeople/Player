@@ -3,7 +3,6 @@ package com.develop.zuzik.audioplayerexample.presentation.fragments;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -14,19 +13,14 @@ import android.widget.ImageView;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.Song;
-import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter;
-import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerVideoPresenter;
 import com.develop.zuzik.player.interfaces.ParamAction;
-import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.video.Listener;
 import com.develop.zuzik.player.video.SurfaceViewWrapper;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
-public class SongFragment extends Fragment implements MultiplePlayer.View<Song> {
+public class SongFragment extends Fragment implements MultiplePlayer.VideoView<Song> {
 
 	private static final String ARGUMENT_SONG = "ARGUMENT_SONG";
 
@@ -43,33 +37,18 @@ public class SongFragment extends Fragment implements MultiplePlayer.View<Song> 
 	}
 
 	private ImageView image;
+	private SurfaceView surfaceView;
 	private SurfaceViewWrapper surfaceViewWrapper;
-	private MultiplePlayer.Presenter<Song> presenter;
-
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		this.presenter = new MultiplePlayerPresenter<>(
-				getModel(),
-				new DoNothingMultiplePlayerPresenterDestroyStrategy(),
-				new ExamplePlayerExceptionMessageProvider());
-		this.presenter.setView(this);
-		this.presenter.onCreate();
-	}
-
-	@Override
-	public void onDestroy() {
-		this.presenter.onDestroy();
-		super.onDestroy();
-	}
+	private MultiplePlayer.VideoPresenter<Song> presenter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_song, container, false);
 		this.image = (ImageView) view.findViewById(R.id.image);
+		this.surfaceView = (SurfaceView) view.findViewById(R.id.surfaceView);
 		this.surfaceViewWrapper = new SurfaceViewWrapper(
-				(SurfaceView) view.findViewById(R.id.surfaceView),
+				this.surfaceView,
 				new Listener() {
 					@Override
 					public void onCreated() {
@@ -81,11 +60,22 @@ public class SongFragment extends Fragment implements MultiplePlayer.View<Song> 
 						presenter.onVideoViewDestroyed();
 					}
 				});
-		parseArguments(getArguments(), value -> Picasso
-				.with(getContext())
-				.load(value.image)
-				.into(this.image));
+		parseArguments(getArguments(), value -> {
+			Picasso
+					.with(getContext())
+					.load(value.image)
+					.into(this.image);
+			this.presenter = new MultiplePlayerVideoPresenter<Song>(getModel(), value);
+		});
+		this.presenter.setView(this);
+		this.presenter.onCreate();
 		return view;
+	}
+
+	@Override
+	public void onDestroyView() {
+		this.presenter.onDestroy();
+		super.onDestroyView();
 	}
 
 	@Override
@@ -104,71 +94,17 @@ public class SongFragment extends Fragment implements MultiplePlayer.View<Song> 
 		return ((App) getActivity().getApplicationContext()).getMultiplePlayerModel();
 	}
 
-	//region MultiplePlayer.View
+	//region MultiplePlayer.VideoView
+
 
 	@Override
-	public void repeat() {
-
+	public void setVideoViewAvailable() {
+		this.surfaceView.setVisibility(View.VISIBLE);
 	}
 
 	@Override
-	public void doNotRepeat() {
-
-	}
-
-	@Override
-	public void shuffle() {
-
-	}
-
-	@Override
-	public void doNotShuffle() {
-
-	}
-
-	@Override
-	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
-
-	}
-
-	@Override
-	public void showProgress() {
-
-	}
-
-	@Override
-	public void hideProgress() {
-
-	}
-
-	@Override
-	public void showTime(String currentTime, String totalTime) {
-
-	}
-
-	@Override
-	public void showError(String message) {
-
-	}
-
-	@Override
-	public void enablePlayControls(boolean play, boolean pause, boolean stop) {
-
-	}
-
-	@Override
-	public void displayCurrentSource(PlayerSource<Song> source) {
-
-	}
-
-	@Override
-	public void doNotDisplayCurrentSource() {
-
-	}
-
-	@Override
-	public void displaySources(List<PlayerSource<Song>> playerSources) {
-
+	public void setVideoViewUnavailable() {
+		this.surfaceView.setVisibility(View.GONE);
 	}
 
 	@Override

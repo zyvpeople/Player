@@ -135,4 +135,31 @@ public interface MultiplePlayer {
 
 		void onVideoViewDestroyed();
 	}
+
+	interface VideoView<SourceInfo> {
+
+		void setVideoViewAvailable();
+
+		void setVideoViewUnavailable();
+
+		void setVideoView(MediaPlayer player);
+
+		void clearVideoView(MediaPlayer player);
+	}
+
+	interface VideoPresenter<SourceInfo> {
+		void setView(VideoView<SourceInfo> view);
+
+		void onCreate();
+
+		void onDestroy();
+
+		void onAppear();
+
+		void onDisappear();
+
+		void onVideoViewCreated();
+
+		void onVideoViewDestroyed();
+	}
 }
