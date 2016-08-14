@@ -16,6 +16,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFac
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -93,6 +94,12 @@ public class MultiplePlaybackService extends Service {
 
 	public Optional<MultiplePlaybackState> getMultiplePlaybackState() {
 		return this.multiplePlayback.transform(MultiplePlayback::getMultiplePlaybackState);
+	}
+
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.multiplePlayback.isPresent()) {
+			this.multiplePlayback.get().videoViewSetter(success);
+		}
 	}
 
 	public void setMultiplePlaybackListener(MultiplePlaybackListener multiplePlaybackListener) {

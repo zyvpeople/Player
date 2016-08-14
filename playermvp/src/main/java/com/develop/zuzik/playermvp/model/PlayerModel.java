@@ -8,6 +8,7 @@ import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.playermvp.composite.CompositeListener;
 import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
@@ -71,6 +72,13 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	@Override
 	public Optional<PlaybackState<SourceInfo>> getState() {
 		return this.playback.transform(Playback::getPlaybackState);
+	}
+
+	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.playback.isPresent()) {
+			this.playback.get().videoViewSetter(success);
+		}
 	}
 
 	@Override

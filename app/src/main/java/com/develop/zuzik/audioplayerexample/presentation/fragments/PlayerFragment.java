@@ -76,6 +76,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.presenter.setView(this);
 		this.presenter.onSetPlayerSources(
 				Arrays.asList(
+						new RawResourcePlayerSource<>(new Song("Image", "Image", R.drawable.enter_shikari_1), R.raw.enter_shikari_1),
+						new RawResourcePlayerSource<>(new Song("Enter Shikari", "local video", R.drawable.enter_shikari_1), R.raw.video),
+						new UriPlayerSource<>(new Song("Enter Shikari", "remote video", R.drawable.enter_shikari_1), "https://youtu.be/tLeg_5ljVcA"),
 						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
 						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
 						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
@@ -109,21 +112,6 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 
 		this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<>());
 		this.viewPager.setAdapter(this.adapter);
-		this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-			@Override
-			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-			}
-
-			@Override
-			public void onPageSelected(int position) {
-				presenter.onSwitchToSource(adapter.getSongs().get(position));
-			}
-
-			@Override
-			public void onPageScrollStateChanged(int state) {
-			}
-		});
 
 		this.playPause.setOnClickListener(v -> {
 			if (TAG_STATE_PLAY.equals(v.getTag())) {
@@ -254,7 +242,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.song.setText(song.getSourceInfo().name);
 		int songIndex = this.adapter.getSongs().indexOf(song);
 		if (songIndex != -1 && this.viewPager.getCurrentItem() != songIndex) {
+			this.viewPager.removeOnPageChangeListener(this.onPageChangeListener);
 			this.viewPager.setCurrentItem(songIndex);
+			this.viewPager.addOnPageChangeListener(this.onPageChangeListener);
 		}
 	}
 
@@ -267,6 +257,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	@Override
 	public void displaySources(List<PlayerSource<Song>> playerSources) {
 		if (!this.adapter.getSongs().equals(playerSources)) {
+			this.viewPager.removeOnPageChangeListener(this.onPageChangeListener);
 			this.adapter.setSongs(playerSources);
 			this.adapter.notifyDataSetChanged();
 		}
@@ -316,4 +307,20 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	private MultiplePlayer.Model<Song> getModel() {
 		return ((App) getActivity().getApplicationContext()).getMultiplePlayerModel();
 	}
+
+	private final ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+
+		@Override
+		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+		}
+
+		@Override
+		public void onPageSelected(int position) {
+			presenter.onSwitchToSource(adapter.getSongs().get(position));
+		}
+
+		@Override
+		public void onPageScrollStateChanged(int state) {
+		}
+	};
 }

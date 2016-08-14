@@ -10,10 +10,12 @@ import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;
 import com.develop.zuzik.playermvp.interfaces.Player;
+import com.develop.zuzik.playermvp.model.PlayerModel;
 import com.develop.zuzik.playermvp.model.PlayerServiceModel;
 import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 
@@ -26,6 +28,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //FIXME: playback service receive playback factory and check if playback exist -> but when we set another factory for differ playback class so this logic is incorrect
 //TODO: use jack for lambda
 //TODO: in notification display X to close notification
+//TODO: do not use optional from library
 public class App extends Application {
 
 	private Player.Model<Song> model;

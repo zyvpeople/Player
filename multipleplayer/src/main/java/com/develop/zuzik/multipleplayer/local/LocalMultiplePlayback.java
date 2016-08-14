@@ -17,6 +17,7 @@ import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -61,6 +62,13 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	@Override
 	public MultiplePlaybackState<SourceInfo> getMultiplePlaybackState() {
 		return this.multiplePlaybackState;
+	}
+
+	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.currentPlayback.isPresent()) {
+			this.currentPlayback.get().videoViewSetter(success);
+		}
 	}
 
 	@Override

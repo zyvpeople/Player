@@ -8,6 +8,8 @@ public interface Playback<SourceInfo> {
 
 	PlaybackState<SourceInfo> getPlaybackState();
 
+	void videoViewSetter(ParamAction<VideoViewSetter> success);
+
 	void setPlaybackListener(PlaybackListener<SourceInfo> playbackListener);
 
 	void init();

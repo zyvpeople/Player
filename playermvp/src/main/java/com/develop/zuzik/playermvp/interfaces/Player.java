@@ -1,6 +1,8 @@
 package com.develop.zuzik.playermvp.interfaces;
 
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -15,6 +17,8 @@ public interface Player {
 		void clear();
 
 		Optional<PlaybackState<SourceInfo>> getState();
+
+		void videoViewSetter(ParamAction<VideoViewSetter> success);
 
 		void addListener(Listener<SourceInfo> listener);
 
@@ -94,5 +98,32 @@ public interface Player {
 		void onDoNotRepeat();
 
 		void simulateError();
+	}
+
+	interface VideoView<SourceInfo> {
+
+		void setVideoViewAvailable();
+
+		void setVideoViewUnavailable();
+
+		void setVideoView(VideoViewSetter setter);
+
+		void clearVideoView(VideoViewSetter setter);
+	}
+
+	interface VideoPresenter<SourceInfo> {
+		void setView(VideoView<SourceInfo> view);
+
+		void onCreate();
+
+		void onDestroy();
+
+		void onAppear();
+
+		void onDisappear();
+
+		void onVideoViewCreated();
+
+		void onVideoViewDestroyed();
 	}
 }

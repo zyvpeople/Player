@@ -12,10 +12,12 @@ import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.FakeMediaPlayerException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
 import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.null_object.NullDeviceSleep;
 import com.develop.zuzik.player.null_object.NullPlaybackListener;
 import com.develop.zuzik.player.source.PlayerSource;
@@ -24,6 +26,7 @@ import com.develop.zuzik.player.state.MediaPlayerState;
 import com.develop.zuzik.player.state.NullPlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerStateContext;
+import com.develop.zuzik.player.video_view_setter.MediaPlayerVideoViewSetter;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -54,6 +57,17 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	@Override
 	public PlaybackState<SourceInfo> getPlaybackState() {
 		return this.playbackState;
+	}
+
+	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.mediaPlayer != null) {
+			success.execute(new MediaPlayerVideoViewSetter(value -> {
+				if (this.mediaPlayer != null) {
+					this.mediaPlayer.setDisplay(value);
+				}
+			}));
+		}
 	}
 
 	@Override
