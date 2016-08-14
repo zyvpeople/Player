@@ -2,6 +2,8 @@ package com.develop.zuzik.player.state.interfaces;
 
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
+import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.state.MediaPlayerState;
 
 /**
@@ -11,6 +13,8 @@ import com.develop.zuzik.player.state.MediaPlayerState;
 public interface PlayerState {
 
 	MediaPlayerState getMediaPlayerState();
+
+	void videoViewSetter(ParamAction<VideoViewSetter> success);
 
 	void onRepeatChanged();
 

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.Song;
+import com.develop.zuzik.audioplayerexample.presentation.activities.MultipleVideoActivity;
 import com.develop.zuzik.audioplayerexample.presentation.activities.VideoActivity;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;

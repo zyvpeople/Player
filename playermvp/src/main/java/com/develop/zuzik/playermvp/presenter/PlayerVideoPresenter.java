@@ -14,6 +14,7 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 	private final Player.Model<SourceInfo> model;
 	private final SourceInfo sourceInfo;
 	private Player.VideoView<SourceInfo> view = NullPlayerVideoView.getInstance();
+	private boolean appeared;
 
 	public PlayerVideoPresenter(Player.Model<SourceInfo> model, SourceInfo sourceInfo) {
 		this.model = model;
@@ -38,6 +39,7 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 
 	@Override
 	public void onAppear() {
+		this.appeared = true;
 		updateView();
 		this.model.addListener(this.modelListener);
 	}
@@ -45,6 +47,8 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 	@Override
 	public void onDisappear() {
 		this.model.removeListener(this.modelListener);
+		this.appeared = false;
+		updateView();
 	}
 
 	@Override
@@ -62,15 +66,27 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 	}
 
 	private void updateView(Optional<PlaybackState<SourceInfo>> state) {
+		if (isCurrentSourceInfo(state)) {
+			if (this.appeared) {
+				this.view.setVideoViewAvailable();
+				this.model.videoViewSetter(value -> this.view.setVideoView(value));
+			} else {
+				this.view.setVideoViewUnavailable();
+				this.model.videoViewSetter(value -> this.view.clearVideoView(value));
+			}
+		} else {
+			this.view.setVideoViewUnavailable();
+		}
+	}
+
+	private boolean isCurrentSourceInfo(Optional<PlaybackState<SourceInfo>> state) {
 		if (this.model.getState().isPresent()) {
 			PlaybackState<SourceInfo> playbackState = this.model.getState().get();
 			if(this.sourceInfo.equals(playbackState.playerSource.getSourceInfo())){
-				this.model.videoViewSetter(value -> this.view.setVideoView(value));
-				this.view.setVideoViewAvailable();
-				return;
+				return true;
 			}
 		}
-		this.view.setVideoViewUnavailable();
+		return false;
 	}
 
 	private final Player.Model.Listener<SourceInfo> modelListener = new Player.Model.Listener<SourceInfo>() {

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.Song;
-import com.develop.zuzik.audioplayerexample.presentation.activities.VideoActivity;
+import com.develop.zuzik.audioplayerexample.presentation.activities.MultipleVideoActivity;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerVideoPresenter;
 import com.develop.zuzik.player.interfaces.ParamAction;
@@ -67,7 +67,7 @@ public class SongFragment extends Fragment implements MultiplePlayer.VideoView<S
 					.load(value.image)
 					.into(this.image);
 			this.presenter = new MultiplePlayerVideoPresenter<Song>(getModel(), value);
-			this.surfaceView.setOnClickListener(v -> startActivity(VideoActivity.createIntent(getContext(), value)));
+			this.surfaceView.setOnClickListener(v -> startActivity(MultipleVideoActivity.createIntent(getContext(), value)));
 		});
 		this.presenter.setView(this);
 		this.presenter.onCreate();

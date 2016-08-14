@@ -4,6 +4,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerVideoView;
 import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.fernandocejas.arrow.optional.Optional;
 
 /**
  * User: zuzik
@@ -14,6 +15,7 @@ public class MultiplePlayerVideoPresenter<SourceInfo> implements MultiplePlayer.
 	private final MultiplePlayer.Model<SourceInfo> model;
 	private final SourceInfo sourceInfo;
 	private MultiplePlayer.VideoView<SourceInfo> view = NullMultiplePlayerVideoView.getInstance();
+	private boolean appeared;
 
 	public MultiplePlayerVideoPresenter(
 			MultiplePlayer.Model<SourceInfo> model,
@@ -38,6 +40,7 @@ public class MultiplePlayerVideoPresenter<SourceInfo> implements MultiplePlayer.
 
 	@Override
 	public void onAppear() {
+		this.appeared = true;
 		updateView();
 		this.model.addListener(this.listener);
 	}
@@ -45,6 +48,8 @@ public class MultiplePlayerVideoPresenter<SourceInfo> implements MultiplePlayer.
 	@Override
 	public void onDisappear() {
 		this.model.removeListener(this.listener);
+		this.appeared = false;
+		updateView();
 	}
 
 	@Override
@@ -58,18 +63,30 @@ public class MultiplePlayerVideoPresenter<SourceInfo> implements MultiplePlayer.
 	}
 
 	private void updateView() {
+		if (isCurrentSourceInfo()) {
+			if (this.appeared) {
+				this.view.setVideoViewAvailable();
+				this.model.videoViewSetter(value -> this.view.setVideoView(value));
+			} else {
+				this.view.setVideoViewUnavailable();
+				this.model.videoViewSetter(value -> this.view.clearVideoView(value));
+			}
+		} else {
+			this.view.setVideoViewUnavailable();
+		}
+	}
+
+	private boolean isCurrentSourceInfo() {
 		if (this.model.getState().isPresent()) {
 			MultiplePlaybackState<SourceInfo> modelState = this.model.getState().get();
 			if(modelState.currentPlaybackState.isPresent()){
 				PlaybackState<SourceInfo> playbackState = modelState.currentPlaybackState.get();
 				if(this.sourceInfo.equals(playbackState.playerSource.getSourceInfo())){
-					this.model.videoViewSetter(value -> this.view.setVideoView(value));
-					this.view.setVideoViewAvailable();
-					return;
+					return true;
 				}
 			}
 		}
-		this.view.setVideoViewUnavailable();
+		return false;
 	}
 
 	private final MultiplePlayer.Model.Listener<SourceInfo> listener = new MultiplePlayer.Model.Listener<SourceInfo>() {

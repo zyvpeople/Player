@@ -9,9 +9,11 @@ import com.develop.zuzik.player.exception.MediaPlayerStateException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.state.interfaces.PlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerStateContext;
+import com.develop.zuzik.player.video_view_setter.MediaPlayerVideoViewSetter;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -103,6 +105,11 @@ abstract class BasePlayerState implements PlayerState {
 	@Override
 	public MediaPlayerState getMediaPlayerState() {
 		return this.mediaPlayerState;
+	}
+
+	@Override
+	public final void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		success.execute(new MediaPlayerVideoViewSetter(getMediaPlayer()::setDisplay));
 	}
 
 	@Override
