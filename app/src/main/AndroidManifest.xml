@@ -18,9 +18,9 @@
         </activity>
         <activity android:name=".presentation.activities.PlayerActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+            <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -31,8 +31,9 @@
             android:name="com.develop.zuzik.multipleplayer.service.MultiplePlaybackService"
             android:exported="false"/>
 
-        <activity android:name=".presentation.activities.VideoActivity">
-        </activity>
+        <activity android:name=".presentation.activities.MultipleVideoActivity"/>
+        <activity android:name=".presentation.activities.VideoActivity"/>
+
     </application>
 
 </manifest>

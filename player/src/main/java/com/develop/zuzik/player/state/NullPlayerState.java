@@ -1,7 +1,9 @@
 package com.develop.zuzik.player.state;
 
 import com.develop.zuzik.player.exception.PlayerInitializeException;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.state.interfaces.PlayerState;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -22,6 +24,11 @@ public class NullPlayerState implements PlayerState {
 				State.NONE,
 				0,
 				Optional.absent());
+	}
+
+	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+
 	}
 
 	@Override

@@ -62,11 +62,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	@Override
 	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
 		if (this.mediaPlayer != null) {
-			success.execute(new MediaPlayerVideoViewSetter(value -> {
-				if (this.mediaPlayer != null) {
-					this.mediaPlayer.setDisplay(value);
-				}
-			}));
+			this.playerState.videoViewSetter(success);
 		}
 	}
 
