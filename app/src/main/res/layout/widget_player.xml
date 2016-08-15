@@ -6,11 +6,13 @@
               android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Title"/>
 
     <TextView
+        android:id="@+id/tvSubtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Subtitle"/>
