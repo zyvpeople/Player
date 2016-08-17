@@ -2,13 +2,13 @@ package com.develop.zuzik.audioplayerexample.application;
 
 import android.app.Application;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 
 import com.develop.zuzik.audioplayerexample.domain.ExampleOnCompletePlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.audioplayerexample.presentation.appwidget_provider.PlayerAppWidgetProvider;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.widget.WidgetSettings;
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
@@ -35,7 +35,6 @@ public class App extends Application {
 
 	private Player.Model<Song> model;
 	private MultiplePlayer.Model<Song> multiplePlayerModel;
-	private WidgetSettings widgetSettings;
 	private AppWidgetManager appWidgetManager;
 
 	public Player.Model<Song> getModel() {
@@ -46,15 +45,10 @@ public class App extends Application {
 		return this.multiplePlayerModel;
 	}
 
-	public WidgetSettings getWidgetSettings() {
-		return this.widgetSettings;
-	}
-
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		this.appWidgetManager = AppWidgetManager.getInstance(this);
-		this.widgetSettings = new WidgetSettings(this, "widget_settings");
 
 //		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
 		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500, new SongPlayerNotificationFactory());
@@ -86,7 +80,8 @@ public class App extends Application {
 		getModel().addListener(new Player.Model.Listener<Song>() {
 			@Override
 			public void onUpdate(PlaybackState<Song> state) {
-				for (Integer id : getWidgetSettings().getWidgetIds()) {
+				int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(App.this, PlayerAppWidgetProvider.class));
+				for (int id : ids) {
 					PlayerAppWidgetProvider.update(App.this, appWidgetManager, id);
 				}
 			}
