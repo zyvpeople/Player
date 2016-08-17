@@ -23,16 +23,19 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/btnPlay"
             android:layout_width="72dp"
             android:layout_height="64dp"
             android:text="Play"/>
 
         <Button
+            android:id="@+id/btnPause"
             android:layout_width="72dp"
             android:layout_height="64dp"
             android:text="Pause"/>
 
         <Button
+            android:id="@+id/btnStop"
             android:layout_width="72dp"
             android:layout_height="64dp"
             android:text="Stop"/>

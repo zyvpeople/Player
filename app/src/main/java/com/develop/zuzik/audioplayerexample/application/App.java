@@ -31,6 +31,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: use jack for lambda
 //TODO: in notification display X to close notification
 //TODO: do not use optional from library
+//TODO: for notification and widget pending intents must refer to broadcast receiver and not to service because model can't be not a service. in this broadcast receivers we should take model and call appropriate method
 public class App extends Application {
 
 	private Player.Model<Song> model;

@@ -33,7 +33,7 @@ public class PlayerAppWidgetProvider extends AppWidgetProvider {
 
 		PlayerRemoteView view = new PlayerRemoteView(context);
 		if (model.getState().isPresent()) {
-			view.setSong(model.getState().get().playerSource.getSourceInfo());
+			view.setSong(context, model.getState().get().playerSource.getSourceInfo());
 		} else {
 			//TODO: clear view
 		}

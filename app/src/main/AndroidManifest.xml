@@ -42,6 +42,10 @@
                 android:resource="@xml/appwidget_provider_player"/>
         </receiver>
 
+        <receiver android:name=".presentation.appwidget_provider.PlayBroadcastReceiver"/>
+        <receiver android:name=".presentation.appwidget_provider.PauseBroadcastReceiver"/>
+        <receiver android:name=".presentation.appwidget_provider.StopBroadcastReceiver"/>
+
     </application>
 
 </manifest>
