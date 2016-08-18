@@ -12,6 +12,7 @@ import com.develop.zuzik.player.interfaces.Playback;
  * User: zuzik
  * Date: 8/12/16
  */
+//TODO: use in Playback too
 public class PlaybackBroadcastReceiver extends BroadcastReceiver {
 
 	public static PlaybackBroadcastReceiver register(Context context, Playback playback) {
