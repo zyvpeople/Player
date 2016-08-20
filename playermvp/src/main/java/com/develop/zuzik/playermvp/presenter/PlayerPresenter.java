@@ -1,5 +1,6 @@
 package com.develop.zuzik.playermvp.presenter;
 
+import com.develop.zuzik.player.analyzer.PlaybackStateAnalyzer;
 import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
@@ -13,10 +14,6 @@ import com.fernandocejas.arrow.optional.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * User: zuzik
  * Date: 6/4/16
@@ -27,10 +24,6 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	private Player.View<SourceInfo> view = NullPlayerView.getInstance();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 	private final PlayerPresenterDestroyStrategy destroyStrategy;
-
-	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
-	private final List<State> allowedPauseButtonStates = Collections.singletonList(State.PLAYING);
-	private final List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 
 	public PlayerPresenter(Player.Model<SourceInfo> model, PlayerExceptionMessageProvider exceptionMessageProvider, PlayerPresenterDestroyStrategy destroyStrategy) {
 		this.model = model;
@@ -111,6 +104,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	}
 
 	private void updateView(Optional<PlaybackState<SourceInfo>> state) {
+
 		boolean repeat = false;
 		int currentTimeInMilliseconds = 0;
 		int totalTimeInMilliseconds = 100;
@@ -124,15 +118,18 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 		String totalTimeText = "";
 
 		if (state.isPresent()) {
+
+			PlaybackStateAnalyzer<SourceInfo> analyzer = new PlaybackStateAnalyzer<>(state.get());
+
 			PlaybackState<SourceInfo> bundle = state.get();
 			repeat = bundle.repeat;
 			currentTimeInMilliseconds = bundle.currentTimeInMilliseconds;
 			totalTimeInMilliseconds = bundle.maxTimeInMilliseconds.or(totalTimeInMilliseconds);
 			showSourceProgress = bundle.maxTimeInMilliseconds.isPresent();
-			playAvailable = this.allowedPlayButtonStates.contains(bundle.state);
-			pauseAvailable = this.allowedPauseButtonStates.contains(bundle.state);
-			stopAvailable = this.allowedStopButtonStates.contains(bundle.state);
-			showLoading = bundle.state == State.PREPARING;
+			playAvailable = analyzer.playAvailable();
+			pauseAvailable = analyzer.pauseAvailable();
+			stopAvailable = analyzer.stopAvailable();
+			showLoading = analyzer.preparing();
 			sourceInfo = Optional.of(bundle.playerSource.getSourceInfo());
 			currentTimeText = bundle.maxTimeInMilliseconds.isPresent() ? String.valueOf(bundle.currentTimeInMilliseconds) : currentTimeText;
 			totalTimeText = bundle.maxTimeInMilliseconds.transform(new Function<Integer, String>() {
