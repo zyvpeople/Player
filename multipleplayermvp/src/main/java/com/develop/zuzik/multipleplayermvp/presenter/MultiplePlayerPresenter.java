@@ -2,6 +2,7 @@ package com.develop.zuzik.multipleplayermvp.presenter;
 
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerView;
+import com.develop.zuzik.player.analyzer.PlaybackStateAnalyzer;
 import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
@@ -31,9 +32,6 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	private MultiplePlayer.View<SourceInfo> view = NullMultiplePlayerView.getInstance();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 
-	private final List<State> allowedPlayButtonStates = Arrays.asList(State.IDLE, State.PAUSED, State.COMPLETED);
-	private final List<State> allowedPauseButtonStates = Collections.singletonList(State.PLAYING);
-	private final List<State> allowedStopButtonStates = Arrays.asList(State.PLAYING, State.PAUSED, State.COMPLETED);
 	private final MultiplePlayerPresenterDestroyStrategy destroyStrategy;
 
 	public MultiplePlayerPresenter(
@@ -172,11 +170,12 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 			}
 		}).or(false)) {
 			PlaybackState<SourceInfo> playbackState = state.get().currentPlaybackState.get();
+			PlaybackStateAnalyzer<SourceInfo> analyzer = new PlaybackStateAnalyzer<>(playbackState);
 
 			this.view.enablePlayControls(
-					this.allowedPlayButtonStates.contains(playbackState.state),
-					this.allowedPauseButtonStates.contains(playbackState.state),
-					this.allowedStopButtonStates.contains(playbackState.state));
+					analyzer.playAvailable(),
+					analyzer.pauseAvailable(),
+					analyzer.stopAvailable());
 
 			if (playbackState.maxTimeInMilliseconds.isPresent()) {
 				int currentTime = playbackState.currentTimeInMilliseconds;
