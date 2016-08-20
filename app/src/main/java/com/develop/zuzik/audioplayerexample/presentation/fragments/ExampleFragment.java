@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.Song;
-import com.develop.zuzik.audioplayerexample.presentation.activities.MultipleVideoActivity;
 import com.develop.zuzik.audioplayerexample.presentation.activities.VideoActivity;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;
@@ -109,12 +108,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song>, Play
 				this.presenter.onDoNotRepeat();
 			}
 		});
-		this.surfaceView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(VideoActivity.createIntent(getContext(), song));
-			}
-		});
+		this.surfaceView.setOnClickListener(v -> startActivity(VideoActivity.createIntent(getContext(), song)));
 
 		this.presenter.onCreate();
 		this.videoPresenter.onCreate();

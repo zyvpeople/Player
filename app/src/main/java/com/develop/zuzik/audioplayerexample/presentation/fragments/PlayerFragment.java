@@ -57,8 +57,6 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	private TextView song;
 
 	private ImageView repeat;
-	private ImageView skipPrevious;
-	private ImageView skipNext;
 	private ImageView shuffle;
 	private ImageView playPause;
 
@@ -109,8 +107,8 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.singer = (TextView) view.findViewById(R.id.singer);
 		this.song = (TextView) view.findViewById(R.id.song);
 		this.repeat = (ImageView) view.findViewById(R.id.repeat);
-		this.skipPrevious = (ImageView) view.findViewById(R.id.skipPrevious);
-		this.skipNext = (ImageView) view.findViewById(R.id.skipNext);
+		ImageView skipPrevious = (ImageView) view.findViewById(R.id.skipPrevious);
+		ImageView skipNext = (ImageView) view.findViewById(R.id.skipNext);
 		this.shuffle = (ImageView) view.findViewById(R.id.shuffle);
 		this.playPause = (ImageView) view.findViewById(R.id.playPause);
 
@@ -135,8 +133,8 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 				Log.w(getClass().getSimpleName(), "Tag is not set");
 			}
 		});
-		this.skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious());
-		this.skipNext.setOnClickListener(v -> this.presenter.onSkipNext());
+		skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious());
+		skipNext.setOnClickListener(v -> this.presenter.onSkipNext());
 		this.shuffle.setOnClickListener(v -> {
 			if (TAG_STATE_SHUFFLE_ON.equals(v.getTag())) {
 				this.presenter.onDoNotShuffle();

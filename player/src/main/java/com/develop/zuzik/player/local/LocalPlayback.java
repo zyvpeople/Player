@@ -26,7 +26,6 @@ import com.develop.zuzik.player.state.MediaPlayerState;
 import com.develop.zuzik.player.state.NullPlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerState;
 import com.develop.zuzik.player.state.interfaces.PlayerStateContext;
-import com.develop.zuzik.player.video_view_setter.MediaPlayerVideoViewSetter;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**

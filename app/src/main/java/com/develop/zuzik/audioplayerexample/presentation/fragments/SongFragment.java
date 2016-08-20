@@ -66,7 +66,7 @@ public class SongFragment extends Fragment implements MultiplePlayer.VideoView<S
 					.with(getContext())
 					.load(value.image)
 					.into(this.image);
-			this.presenter = new MultiplePlayerVideoPresenter<Song>(getModel(), value);
+			this.presenter = new MultiplePlayerVideoPresenter<>(getModel(), value);
 			this.surfaceView.setOnClickListener(v -> startActivity(MultipleVideoActivity.createIntent(getContext(), value)));
 		});
 		this.presenter.setView(this);

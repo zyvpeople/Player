@@ -27,7 +27,6 @@ public class MultipleVideoActivity extends AppCompatActivity implements Multiple
 		success.execute((Song) intent.getSerializableExtra("song"));
 	}
 
-	private SurfaceView surfaceView;
 	private SurfaceViewWrapper surfaceViewWrapper;
 	private MultiplePlayer.VideoPresenter<Song> presenter;
 
@@ -35,10 +34,10 @@ public class MultipleVideoActivity extends AppCompatActivity implements Multiple
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_video);
-		parseIntent(getIntent(), value -> this.presenter = new MultiplePlayerVideoPresenter<Song>(getModel(), value));
-		this.surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+		parseIntent(getIntent(), value -> this.presenter = new MultiplePlayerVideoPresenter<>(getModel(), value));
+		SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
 		this.surfaceViewWrapper = new SurfaceViewWrapper(
-				this.surfaceView,
+				surfaceView,
 				new Listener() {
 					@Override
 					public void onCreated() {

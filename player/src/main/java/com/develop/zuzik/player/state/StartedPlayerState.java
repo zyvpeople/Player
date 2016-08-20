@@ -18,7 +18,7 @@ import com.fernandocejas.arrow.optional.Optional;
 class StartedPlayerState extends BasePlayerState {
 
 	private static final int CHECK_PLAYER_PROGRESS_PERIODIC_INTERVAL_IN_MILLISECONDS = 1000;
-	private PeriodicAction periodicAction;
+	private final PeriodicAction periodicAction;
 
 	public StartedPlayerState(PlayerStateContext playerStateContext) {
 		super(playerStateContext, true, true);

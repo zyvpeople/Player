@@ -80,9 +80,8 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 	}
 
 	private boolean isCurrentSourceInfo(Optional<PlaybackState<SourceInfo>> state) {
-		if (this.model.getState().isPresent()) {
-			PlaybackState<SourceInfo> playbackState = this.model.getState().get();
-			if(this.sourceInfo.equals(playbackState.playerSource.getSourceInfo())){
+		if (state.isPresent()) {
+			if(this.sourceInfo.equals(state.get().playerSource.getSourceInfo())){
 				return true;
 			}
 		}

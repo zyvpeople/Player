@@ -1,6 +1,5 @@
 package com.develop.zuzik.player.video;
 
-import android.media.MediaPlayer;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -13,12 +12,10 @@ import com.develop.zuzik.player.interfaces.VideoViewSetter;
 public class SurfaceViewWrapper {
 
 	private final SurfaceHolder holder;
-	private final Listener listener;
 	private Strategy strategy = new UnavailableHolderStrategy();
 
 	public SurfaceViewWrapper(SurfaceView view, Listener listener) {
 		this.holder = view.getHolder();
-		this.listener = listener;
 		this.holder.addCallback(new SurfaceHolder.Callback() {
 			@Override
 			public void surfaceCreated(SurfaceHolder surfaceHolder) {

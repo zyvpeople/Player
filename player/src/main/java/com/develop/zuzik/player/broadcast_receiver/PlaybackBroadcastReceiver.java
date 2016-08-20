@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 
 import com.develop.zuzik.player.interfaces.Action;
-import com.develop.zuzik.player.interfaces.Playback;
 
 /**
  * User: zuzik
