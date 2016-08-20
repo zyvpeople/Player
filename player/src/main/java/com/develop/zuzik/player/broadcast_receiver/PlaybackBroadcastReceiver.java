@@ -6,31 +6,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 
+import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.Playback;
 
 /**
  * User: zuzik
  * Date: 8/12/16
  */
-//TODO: use in Playback too
 public class PlaybackBroadcastReceiver extends BroadcastReceiver {
 
-	public static PlaybackBroadcastReceiver register(Context context, Playback playback) {
-		PlaybackBroadcastReceiver receiver = new PlaybackBroadcastReceiver(playback);
+	public static PlaybackBroadcastReceiver register(Context context, Action pause) {
+		PlaybackBroadcastReceiver receiver = new PlaybackBroadcastReceiver(pause);
 		context.registerReceiver(receiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
 		return receiver;
 	}
 
-	private final Playback playback;
+	private final Action pause;
 
-	private PlaybackBroadcastReceiver(Playback playback) {
-		this.playback = playback;
+	private PlaybackBroadcastReceiver(Action pause) {
+		this.pause = pause;
 	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
-			this.playback.pause();
+			this.pause.execute();
 		}
 	}
 }

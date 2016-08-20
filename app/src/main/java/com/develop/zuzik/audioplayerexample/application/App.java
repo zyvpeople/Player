@@ -13,6 +13,7 @@ import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
+import com.develop.zuzik.player.broadcast_receiver.PlaybackBroadcastReceiver;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.playermvp.model.PlayerModel;
@@ -74,5 +75,8 @@ public class App extends Application {
 						playbackSettings.isShuffle()),
 				100500,
 				new SongMultiplePlayerNotificationFactory());
+
+		PlaybackBroadcastReceiver.register(this, model::pause);
+		PlaybackBroadcastReceiver.register(this, multiplePlayerModel::pause);
 	}
 }
