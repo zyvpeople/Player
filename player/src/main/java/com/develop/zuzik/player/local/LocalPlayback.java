@@ -48,7 +48,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	public LocalPlayback(Context context, boolean repeat, PlayerSource<SourceInfo> playerSource) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		this.playbackState = new PlaybackState<>(State.NONE, 0, Optional.absent(), repeat, playerSource);
+		this.playbackState = new PlaybackState<SourceInfo>(State.NONE, 0, Optional.<Integer>absent(), repeat, playerSource);
 	}
 
 	//region Playback
@@ -67,7 +67,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 
 	@Override
 	public void setPlaybackListener(PlaybackListener<SourceInfo> playbackListener) {
-		this.playbackListener = playbackListener != null ? playbackListener : NullPlaybackListener.getInstance();
+		this.playbackListener = playbackListener != null ? playbackListener : NullPlaybackListener.<SourceInfo>getInstance();
 	}
 
 	@Override
@@ -209,16 +209,20 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
 	}
 
-	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = focusChange -> {
-		if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-			this.playerState.audioFocusLossTransient();
-		} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-			this.playerState.audioFocusGain();
-			this.mediaPlayer.setVolume(FOCUS_GAIN_VOLUME_LEVEL, FOCUS_GAIN_VOLUME_LEVEL);
-		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-			this.playerState.audioFocusLoss();
-		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-			this.mediaPlayer.setVolume(FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL, FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL);
+	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+		@Override
+		public void onAudioFocusChange(int focusChange) {
+			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+				playerState.audioFocusLossTransient();
+			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+				playerState.audioFocusGain();
+				mediaPlayer.setVolume(FOCUS_GAIN_VOLUME_LEVEL, FOCUS_GAIN_VOLUME_LEVEL);
+			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+				playerState.audioFocusLoss();
+			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+				mediaPlayer.setVolume(FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL, FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL);
+			}
+
 		}
 	};
 

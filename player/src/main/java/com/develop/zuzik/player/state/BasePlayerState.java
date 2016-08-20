@@ -2,6 +2,7 @@ package com.develop.zuzik.player.state;
 
 import android.media.MediaPlayer;
 import android.util.Log;
+import android.view.SurfaceHolder;
 
 import com.develop.zuzik.player.device_sleep.DeviceSleep;
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
@@ -25,7 +26,7 @@ abstract class BasePlayerState implements PlayerState {
 	final PlayerStateContext playerStateContext;
 	private final boolean allowSetRepeat;
 	private final boolean allowSeekToPosition;
-	private MediaPlayerState mediaPlayerState = new MediaPlayerState(State.NONE, 0, Optional.absent());
+	private MediaPlayerState mediaPlayerState = new MediaPlayerState(State.NONE, 0, Optional.<Integer>absent());
 
 	protected abstract MediaPlayerState playerToState(MediaPlayer player);
 
@@ -94,9 +95,12 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	final void stopPlayer() {
-		getMediaPlayerSafely(value -> {
-			value.stop();
-			applyState(new IdlePlayerState(this.playerStateContext));
+		getMediaPlayerSafely(new ParamAction<MediaPlayer>() {
+			@Override
+			public void execute(MediaPlayer value) {
+				value.stop();
+				applyState(new IdlePlayerState(playerStateContext));
+			}
 		});
 	}
 
@@ -109,15 +113,23 @@ abstract class BasePlayerState implements PlayerState {
 
 	@Override
 	public final void videoViewSetter(ParamAction<VideoViewSetter> success) {
-		success.execute(new MediaPlayerVideoViewSetter(getMediaPlayer()::setDisplay));
+		success.execute(new MediaPlayerVideoViewSetter(new ParamAction<SurfaceHolder>() {
+			@Override
+			public void execute(SurfaceHolder value) {
+				getMediaPlayer().setDisplay(value);
+			}
+		}));
 	}
 
 	@Override
 	public final void onRepeatChanged() {
 		if (this.allowSetRepeat) {
-			getMediaPlayerSafely(value -> {
-				value.setLooping(this.playerStateContext.isRepeat());
-				saveMediaPlayerStateAndNotify(playerToState(value));
+			getMediaPlayerSafely(new ParamAction<MediaPlayer>() {
+				@Override
+				public void execute(MediaPlayer value) {
+					value.setLooping(playerStateContext.isRepeat());
+					saveMediaPlayerStateAndNotify(playerToState(value));
+				}
 			});
 		}
 	}
@@ -127,18 +139,36 @@ abstract class BasePlayerState implements PlayerState {
 		if (this.allowSetRepeat) {
 			getMediaPlayer().setLooping(this.playerStateContext.isRepeat());
 		}
-		getMediaPlayer().setOnErrorListener((mp, what, extra) -> {
-			handleError(new MediaPlayerStateException());
-			return true;
+		getMediaPlayer().setOnErrorListener(new MediaPlayer.OnErrorListener() {
+			@Override
+			public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
+				return false;
+			}
 		});
-		getMediaPlayer().setOnCompletionListener(mp ->
-				getMediaPlayerSafely(value ->
+		getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+			@Override
+			public void onCompletion(MediaPlayer mediaPlayer) {
+				getMediaPlayerSafely(new ParamAction<MediaPlayer>() {
+					@Override
+					public void execute(MediaPlayer value) {
 						applyState(value.isLooping()
-								? new StartedPlayerState(this.playerStateContext)
-								: new CompletedPlayerState(this.playerStateContext))));
-		getMediaPlayer().setOnSeekCompleteListener(mp ->
-				getMediaPlayerSafely(value ->
-						saveMediaPlayerStateAndNotify(playerToState(value))));
+								? new StartedPlayerState(playerStateContext)
+								: new CompletedPlayerState(playerStateContext));
+					}
+				});
+			}
+		});
+		getMediaPlayer().setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+			@Override
+			public void onSeekComplete(MediaPlayer mediaPlayer) {
+				getMediaPlayerSafely(new ParamAction<MediaPlayer>() {
+					@Override
+					public void execute(MediaPlayer value) {
+						saveMediaPlayerStateAndNotify(playerToState(value));
+					}
+				});
+			}
+		});
 		doOnApply(getMediaPlayer());
 		saveMediaPlayerState(playerToState(getMediaPlayer()));
 	}
@@ -180,9 +210,14 @@ abstract class BasePlayerState implements PlayerState {
 	}
 
 	@Override
-	public final void seekTo(int positionInMilliseconds) {
+	public final void seekTo(final int positionInMilliseconds) {
 		if (this.allowSeekToPosition) {
-			getMediaPlayerSafely(value -> value.seekTo(positionInMilliseconds));
+			getMediaPlayerSafely(new ParamAction<MediaPlayer>() {
+				@Override
+				public void execute(MediaPlayer value) {
+					value.seekTo(positionInMilliseconds);
+				}
+			});
 		}
 	}
 

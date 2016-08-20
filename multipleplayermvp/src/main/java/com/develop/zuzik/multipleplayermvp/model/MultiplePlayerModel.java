@@ -28,7 +28,7 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 
 	public MultiplePlayerModel(Context context,
 							   MultiplePlaybackFactory<SourceInfo> multiplePlaybackFactory,
-							   MultiplePlaybackSettings playbackSettings) {
+							   final MultiplePlaybackSettings playbackSettings) {
 		this.playback = multiplePlaybackFactory.create(context);
 		addListener(new Listener<SourceInfo>() {
 			@Override

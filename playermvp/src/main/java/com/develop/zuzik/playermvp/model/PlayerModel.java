@@ -13,7 +13,10 @@ import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.playermvp.composite.CompositeListener;
 import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
 import com.develop.zuzik.playermvp.interfaces.Player;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * User: zuzik
@@ -27,7 +30,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	private final CompositeListener<SourceInfo> compositeListener = new CompositeListener<>();
 	private Optional<Playback<SourceInfo>> playback = Optional.absent();
 
-	public PlayerModel(Context context, PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
+	public PlayerModel(Context context, final PlaybackSettings playbackSettings, PlaybackFactory<SourceInfo> playbackFactory) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackSettings = playbackSettings;
 		this.playbackFactory = playbackFactory;
@@ -63,15 +66,24 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	@Override
 	public void clear() {
-		getPlayback(value -> {
-			releasePlayback(value);
-			this.playback = Optional.absent();
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> value) {
+				PlayerModel.this.releasePlayback(value);
+				PlayerModel.this.playback = Optional.absent();
+			}
 		});
 	}
 
 	@Override
 	public Optional<PlaybackState<SourceInfo>> getState() {
-		return this.playback.transform(Playback::getPlaybackState);
+		return this.playback.transform(new Function<Playback<SourceInfo>, PlaybackState<SourceInfo>>() {
+			@Nullable
+			@Override
+			public PlaybackState<SourceInfo> apply(Playback<SourceInfo> sourceInfoPlayback) {
+				return sourceInfoPlayback.getPlaybackState();
+			}
+		});
 	}
 
 	@Override
@@ -93,37 +105,72 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 
 	@Override
 	public void play() {
-		getPlayback(Playback::play);
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> sourceInfoPlayback) {
+				sourceInfoPlayback.play();
+			}
+		});
 	}
 
 	@Override
 	public void pause() {
-		getPlayback(Playback::pause);
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> sourceInfoPlayback) {
+				sourceInfoPlayback.pause();
+			}
+		});
 	}
 
 	@Override
 	public void stop() {
-		getPlayback(Playback::stop);
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> sourceInfoPlayback) {
+				sourceInfoPlayback.stop();
+			}
+		});
 	}
 
 	@Override
-	public void seekToPosition(int positionInMilliseconds) {
-		getPlayback(value -> value.seekTo(positionInMilliseconds));
+	public void seekToPosition(final int positionInMilliseconds) {
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> value) {
+				value.seekTo(positionInMilliseconds);
+			}
+		});
 	}
 
 	@Override
 	public void repeat() {
-		getPlayback(Playback::repeat);
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> sourceInfoPlayback) {
+				sourceInfoPlayback.repeat();
+			}
+		});
 	}
 
 	@Override
 	public void doNotRepeat() {
-		getPlayback(Playback::doNotRepeat);
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> sourceInfoPlayback) {
+				sourceInfoPlayback.doNotRepeat();
+			}
+		});
 	}
 
 	@Override
 	public void simulateError() {
-		getPlayback(Playback::simulateError);
+		getPlayback(new ParamAction<Playback<SourceInfo>>() {
+			@Override
+			public void execute(Playback<SourceInfo> sourceInfoPlayback) {
+				sourceInfoPlayback.simulateError();
+			}
+		});
 	}
 
 	private void getPlayback(ParamAction<Playback<SourceInfo>> success) {

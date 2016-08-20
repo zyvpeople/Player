@@ -3,7 +3,9 @@ package com.develop.zuzik.multipleplayermvp.presenter;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerVideoView;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 
 /**
  * User: zuzik
@@ -25,7 +27,7 @@ public class MultiplePlayerVideoPresenter<SourceInfo> implements MultiplePlayer.
 
 	@Override
 	public void setView(MultiplePlayer.VideoView<SourceInfo> view) {
-		this.view = view != null ? view : NullMultiplePlayerVideoView.getInstance();
+		this.view = view != null ? view : NullMultiplePlayerVideoView.<SourceInfo>getInstance();
 	}
 
 	@Override
@@ -65,10 +67,20 @@ public class MultiplePlayerVideoPresenter<SourceInfo> implements MultiplePlayer.
 		if (isCurrentSourceInfo()) {
 			if (this.appeared) {
 				this.view.setVideoViewAvailable();
-				this.model.videoViewSetter(value -> this.view.setVideoView(value));
+				this.model.videoViewSetter(new ParamAction<VideoViewSetter>() {
+					@Override
+					public void execute(VideoViewSetter value) {
+						MultiplePlayerVideoPresenter.this.view.setVideoView(value);
+					}
+				});
 			} else {
 				this.view.setVideoViewUnavailable();
-				this.model.videoViewSetter(value -> this.view.clearVideoView(value));
+				this.model.videoViewSetter(new ParamAction<VideoViewSetter>() {
+					@Override
+					public void execute(VideoViewSetter value) {
+						MultiplePlayerVideoPresenter.this.view.clearVideoView(value);
+					}
+				});
 			}
 		} else {
 			this.view.setVideoViewUnavailable();

@@ -8,6 +8,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song>, Play
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_example, container, false);
 
-		Song song = new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1);
+		final Song song = new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1);
 
 		this.presenter = new PlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPlayerPresenterDestroyStrategy());
 		this.presenter.setView(this);
@@ -81,10 +82,30 @@ public class ExampleFragment extends Fragment implements Player.View<Song>, Play
 			}
 		});
 
-		this.play.setOnClickListener(v -> this.presenter.onPlay());
-		this.pause.setOnClickListener(v -> this.presenter.onPause());
-		this.stop.setOnClickListener(v -> this.presenter.onStop());
-		fakeError.setOnClickListener(v -> this.presenter.simulateError());
+		this.play.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ExampleFragment.this.presenter.onPlay();
+			}
+		});
+		this.pause.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ExampleFragment.this.presenter.onPause();
+			}
+		});
+		this.stop.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ExampleFragment.this.presenter.onStop();
+			}
+		});
+		fakeError.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ExampleFragment.this.presenter.simulateError();
+			}
+		});
 		this.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -101,14 +122,22 @@ public class ExampleFragment extends Fragment implements Player.View<Song>, Play
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
-		this.repeat.setOnCheckedChangeListener((buttonView, isChecked) -> {
-			if (isChecked) {
-				this.presenter.onRepeat();
-			} else {
-				this.presenter.onDoNotRepeat();
+		this.repeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					ExampleFragment.this.presenter.onRepeat();
+				} else {
+					ExampleFragment.this.presenter.onDoNotRepeat();
+				}
 			}
 		});
-		this.surfaceView.setOnClickListener(v -> startActivity(VideoActivity.createIntent(getContext(), song)));
+		this.surfaceView.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ExampleFragment.this.startActivity(VideoActivity.createIntent(getContext(), song));
+			}
+		});
 
 		this.presenter.onCreate();
 		this.videoPresenter.onCreate();

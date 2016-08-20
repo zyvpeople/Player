@@ -1,6 +1,8 @@
 package com.develop.zuzik.playermvp.presenter;
 
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.playermvp.null_object.NullPlayerVideoView;
 import com.fernandocejas.arrow.optional.Optional;
@@ -25,7 +27,7 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 	public void setView(Player.VideoView<SourceInfo> view) {
 		this.view = view != null
 				? view
-				: NullPlayerVideoView.getInstance();
+				: NullPlayerVideoView.<SourceInfo>getInstance();
 	}
 
 	@Override
@@ -69,10 +71,20 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 		if (isCurrentSourceInfo(state)) {
 			if (this.appeared) {
 				this.view.setVideoViewAvailable();
-				this.model.videoViewSetter(value -> this.view.setVideoView(value));
+				this.model.videoViewSetter(new ParamAction<VideoViewSetter>() {
+					@Override
+					public void execute(VideoViewSetter value) {
+						PlayerVideoPresenter.this.view.setVideoView(value);
+					}
+				});
 			} else {
 				this.view.setVideoViewUnavailable();
-				this.model.videoViewSetter(value -> this.view.clearVideoView(value));
+				this.model.videoViewSetter(new ParamAction<VideoViewSetter>() {
+					@Override
+					public void execute(VideoViewSetter value) {
+						PlayerVideoPresenter.this.view.clearVideoView(value);
+					}
+				});
 			}
 		} else {
 			this.view.setVideoViewUnavailable();
@@ -81,7 +93,7 @@ public class PlayerVideoPresenter<SourceInfo> implements Player.VideoPresenter<S
 
 	private boolean isCurrentSourceInfo(Optional<PlaybackState<SourceInfo>> state) {
 		if (state.isPresent()) {
-			if(this.sourceInfo.equals(state.get().playerSource.getSourceInfo())){
+			if (this.sourceInfo.equals(state.get().playerSource.getSourceInfo())) {
 				return true;
 			}
 		}

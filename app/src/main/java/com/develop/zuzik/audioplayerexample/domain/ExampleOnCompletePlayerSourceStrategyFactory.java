@@ -13,7 +13,7 @@ public class ExampleOnCompletePlayerSourceStrategyFactory<SourceInfo> implements
 	@Override
 	public PlayerSourceStrategy<SourceInfo> create(boolean shuffle) {
 		return shuffle
-				? new ShufflePlayerSourceStrategy<>()
-				: new EndedNextPlayerSourceStrategy<>();
+				? new ShufflePlayerSourceStrategy<SourceInfo>()
+				: new EndedNextPlayerSourceStrategy<SourceInfo>();
 	}
 }

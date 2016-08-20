@@ -18,6 +18,7 @@ import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.Song;
+import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.volume.Volume;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
@@ -77,14 +78,14 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.presenter.setView(this);
 		this.presenter.onSetPlayerSources(
 				Arrays.asList(
-//						new RawResourcePlayerSource<>(new Song("Image", "Image", R.drawable.enter_shikari_1), R.raw.enter_shikari_1),
-//						new RawResourcePlayerSource<>(new Song("Enter Shikari", "local video", R.drawable.enter_shikari_1), R.raw.video),
-						new UriPlayerSource<>(new Song("Ha ha", "remote video", R.drawable.enter_shikari_1), "http://fs144.www.ex.ua/get/98f9f422e098823c72727f20fbdcbc8b/225821344/Hardcore_tr2_oKino.ua.mp4")));
-//						new UriPlayerSource<>(new Song("Enter Shikari", "remote video", R.drawable.enter_shikari_1), "https://youtu.be/tLeg_5ljVcA"),
-//						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
-//						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
-//						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
-//						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
+						new RawResourcePlayerSource<>(new Song("Image", "Image", R.drawable.enter_shikari_1), R.raw.enter_shikari_1),
+						new RawResourcePlayerSource<>(new Song("Enter Shikari", "local video", R.drawable.enter_shikari_1), R.raw.video),
+						new UriPlayerSource<>(new Song("Ha ha", "remote video", R.drawable.enter_shikari_1), "http://fs144.www.ex.ua/get/98f9f422e098823c72727f20fbdcbc8b/225821344/Hardcore_tr2_oKino.ua.mp4"),
+						new UriPlayerSource<>(new Song("Enter Shikari", "remote video", R.drawable.enter_shikari_1), "https://youtu.be/tLeg_5ljVcA"),
+						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
+						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
+						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
+						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
 		this.presenter.onCreate();
 	}
 
@@ -112,36 +113,55 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.shuffle = (ImageView) view.findViewById(R.id.shuffle);
 		this.playPause = (ImageView) view.findViewById(R.id.playPause);
 
-		this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<>());
+		this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<PlayerSource<Song>>());
 		this.viewPager.setAdapter(this.adapter);
 
-		this.playPause.setOnClickListener(v -> {
-			if (TAG_STATE_PLAY.equals(v.getTag())) {
-				this.presenter.onPlay();
-			} else if (TAG_STATE_PAUSE.equals(v.getTag())) {
-				this.presenter.onPause();
-			} else {
-				Log.w(getClass().getSimpleName(), "Tag is not set");
+		this.playPause.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (TAG_STATE_PLAY.equals(v.getTag())) {
+					PlayerFragment.this.presenter.onPlay();
+				} else if (TAG_STATE_PAUSE.equals(v.getTag())) {
+					PlayerFragment.this.presenter.onPause();
+				} else {
+					Log.w(PlayerFragment.this.getClass().getSimpleName(), "Tag is not set");
+				}
 			}
 		});
-		this.repeat.setOnClickListener(v -> {
-			if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
-				this.presenter.onDoNotRepeatSingle();
-			} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
-				this.presenter.onRepeatSingle();
-			} else {
-				Log.w(getClass().getSimpleName(), "Tag is not set");
+		this.repeat.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
+					PlayerFragment.this.presenter.onDoNotRepeatSingle();
+				} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
+					PlayerFragment.this.presenter.onRepeatSingle();
+				} else {
+					Log.w(PlayerFragment.this.getClass().getSimpleName(), "Tag is not set");
+				}
 			}
 		});
-		skipPrevious.setOnClickListener(v -> this.presenter.onSkipPrevious());
-		skipNext.setOnClickListener(v -> this.presenter.onSkipNext());
-		this.shuffle.setOnClickListener(v -> {
-			if (TAG_STATE_SHUFFLE_ON.equals(v.getTag())) {
-				this.presenter.onDoNotShuffle();
-			} else if (TAG_STATE_SHUFFLE_OFF.equals(v.getTag())) {
-				this.presenter.onShuffle();
-			} else {
-				Log.w(getClass().getSimpleName(), "Tag is not set");
+		skipPrevious.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PlayerFragment.this.presenter.onSkipPrevious();
+			}
+		});
+		skipNext.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				PlayerFragment.this.presenter.onSkipNext();
+			}
+		});
+		this.shuffle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (TAG_STATE_SHUFFLE_ON.equals(v.getTag())) {
+					PlayerFragment.this.presenter.onDoNotShuffle();
+				} else if (TAG_STATE_SHUFFLE_OFF.equals(v.getTag())) {
+					PlayerFragment.this.presenter.onShuffle();
+				} else {
+					Log.w(PlayerFragment.this.getClass().getSimpleName(), "Tag is not set");
+				}
 			}
 		});
 		this.progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -162,9 +182,12 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		});
 
 		if (BuildConfig.DEBUG) {
-			this.playPause.setOnLongClickListener(v -> {
-				this.presenter.simulateError();
-				return true;
+			this.playPause.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					PlayerFragment.this.presenter.simulateError();
+					return true;
+				}
 			});
 		}
 

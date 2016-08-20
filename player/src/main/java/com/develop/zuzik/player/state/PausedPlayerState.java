@@ -26,7 +26,7 @@ abstract class PausedPlayerState extends BasePlayerState {
 				player.getCurrentPosition(),
 				maxDuration != -1
 						? Optional.of(maxDuration)
-						: Optional.absent());
+						: Optional.<Integer>absent());
 	}
 
 	@Override

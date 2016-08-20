@@ -14,7 +14,7 @@ public class SurfaceViewWrapper {
 	private final SurfaceHolder holder;
 	private Strategy strategy = new UnavailableHolderStrategy();
 
-	public SurfaceViewWrapper(SurfaceView view, Listener listener) {
+	public SurfaceViewWrapper(SurfaceView view, final Listener listener) {
 		this.holder = view.getHolder();
 		this.holder.addCallback(new SurfaceHolder.Callback() {
 			@Override

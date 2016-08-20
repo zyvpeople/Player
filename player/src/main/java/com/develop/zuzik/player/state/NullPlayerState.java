@@ -23,7 +23,7 @@ public class NullPlayerState implements PlayerState {
 		return new MediaPlayerState(
 				State.NONE,
 				0,
-				Optional.absent());
+				Optional.<Integer>absent());
 	}
 
 	@Override

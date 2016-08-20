@@ -16,6 +16,6 @@ public class EndedNextPlayerSourceStrategy<SourceInfo> implements PlayerSourceSt
 		int currentPlayerSourceIndex = playerSources.indexOf(currentPlayerSource);
 		return 0 <= currentPlayerSourceIndex && currentPlayerSourceIndex < playerSources.size() - 1
 				? Optional.of(playerSources.get(currentPlayerSourceIndex + 1))
-				: Optional.absent();
+				: Optional.<PlayerSource<SourceInfo>>absent();
 	}
 }

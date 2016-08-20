@@ -9,7 +9,10 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.source.PlayerSource;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +47,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	@Override
 	public void setView(MultiplePlayer.View<SourceInfo> view) {
-		this.view = view != null ? view : NullMultiplePlayerView.getInstance();
+		this.view = view != null ? view : NullMultiplePlayerView.<SourceInfo>getInstance();
 	}
 
 	@Override
@@ -161,7 +164,13 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 		}
 
 		this.view.displaySources(sources);
-		if (state.transform(input -> input.currentPlaybackState.isPresent()).or(false)) {
+		if (state.transform(new Function<MultiplePlaybackState<SourceInfo>, Boolean>() {
+			@Nullable
+			@Override
+			public Boolean apply(MultiplePlaybackState<SourceInfo> input) {
+				return input.currentPlaybackState.isPresent();
+			}
+		}).or(false)) {
 			PlaybackState<SourceInfo> playbackState = state.get().currentPlaybackState.get();
 
 			this.view.enablePlayControls(

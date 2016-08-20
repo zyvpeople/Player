@@ -61,13 +61,21 @@ public class SongFragment extends Fragment implements MultiplePlayer.VideoView<S
 						presenter.onVideoViewDestroyed();
 					}
 				});
-		parseArguments(getArguments(), value -> {
-			Picasso
-					.with(getContext())
-					.load(value.image)
-					.into(this.image);
-			this.presenter = new MultiplePlayerVideoPresenter<>(getModel(), value);
-			this.surfaceView.setOnClickListener(v -> startActivity(MultipleVideoActivity.createIntent(getContext(), value)));
+		parseArguments(getArguments(), new ParamAction<Song>() {
+			@Override
+			public void execute(final Song value) {
+				Picasso
+						.with(SongFragment.this.getContext())
+						.load(value.image)
+						.into(SongFragment.this.image);
+				SongFragment.this.presenter = new MultiplePlayerVideoPresenter<>(SongFragment.this.getModel(), value);
+				SongFragment.this.surfaceView.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SongFragment.this.startActivity(MultipleVideoActivity.createIntent(getContext(), value));
+					}
+				});
+			}
 		});
 		this.presenter.setView(this);
 		this.presenter.onCreate();

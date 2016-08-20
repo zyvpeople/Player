@@ -10,11 +10,14 @@ import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.player.broadcast_receiver.PlaybackBroadcastReceiver;
+import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;
 import com.develop.zuzik.playermvp.interfaces.Player;
+import com.develop.zuzik.playermvp.model.PlayerModel;
 import com.develop.zuzik.playermvp.model.PlayerServiceModel;
 import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 
@@ -47,34 +50,44 @@ public class App extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-//		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>());
-		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<>(), 100500, new SongPlayerNotificationFactory());
+		this.model = new PlayerModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<Song>());
+//		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<Song>(), 100500, new SongPlayerNotificationFactory());
 
 		InMemoryMultiplePlaybackSettings playbackSettings = new InMemoryMultiplePlaybackSettings();
-//		this.multiplePlayerModel = new MultiplePlayerModel<>(
-//				this,
-//				new LocalMultiplePlaybackFactory<>(
-//						new LocalPlaybackFactory<>(),
-//						new EndedNextPlayerSourceStrategy<>(),
-//						new EndedPreviousPlayerSourceStrategy<>(),
-//						new ExampleOnCompletePlayerSourceStrategyFactory<>(),
-//						playbackSettings.isRepeatSingle(),
-//						playbackSettings.isShuffle()),
-//				playbackSettings);
-		this.multiplePlayerModel = new MultiplePlayerServiceModel<>(
+		this.multiplePlayerModel = new MultiplePlayerModel<Song>(
 				this,
-				playbackSettings,
-				new LocalMultiplePlaybackFactory<>(
-						new LocalPlaybackFactory<>(),
-						new EndedNextPlayerSourceStrategy<>(),
-						new EndedPreviousPlayerSourceStrategy<>(),
-						new ExampleOnCompletePlayerSourceStrategyFactory<>(),
+				new LocalMultiplePlaybackFactory<Song>(
+						new LocalPlaybackFactory<Song>(),
+						new EndedNextPlayerSourceStrategy<Song>(),
+						new EndedPreviousPlayerSourceStrategy<Song>(),
+						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
 						playbackSettings.isRepeatSingle(),
 						playbackSettings.isShuffle()),
-				100500,
-				new SongMultiplePlayerNotificationFactory());
+				playbackSettings);
+//		this.multiplePlayerModel = new MultiplePlayerServiceModel<Song>(
+//				this,
+//				playbackSettings,
+//				new LocalMultiplePlaybackFactory<>(
+//						new LocalPlaybackFactory<Song>(),
+//						new EndedNextPlayerSourceStrategy<Song>(),
+//						new EndedPreviousPlayerSourceStrategy<Song>(),
+//						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
+//						playbackSettings.isRepeatSingle(),
+//						playbackSettings.isShuffle()),
+//				100500,
+//				new SongMultiplePlayerNotificationFactory());
 
-		PlaybackBroadcastReceiver.register(this, model::pause);
-		PlaybackBroadcastReceiver.register(this, multiplePlayerModel::pause);
+		PlaybackBroadcastReceiver.register(this, new Action() {
+			@Override
+			public void execute() {
+				model.pause();
+			}
+		});
+		PlaybackBroadcastReceiver.register(this, new Action() {
+			@Override
+			public void execute() {
+				multiplePlayerModel.pause();
+			}
+		});
 	}
 }

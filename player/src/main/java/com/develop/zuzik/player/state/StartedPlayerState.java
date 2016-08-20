@@ -5,6 +5,8 @@ import android.media.MediaPlayer;
 import com.develop.zuzik.player.exception.AudioFocusLostException;
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
+import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.state.interfaces.PlayerStateContext;
 import com.develop.zuzik.player.timer.PeriodicAction;
@@ -24,7 +26,17 @@ class StartedPlayerState extends BasePlayerState {
 		super(playerStateContext, true, true);
 		this.periodicAction = new PeriodicAction(
 				CHECK_PLAYER_PROGRESS_PERIODIC_INTERVAL_IN_MILLISECONDS,
-				() -> getMediaPlayerSafely(value -> saveMediaPlayerStateAndNotify(playerToState(value))));
+				new Action() {
+					@Override
+					public void execute() {
+						getMediaPlayerSafely(new ParamAction<MediaPlayer>() {
+							@Override
+							public void execute(MediaPlayer value) {
+								saveMediaPlayerStateAndNotify(playerToState(value));
+							}
+						});
+					}
+				});
 	}
 
 	@Override
@@ -35,18 +47,26 @@ class StartedPlayerState extends BasePlayerState {
 				player.getCurrentPosition(),
 				maxDuration != -1
 						? Optional.of(maxDuration)
-						: Optional.absent());
+						: Optional.<Integer>absent());
 	}
 
 	@Override
-	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
+	protected void doOnApply(final MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		denyDeviceSleep();
 		this.periodicAction.start();
 		this.playerStateContext
 				.requestFocus(
-						player::start,
-						() -> {
-							throw new FailRequestAudioFocusException();
+						new Action() {
+							@Override
+							public void execute() {
+								player.start();
+							}
+						},
+						new Action() {
+							@Override
+							public void execute() {
+								throw new FailRequestAudioFocusException();
+							}
 						});
 	}
 

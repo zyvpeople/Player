@@ -17,7 +17,9 @@ import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;
+import com.develop.zuzik.player.null_object.NullAction;
 import com.develop.zuzik.player.source.PlayerSource;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
 
 import java.util.List;
@@ -49,29 +51,152 @@ public class MultiplePlaybackService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(getClass().getSimpleName(), "onStartCommand");
-		MultiplePlaybackServiceIntentFactory.parseForInit(intent, bundle -> {
-			MultiplePlaybackFactory multiplePlaybackFactory = bundle.multiplePlaybackFactory;
-			List<PlayerSource> playerSources = bundle.playerSources;
-			this.notificationId = bundle.notificationId;
-			this.multiplePlayerNotificationFactory = bundle.multiplePlayerNotificationFactory;
-			if (this.multiplePlayback.isPresent()) {
-				this.multiplePlayback.get().setPlayerSources(playerSources);
-			} else {
-				initMultiplePlayback(multiplePlaybackFactory, playerSources);
+		MultiplePlaybackServiceIntentFactory.parseForInit(intent, new ParamAction<MultiplePlaybackServiceInitializeBundle>() {
+			@Override
+			public void execute(MultiplePlaybackServiceInitializeBundle bundle) {
+				MultiplePlaybackFactory multiplePlaybackFactory = bundle.multiplePlaybackFactory;
+				List<PlayerSource> playerSources = bundle.playerSources;
+				MultiplePlaybackService.this.notificationId = bundle.notificationId;
+				MultiplePlaybackService.this.multiplePlayerNotificationFactory = bundle.multiplePlayerNotificationFactory;
+				if (MultiplePlaybackService.this.multiplePlayback.isPresent()) {
+					MultiplePlaybackService.this.multiplePlayback.get().setPlayerSources(playerSources);
+				} else {
+					MultiplePlaybackService.this.initMultiplePlayback(multiplePlaybackFactory, playerSources);
+				}
 			}
 		});
-		MultiplePlaybackServiceIntentFactory.parsePlay(intent, () -> getMultiplePlayback(MultiplePlayback::play));
-		MultiplePlaybackServiceIntentFactory.parsePause(intent, () -> getMultiplePlayback(MultiplePlayback::pause));
-		MultiplePlaybackServiceIntentFactory.parseStop(intent, () -> getMultiplePlayback(MultiplePlayback::stop));
-		MultiplePlaybackServiceIntentFactory.parsePlayNext(intent, () -> getMultiplePlayback(MultiplePlayback::playNextPlayerSource));
-		MultiplePlaybackServiceIntentFactory.parsePlayPrevious(intent, () -> getMultiplePlayback(MultiplePlayback::playPreviousPlayerSource));
-		MultiplePlaybackServiceIntentFactory.parseSeekTo(intent, value -> getMultiplePlayback(playback -> playback.seekTo(value)));
-		MultiplePlaybackServiceIntentFactory.parseSwitchToSource(intent, value -> getMultiplePlayback(playback -> playback.playPlayerSource(value)));
-		MultiplePlaybackServiceIntentFactory.parseRepeatSingle(intent, () -> getMultiplePlayback(MultiplePlayback::repeatSingle));
-		MultiplePlaybackServiceIntentFactory.parseDoNotRepeatSingle(intent, () -> getMultiplePlayback(MultiplePlayback::doNotRepeatSingle));
-		MultiplePlaybackServiceIntentFactory.parseShuffle(intent, () -> getMultiplePlayback(MultiplePlayback::shuffle));
-		MultiplePlaybackServiceIntentFactory.parseDoNotShuffle(intent, () -> getMultiplePlayback(MultiplePlayback::doNotShuffle));
-		MultiplePlaybackServiceIntentFactory.parseSimulateError(intent, () -> getMultiplePlayback(MultiplePlayback::simulateError));
+		MultiplePlaybackServiceIntentFactory.parsePlay(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.play();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parsePause(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.pause();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseStop(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.stop();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parsePlayNext(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.playNextPlayerSource();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parsePlayPrevious(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.playPreviousPlayerSource();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseSeekTo(intent, new ParamAction<Integer>() {
+			@Override
+			public void execute(final Integer value) {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback playback) {
+						playback.seekTo(value);
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseSwitchToSource(intent, new ParamAction<PlayerSource>() {
+			@Override
+			public void execute(final PlayerSource value) {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback playback) {
+						playback.playPlayerSource(value);
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseRepeatSingle(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.repeatSingle();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseDoNotRepeatSingle(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.doNotRepeatSingle();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseShuffle(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.shuffle();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseDoNotShuffle(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.doNotShuffle();
+					}
+				});
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseSimulateError(intent, new Action() {
+			@Override
+			public void execute() {
+				MultiplePlaybackService.this.getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+					@Override
+					public void execute(MultiplePlayback multiplePlayback1) {
+						multiplePlayback1.simulateError();
+					}
+				});
+			}
+		});
 		return START_STICKY;
 	}
 
@@ -93,7 +218,12 @@ public class MultiplePlaybackService extends Service {
 	}
 
 	public Optional<MultiplePlaybackState> getMultiplePlaybackState() {
-		return this.multiplePlayback.transform(MultiplePlayback::getMultiplePlaybackState);
+		return this.multiplePlayback.transform(new Function<MultiplePlayback, MultiplePlaybackState>() {
+			@Override
+			public MultiplePlaybackState apply(MultiplePlayback input) {
+				return input.getMultiplePlaybackState();
+			}
+		});
 	}
 
 	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
@@ -107,8 +237,7 @@ public class MultiplePlaybackService extends Service {
 	}
 
 	private void getMultiplePlayback(ParamAction<MultiplePlayback> success) {
-		getMultiplePlayback(success, () -> {
-		});
+		getMultiplePlayback(success, NullAction.INSTANCE);
 	}
 
 	private void getMultiplePlayback(ParamAction<MultiplePlayback> success, Action fail) {
@@ -129,7 +258,12 @@ public class MultiplePlaybackService extends Service {
 	public void onDestroy() {
 		Log.d(getClass().getSimpleName(), "onDestroy");
 		setMultiplePlaybackListener(null);
-		getMultiplePlayback(MultiplePlayback::clear);
+		getMultiplePlayback(new ParamAction<MultiplePlayback>() {
+			@Override
+			public void execute(MultiplePlayback multiplePlayback1) {
+				multiplePlayback1.clear();
+			}
+		});
 		this.multiplePlayback = Optional.absent();
 		stopForeground(true);
 		super.onDestroy();

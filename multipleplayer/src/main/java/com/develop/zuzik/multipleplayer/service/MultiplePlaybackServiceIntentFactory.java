@@ -44,10 +44,13 @@ public class MultiplePlaybackServiceIntentFactory {
 				.putExtra(EXTRA_MULTIPLE_PLAYBACK_SERVICE_INITIALIZE_BUNDLE, bundle);
 	}
 
-	static void parseForInit(Intent intent, ParamAction<MultiplePlaybackServiceInitializeBundle> success) {
-		parseAction(intent, ACTION_INIT, () -> {
-			if (intent.hasExtra(EXTRA_MULTIPLE_PLAYBACK_SERVICE_INITIALIZE_BUNDLE)) {
-				success.execute((MultiplePlaybackServiceInitializeBundle) intent.getSerializableExtra(EXTRA_MULTIPLE_PLAYBACK_SERVICE_INITIALIZE_BUNDLE));
+	static void parseForInit(final Intent intent, final ParamAction<MultiplePlaybackServiceInitializeBundle> success) {
+		parseAction(intent, ACTION_INIT, new Action() {
+			@Override
+			public void execute() {
+				if (intent.hasExtra(EXTRA_MULTIPLE_PLAYBACK_SERVICE_INITIALIZE_BUNDLE)) {
+					success.execute((MultiplePlaybackServiceInitializeBundle) intent.getSerializableExtra(EXTRA_MULTIPLE_PLAYBACK_SERVICE_INITIALIZE_BUNDLE));
+				}
 			}
 		});
 	}
@@ -102,10 +105,13 @@ public class MultiplePlaybackServiceIntentFactory {
 		return createWithAction(context, ACTION_SEEK_TO).putExtra(EXTRA_SEEK_TO, positionInMilliseconds);
 	}
 
-	static void parseSeekTo(Intent intent, ParamAction<Integer> success) {
-		parseAction(intent, ACTION_SEEK_TO, () -> {
-			if (intent.hasExtra(EXTRA_SEEK_TO)) {
-				success.execute(intent.getIntExtra(EXTRA_SEEK_TO, 0));
+	static void parseSeekTo(final Intent intent, final ParamAction<Integer> success) {
+		parseAction(intent, ACTION_SEEK_TO, new Action() {
+			@Override
+			public void execute() {
+				if (intent.hasExtra(EXTRA_SEEK_TO)) {
+					success.execute(intent.getIntExtra(EXTRA_SEEK_TO, 0));
+				}
 			}
 		});
 	}
@@ -114,10 +120,13 @@ public class MultiplePlaybackServiceIntentFactory {
 		return createWithAction(context, ACTION_SWITCH_TO_SOURCE).putExtra(EXTRA_SWITCH_TO_SOURCE, source);
 	}
 
-	static void parseSwitchToSource(Intent intent, ParamAction<PlayerSource> success) {
-		parseAction(intent, ACTION_SWITCH_TO_SOURCE, () -> {
-			if (intent.hasExtra(EXTRA_SWITCH_TO_SOURCE)) {
-				success.execute((PlayerSource) intent.getSerializableExtra(EXTRA_SWITCH_TO_SOURCE));
+	static void parseSwitchToSource(final Intent intent, final ParamAction<PlayerSource> success) {
+		parseAction(intent, ACTION_SWITCH_TO_SOURCE, new Action() {
+			@Override
+			public void execute() {
+				if (intent.hasExtra(EXTRA_SWITCH_TO_SOURCE)) {
+					success.execute((PlayerSource) intent.getSerializableExtra(EXTRA_SWITCH_TO_SOURCE));
+				}
 			}
 		});
 	}

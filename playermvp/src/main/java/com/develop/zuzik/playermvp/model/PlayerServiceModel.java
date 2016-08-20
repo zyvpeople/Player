@@ -21,7 +21,10 @@ import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.playermvp.composite.CompositeListener;
 import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
 import com.develop.zuzik.playermvp.interfaces.Player;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.create;
 import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createDoNotRepeat;
@@ -49,7 +52,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private final PlayerNotificationFactory<SourceInfo> playerNotificationFactory;
 
 	public PlayerServiceModel(Context context,
-							  PlaybackSettings playbackSettings,
+							  final PlaybackSettings playbackSettings,
 							  PlaybackFactory<SourceInfo> playbackFactory,
 							  int notificationId,
 							  PlayerNotificationFactory<SourceInfo> playerNotificationFactory) {
@@ -99,7 +102,13 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 				return Optional.of(state);
 			}
 		}
-		return this.source.transform(source -> new PlaybackState<>(State.NONE, 0, Optional.absent(), this.playbackSettings.isRepeat(), source));
+		return this.source.transform(new Function<PlayerSource<SourceInfo>, PlaybackState<SourceInfo>>() {
+			@Nullable
+			@Override
+			public PlaybackState<SourceInfo> apply(PlayerSource<SourceInfo> source) {
+				return new PlaybackState<>(State.NONE, 0, Optional.<Integer>absent(), PlayerServiceModel.this.playbackSettings.isRepeat(), source);
+			}
+		});
 	}
 
 	@Override

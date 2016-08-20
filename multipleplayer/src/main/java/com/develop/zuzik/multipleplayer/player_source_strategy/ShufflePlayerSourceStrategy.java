@@ -17,6 +17,6 @@ public class ShufflePlayerSourceStrategy<SourceInfo> implements PlayerSourceStra
 		int currentPlayerSourceIndex = playerSources.indexOf(currentPlayerSource);
 		return currentPlayerSourceIndex >= 0
 				? Optional.of(playerSources.get(new Random().nextInt(Integer.MAX_VALUE) % playerSources.size()))
-				: Optional.absent();
+				: Optional.<PlayerSource<SourceInfo>>absent();
 	}
 }

@@ -23,7 +23,7 @@ public class IdlePlayerState extends BasePlayerState {
 		return new MediaPlayerState(
 				State.IDLE,
 				0,
-				Optional.absent());
+				Optional.<Integer>absent());
 	}
 
 	@Override

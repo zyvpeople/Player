@@ -34,7 +34,12 @@ public class MultipleVideoActivity extends AppCompatActivity implements Multiple
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_video);
-		parseIntent(getIntent(), value -> this.presenter = new MultiplePlayerVideoPresenter<>(getModel(), value));
+		parseIntent(getIntent(), new ParamAction<Song>() {
+			@Override
+			public void execute(Song value) {
+				MultipleVideoActivity.this.presenter = new MultiplePlayerVideoPresenter<>(MultipleVideoActivity.this.getModel(), value);
+			}
+		});
 		SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
 		this.surfaceViewWrapper = new SurfaceViewWrapper(
 				surfaceView,

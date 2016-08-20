@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
@@ -17,6 +18,7 @@ import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.null_object.NullPlaybackListener;
 import com.develop.zuzik.player.source.PlayerSource;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
 
 /**
@@ -44,28 +46,102 @@ public class PlaybackService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(getClass().getSimpleName(), "onStartCommand");
-		PlaybackServiceIntentFactory.parseForInit(intent, bundle -> {
-			PlayerSource source = bundle.playerSource;
-			PlaybackFactory factory = bundle.playbackFactory;
-			boolean repeat = bundle.repeat;
-			this.notificationId = bundle.notificationId;
-			this.playerNotificationFactory = bundle.playerNotificationFactory;
-			if (this.playback.isPresent()) {
-				if (!this.playback.get().getPlaybackState().playerSource.equals(source)) {
-					this.playback.get().release();
+		PlaybackServiceIntentFactory.parseForInit(intent, new ParamAction<PlaybackServiceInitializeBundle>() {
+			@Override
+			public void execute(PlaybackServiceInitializeBundle bundle) {
+				PlayerSource source = bundle.playerSource;
+				PlaybackFactory factory = bundle.playbackFactory;
+				boolean repeat = bundle.repeat;
+				notificationId = bundle.notificationId;
+				playerNotificationFactory = bundle.playerNotificationFactory;
+				if (playback.isPresent()) {
+					if (!playback.get().getPlaybackState().playerSource.equals(source)) {
+						playback.get().release();
+						initPlayback(source, factory, repeat);
+					}
+				} else {
 					initPlayback(source, factory, repeat);
 				}
-			} else {
-				initPlayback(source, factory, repeat);
+
 			}
 		});
-		PlaybackServiceIntentFactory.parsePlay(intent, () -> getPlayback(Playback::play));
-		PlaybackServiceIntentFactory.parsePause(intent, () -> getPlayback(Playback::pause));
-		PlaybackServiceIntentFactory.parseStop(intent, () -> getPlayback(Playback::stop));
-		PlaybackServiceIntentFactory.parseSeekTo(intent, value -> getPlayback(playback -> playback.seekTo(value)));
-		PlaybackServiceIntentFactory.parseRepeat(intent, () -> getPlayback(Playback::repeat));
-		PlaybackServiceIntentFactory.parseDoNotRepeat(intent, () -> getPlayback(Playback::doNotRepeat));
-		PlaybackServiceIntentFactory.parseSimulateError(intent, () -> getPlayback(Playback::simulateError));
+		PlaybackServiceIntentFactory.parsePlay(intent, new Action() {
+			@Override
+			public void execute() {
+				getPlayback(new ParamAction<Playback>() {
+					@Override
+					public void execute(Playback value) {
+						value.play();
+					}
+				});
+			}
+		});
+		PlaybackServiceIntentFactory.parsePause(intent, new Action() {
+			@Override
+			public void execute() {
+				getPlayback(new ParamAction<Playback>() {
+					@Override
+					public void execute(Playback value) {
+						value.pause();
+					}
+				});
+			}
+		});
+		PlaybackServiceIntentFactory.parseStop(intent, new Action() {
+			@Override
+			public void execute() {
+				getPlayback(new ParamAction<Playback>() {
+					@Override
+					public void execute(Playback value) {
+						value.stop();
+					}
+				});
+			}
+		});
+		PlaybackServiceIntentFactory.parseSeekTo(intent, new ParamAction<Integer>() {
+			@Override
+			public void execute(final Integer value) {
+				getPlayback(new ParamAction<Playback>() {
+					@Override
+					public void execute(Playback playback) {
+						playback.seekTo(value);
+					}
+				});
+			}
+		});
+		PlaybackServiceIntentFactory.parseRepeat(intent, new Action() {
+			@Override
+			public void execute() {
+				getPlayback(new ParamAction<Playback>() {
+					@Override
+					public void execute(Playback value) {
+						value.repeat();
+					}
+				});
+			}
+		});
+		PlaybackServiceIntentFactory.parseDoNotRepeat(intent, new Action() {
+			@Override
+			public void execute() {
+				getPlayback(new ParamAction<Playback>() {
+					@Override
+					public void execute(Playback value) {
+						value.doNotRepeat();
+					}
+				});
+			}
+		});
+		PlaybackServiceIntentFactory.parseSimulateError(intent, new Action() {
+			@Override
+			public void execute() {
+				getPlayback(new ParamAction<Playback>() {
+					@Override
+					public void execute(Playback value) {
+						value.simulateError();
+					}
+				});
+			}
+		});
 		return START_STICKY;
 	}
 
@@ -87,7 +163,13 @@ public class PlaybackService extends Service {
 	}
 
 	public Optional<PlaybackState> getPlaybackState() {
-		return this.playback.transform(Playback::getPlaybackState);
+		return this.playback.transform(new Function<Playback, PlaybackState>() {
+			@org.jetbrains.annotations.Nullable
+			@Override
+			public PlaybackState apply(Playback input) {
+				return input.getPlaybackState();
+			}
+		});
 	}
 
 	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
@@ -110,7 +192,12 @@ public class PlaybackService extends Service {
 	public void onDestroy() {
 		Log.d(getClass().getSimpleName(), "onDestroy");
 		setPlaybackListener(NullPlaybackListener.getInstance());
-		getPlayback(Playback::release);
+		getPlayback(new ParamAction<Playback>() {
+			@Override
+			public void execute(Playback value) {
+				value.release();
+			}
+		});
 		this.playback = Optional.absent();
 		stopForeground(true);
 		super.onDestroy();

@@ -34,7 +34,12 @@ public class VideoActivity extends AppCompatActivity implements Player.VideoView
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_video);
-		parseIntent(getIntent(), value -> this.presenter = new PlayerVideoPresenter<>(getModel(), value));
+		parseIntent(getIntent(), new ParamAction<Song>() {
+			@Override
+			public void execute(Song value) {
+				VideoActivity.this.presenter = new PlayerVideoPresenter<>(VideoActivity.this.getModel(), value);
+			}
+		});
 		SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
 		this.surfaceViewWrapper = new SurfaceViewWrapper(
 				surfaceView,
