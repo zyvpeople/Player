@@ -18,13 +18,13 @@ import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.Song;
+import com.develop.zuzik.player.volume.Volume;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter;
 import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.source.PlayerSource;
-import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.source.UriPlayerSource;
 
 import java.util.ArrayList;
@@ -69,6 +69,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		new Volume().useVolumeKeysToControlPlaybackVolume(getActivity());
+
 		this.presenter = new MultiplePlayerPresenter<>(
 				getModel(),
 				new DoNothingMultiplePlayerPresenterDestroyStrategy(),

@@ -1,4 +1,4 @@
-package com.develop.zuzik.audioplayerexample.player.volume_control;
+package com.develop.zuzik.player.volume;
 
 import android.app.Activity;
 import android.media.AudioManager;
@@ -7,8 +7,7 @@ import android.media.AudioManager;
  * User: zuzik
  * Date: 6/11/16
  */
-//TODO: implement and use
-public class VolumeController {
+public class Volume {
 	public void useVolumeKeysToControlPlaybackVolume(Activity activity) {
 		activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
