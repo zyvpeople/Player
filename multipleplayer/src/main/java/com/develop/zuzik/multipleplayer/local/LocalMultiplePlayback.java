@@ -171,26 +171,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	@Override
-	public void addPlayerSource(PlayerSource<SourceInfo> playerSource) {
-		//TODO: add
-		//TODO: save to state
-		//TODO: notify listeners
-
-		//TODO: ? what to do is source already exists
-	}
-
-	@Override
-	public void removePlayerSource(PlayerSource<SourceInfo> playerSource) {
-		//TODO: if this source is current source
-		// -> release current source
-		// -> remove, save state
-		// find next
-		// -> if found -> save, init, play
-		// else -> save, notify listeners
-		//TODO: else remove, save state, notify listeners
-	}
-
-	@Override
 	public void playPlayerSource(PlayerSource<SourceInfo> playerSource) {
 		boolean isCurrentPlayerSource = getMultiplePlaybackState()
 				.currentPlaybackState

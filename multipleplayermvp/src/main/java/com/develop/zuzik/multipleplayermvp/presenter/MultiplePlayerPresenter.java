@@ -124,16 +124,6 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	}
 
 	@Override
-	public void onRepeatAll() {
-		//TODO: implement
-	}
-
-	@Override
-	public void onDoNotRepeatAll() {
-		//TODO: implement
-	}
-
-	@Override
 	public void onSwitchToSource(PlayerSource<SourceInfo> source) {
 		this.model.switchToSource(source);
 	}

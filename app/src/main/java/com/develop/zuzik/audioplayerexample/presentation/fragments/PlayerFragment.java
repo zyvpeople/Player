@@ -76,13 +76,14 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		this.presenter.setView(this);
 		this.presenter.onSetPlayerSources(
 				Arrays.asList(
-						new RawResourcePlayerSource<>(new Song("Image", "Image", R.drawable.enter_shikari_1), R.raw.enter_shikari_1),
-						new RawResourcePlayerSource<>(new Song("Enter Shikari", "local video", R.drawable.enter_shikari_1), R.raw.video),
-						new UriPlayerSource<>(new Song("Enter Shikari", "remote video", R.drawable.enter_shikari_1), "https://youtu.be/tLeg_5ljVcA"),
-						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
-						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
-						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
-						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
+//						new RawResourcePlayerSource<>(new Song("Image", "Image", R.drawable.enter_shikari_1), R.raw.enter_shikari_1),
+//						new RawResourcePlayerSource<>(new Song("Enter Shikari", "local video", R.drawable.enter_shikari_1), R.raw.video),
+						new UriPlayerSource<>(new Song("Ha ha", "remote video", R.drawable.enter_shikari_1), "http://fs144.www.ex.ua/get/98f9f422e098823c72727f20fbdcbc8b/225821344/Hardcore_tr2_oKino.ua.mp4")));
+//						new UriPlayerSource<>(new Song("Enter Shikari", "remote video", R.drawable.enter_shikari_1), "https://youtu.be/tLeg_5ljVcA"),
+//						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_1), R.raw.song),
+//						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
+//						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
+//						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
 		this.presenter.onCreate();
 	}
 

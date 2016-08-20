@@ -119,6 +119,5 @@ public class SongFragment extends Fragment implements MultiplePlayer.VideoView<S
 		this.surfaceViewWrapper.clearVideoView(setter);
 	}
 
-
 	//endregion
 }

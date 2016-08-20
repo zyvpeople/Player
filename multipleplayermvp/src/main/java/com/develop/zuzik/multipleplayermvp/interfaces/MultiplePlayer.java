@@ -119,10 +119,6 @@ public interface MultiplePlayer {
 
 		void onDoNotShuffle();
 
-		void onRepeatAll();
-
-		void onDoNotRepeatAll();
-
 		void onSwitchToSource(PlayerSource<SourceInfo> source);
 
 		void simulateError();

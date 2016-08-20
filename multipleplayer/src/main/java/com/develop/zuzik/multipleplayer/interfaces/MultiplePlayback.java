@@ -40,10 +40,6 @@ public interface MultiplePlayback<SourceInfo> {
 
 	void setPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
 
-	void addPlayerSource(PlayerSource<SourceInfo> playerSource);
-
-	void removePlayerSource(PlayerSource<SourceInfo> playerSource);
-
 	void playPlayerSource(PlayerSource<SourceInfo> playerSource);
 
 	void playNextPlayerSource();
