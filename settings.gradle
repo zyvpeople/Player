@@ -1,1 +1,1 @@
-include ':app', ':player', ':multipleplayer', ':playermvp', ':multipleplayermvp'
+include ':app', ':player', ':multipleplayer', ':playermvp', ':multipleplayermvp', ':musicbrowser'
