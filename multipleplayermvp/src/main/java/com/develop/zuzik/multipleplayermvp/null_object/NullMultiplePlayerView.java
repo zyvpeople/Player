@@ -84,4 +84,5 @@ public class NullMultiplePlayerView<SourceInfo> implements MultiplePlayer.View<S
 	public void displaySources(List<PlayerSource<SourceInfo>> playerSources) {
 
 	}
+
 }

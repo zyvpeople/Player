@@ -11,6 +11,10 @@ import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.fernandocejas.arrow.functions.Function;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * User: zuzik
@@ -30,20 +34,44 @@ public class SongMultiplePlayerNotificationFactory implements MultiplePlayerNoti
 		Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
 		return new NotificationCompat.Builder(context)
 				.setStyle(new android.support.v7.app.NotificationCompat.MediaStyle())
-				.setContentTitle(playbackState.currentPlaybackState.transform(input -> input.playerSource.getSourceInfo().artist).or(""))
-				.setContentText(playbackState.currentPlaybackState.transform(input -> input.playerSource.getSourceInfo().name).or(""))
+				.setContentTitle(playbackState.currentPlaybackState.transform(new Function<PlaybackState<Song>, String>() {
+					@Nullable
+					@Override
+					public String apply(PlaybackState<Song> input) {
+						return input.playerSource.getSourceInfo().artist;
+					}
+				}).or(""))
+				.setContentText(playbackState.currentPlaybackState.transform(new Function<PlaybackState<Song>, String>() {
+					@Nullable
+					@Override
+					public String apply(PlaybackState<Song> input) {
+						return input.playerSource.getSourceInfo().name;
+					}
+				}).or(""))
 				.setTicker("Ticker")
 				.setSmallIcon(R.mipmap.ic_launcher)
 				.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
 				.setProgress(
-						playbackState.currentPlaybackState.transform(input -> input.maxTimeInMilliseconds.or(100)).or(100),
-						playbackState.currentPlaybackState.transform(input -> input.currentTimeInMilliseconds).or(0),
+						playbackState.currentPlaybackState.transform(new Function<PlaybackState<Song>, Integer>() {
+							@Nullable
+							@Override
+							public Integer apply(PlaybackState<Song> input) {
+								return input.maxTimeInMilliseconds.or(100);
+							}
+						}).or(100),
+						playbackState.currentPlaybackState.transform(new Function<PlaybackState<Song>, Integer>() {
+							@Nullable
+							@Override
+							public Integer apply(PlaybackState<Song> input) {
+								return input.currentTimeInMilliseconds;
+							}
+						}).or(0),
 						false)
 				.setOngoing(true)
 				.setAutoCancel(true)
-				.addAction(R.drawable.ic_play, "Play prev", playPreviousIntent)
+				.addAction(R.drawable.ic_play, "Play", playIntent)
+				.addAction(R.drawable.ic_pause, "Pause", pauseIntent)
 				.addAction(R.drawable.ic_stop, "Stop", stopIntent)
-				.addAction(R.drawable.ic_play, "Play next", playNextIntent)
 				.build();
 	}
 }

@@ -37,10 +37,14 @@ public class PlaybackServiceIntentFactory {
 				.putExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE, bundle);
 	}
 
-	static void parseForInit(Intent intent, ParamAction<PlaybackServiceInitializeBundle> success) {
-		parseAction(intent, ACTION_INIT, () -> {
-			if (intent.hasExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE)) {
-				success.execute((PlaybackServiceInitializeBundle) intent.getSerializableExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE));
+	static void parseForInit(final Intent intent, final ParamAction<PlaybackServiceInitializeBundle> success) {
+		parseAction(intent, ACTION_INIT, new Action() {
+			@Override
+			public void execute() {
+				if (intent.hasExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE)) {
+					success.execute((PlaybackServiceInitializeBundle) intent.getSerializableExtra(EXTRA_PLAYBACK_SERVICE_INITIALIZE_BUNDLE));
+				}
+
 			}
 		});
 	}
@@ -79,10 +83,14 @@ public class PlaybackServiceIntentFactory {
 		return createWithAction(context, ACTION_SEEK_TO).putExtra(EXTRA_SEEK_TO, positionInMilliseconds);
 	}
 
-	static void parseSeekTo(Intent intent, ParamAction<Integer> success) {
-		parseAction(intent, ACTION_SEEK_TO, () -> {
-			if (intent.hasExtra(EXTRA_SEEK_TO)) {
-				success.execute(intent.getIntExtra(EXTRA_SEEK_TO, 0));
+	static void parseSeekTo(final Intent intent, final ParamAction<Integer> success) {
+		parseAction(intent, ACTION_SEEK_TO, new Action() {
+			@Override
+			public void execute() {
+				if (intent.hasExtra(EXTRA_SEEK_TO)) {
+					success.execute(intent.getIntExtra(EXTRA_SEEK_TO, 0));
+				}
+
 			}
 		});
 	}

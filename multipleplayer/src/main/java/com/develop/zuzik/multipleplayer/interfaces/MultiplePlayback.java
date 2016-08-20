@@ -1,5 +1,7 @@
 package com.develop.zuzik.multipleplayer.interfaces;
 
+import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.List;
 public interface MultiplePlayback<SourceInfo> {
 
 	MultiplePlaybackState<SourceInfo> getMultiplePlaybackState();
+
+	void videoViewSetter(ParamAction<VideoViewSetter> success);
 
 	void setMultiplePlaybackListener(MultiplePlaybackListener<SourceInfo> multiplePlaybackListener);
 
@@ -35,10 +39,6 @@ public interface MultiplePlayback<SourceInfo> {
 	void simulateError();
 
 	void setPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
-
-	void addPlayerSource(PlayerSource<SourceInfo> playerSource);
-
-	void removePlayerSource(PlayerSource<SourceInfo> playerSource);
 
 	void playPlayerSource(PlayerSource<SourceInfo> playerSource);
 

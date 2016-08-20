@@ -16,6 +16,6 @@ public class CyclicNextPlayerSourceStrategy<SourceInfo> implements PlayerSourceS
 		int currentPlayerSourceIndex = playerSources.indexOf(currentPlayerSource);
 		return currentPlayerSourceIndex >= 0
 				? Optional.of(playerSources.get((currentPlayerSourceIndex + 1) % playerSources.size()))
-				: Optional.absent();
+				: Optional.<PlayerSource<SourceInfo>>absent();
 	}
 }

@@ -5,7 +5,10 @@ import android.content.ContextWrapper;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 
 /**
@@ -27,9 +30,15 @@ public class WiFiDeviceSleep implements DeviceSleep {
 			WifiManager wifiManager = (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
 			this.wifiLock = wifiManager != null
 					? Optional.of(wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL, getClass().getSimpleName()))
-					: Optional.absent();
+					: Optional.<WifiManager.WifiLock>absent();
 		}
-		if (!this.wifiLock.transform(WifiManager.WifiLock::isHeld).or(true)) {
+		if (!this.wifiLock.transform(new Function<WifiManager.WifiLock, Boolean>() {
+			@Nullable
+			@Override
+			public Boolean apply(WifiManager.WifiLock input) {
+				return input.isHeld();
+			}
+		}).or(true)) {
 			this.wifiLock.get().acquire();
 			Log.i(getClass().getSimpleName(), "allow");
 		}
@@ -37,7 +46,13 @@ public class WiFiDeviceSleep implements DeviceSleep {
 
 	@Override
 	public void deny() {
-		if (this.wifiLock.transform(WifiManager.WifiLock::isHeld).or(false)) {
+		if (this.wifiLock.transform(new Function<WifiManager.WifiLock, Boolean>() {
+			@Nullable
+			@Override
+			public Boolean apply(WifiManager.WifiLock input) {
+				return input.isHeld();
+			}
+		}).or(false)) {
 			this.wifiLock.get().release();
 			Log.i(getClass().getSimpleName(), "deny");
 		}

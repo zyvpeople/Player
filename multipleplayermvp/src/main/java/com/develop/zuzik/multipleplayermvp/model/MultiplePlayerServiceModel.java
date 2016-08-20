@@ -18,8 +18,14 @@ import com.develop.zuzik.multipleplayermvp.composite.CompositeListener;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
+import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.PlaybackState;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -54,7 +60,7 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 
 	public MultiplePlayerServiceModel(
 			Context context,
-			MultiplePlaybackSettings playbackSettings,
+			final MultiplePlaybackSettings playbackSettings,
 			MultiplePlaybackFactory<SourceInfo> playbackFactory,
 			int notificationId,
 			MultiplePlayerNotificationFactory<SourceInfo> playerNotificationFactory) {
@@ -109,8 +115,20 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 				return Optional.of(state);
 			}
 		}
-		return this.sources.transform(input ->
-				new MultiplePlaybackState<>(input, Optional.absent(), this.playbackSettings.isRepeatSingle(), this.playbackSettings.isShuffle()));
+		return this.sources.transform(new Function<List<PlayerSource<SourceInfo>>, MultiplePlaybackState<SourceInfo>>() {
+			@Nullable
+			@Override
+			public MultiplePlaybackState<SourceInfo> apply(List<PlayerSource<SourceInfo>> input) {
+				return new MultiplePlaybackState<>(input, Optional.<PlaybackState<SourceInfo>>absent(), MultiplePlayerServiceModel.this.playbackSettings.isRepeatSingle(), MultiplePlayerServiceModel.this.playbackSettings.isShuffle());
+			}
+		});
+	}
+
+	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.boundedService.isPresent()) {
+			this.boundedService.get().videoViewSetter(success);
+		}
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package com.develop.zuzik.multipleplayermvp.interfaces;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.player.interfaces.ParamAction;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.optional.Optional;
 
@@ -17,6 +19,8 @@ public interface MultiplePlayer {
 		void clear();
 
 		Optional<MultiplePlaybackState<SourceInfo>> getState();
+
+		void videoViewSetter(ParamAction<VideoViewSetter> success);
 
 		void addListener(Listener<SourceInfo> listener);
 
@@ -79,6 +83,7 @@ public interface MultiplePlayer {
 		void doNotDisplayCurrentSource();
 
 		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
+
 	}
 
 	interface Presenter<SourceInfo> {
@@ -114,12 +119,36 @@ public interface MultiplePlayer {
 
 		void onDoNotShuffle();
 
-		void onRepeatAll();
-
-		void onDoNotRepeatAll();
-
 		void onSwitchToSource(PlayerSource<SourceInfo> source);
 
 		void simulateError();
+
+	}
+
+	interface VideoView<SourceInfo> {
+
+		void setVideoViewAvailable();
+
+		void setVideoViewUnavailable();
+
+		void setVideoView(VideoViewSetter setter);
+
+		void clearVideoView(VideoViewSetter setter);
+	}
+
+	interface VideoPresenter<SourceInfo> {
+		void setView(VideoView<SourceInfo> view);
+
+		void onCreate();
+
+		void onDestroy();
+
+		void onAppear();
+
+		void onDisappear();
+
+		void onVideoViewCreated();
+
+		void onVideoViewDestroyed();
 	}
 }

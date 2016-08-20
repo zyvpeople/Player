@@ -8,18 +8,23 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import com.develop.zuzik.player.exception.ServiceIsNotDeclaredInManifestException;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.PlayerNotificationFactory;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.service.PlaybackService;
 import com.develop.zuzik.player.service.PlaybackServiceInitializeBundle;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.playermvp.composite.CompositeListener;
 import com.develop.zuzik.playermvp.interfaces.PlaybackSettings;
 import com.develop.zuzik.playermvp.interfaces.Player;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.create;
 import static com.develop.zuzik.player.service.PlaybackServiceIntentFactory.createDoNotRepeat;
@@ -47,7 +52,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	private final PlayerNotificationFactory<SourceInfo> playerNotificationFactory;
 
 	public PlayerServiceModel(Context context,
-							  PlaybackSettings playbackSettings,
+							  final PlaybackSettings playbackSettings,
 							  PlaybackFactory<SourceInfo> playbackFactory,
 							  int notificationId,
 							  PlayerNotificationFactory<SourceInfo> playerNotificationFactory) {
@@ -97,7 +102,20 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 				return Optional.of(state);
 			}
 		}
-		return this.source.transform(source -> new PlaybackState<>(State.NONE, 0, Optional.absent(), this.playbackSettings.isRepeat(), source));
+		return this.source.transform(new Function<PlayerSource<SourceInfo>, PlaybackState<SourceInfo>>() {
+			@Nullable
+			@Override
+			public PlaybackState<SourceInfo> apply(PlayerSource<SourceInfo> source) {
+				return new PlaybackState<>(State.NONE, 0, Optional.<Integer>absent(), PlayerServiceModel.this.playbackSettings.isRepeat(), source);
+			}
+		});
+	}
+
+	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.boundedService.isPresent()) {
+			this.boundedService.get().videoViewSetter(success);
+		}
 	}
 
 	@Override

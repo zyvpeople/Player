@@ -5,15 +5,13 @@ import android.media.MediaPlayer;
 import com.develop.zuzik.player.exception.AudioFocusLostException;
 import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
+import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.state.interfaces.PlayerStateContext;
+import com.develop.zuzik.player.timer.PeriodicAction;
 import com.fernandocejas.arrow.optional.Optional;
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * User: zuzik
@@ -21,13 +19,24 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 class StartedPlayerState extends BasePlayerState {
 
-	private final Observable<Long> checkPlayerProgressObservable = Observable
-			.interval(1, TimeUnit.SECONDS)
-			.observeOn(AndroidSchedulers.mainThread());
-	private Subscription checkPlayerProgressSubscription;
+	private static final int CHECK_PLAYER_PROGRESS_PERIODIC_INTERVAL_IN_MILLISECONDS = 1000;
+	private final PeriodicAction periodicAction;
 
 	public StartedPlayerState(PlayerStateContext playerStateContext) {
 		super(playerStateContext, true, true);
+		this.periodicAction = new PeriodicAction(
+				CHECK_PLAYER_PROGRESS_PERIODIC_INTERVAL_IN_MILLISECONDS,
+				new Action() {
+					@Override
+					public void execute() {
+						getMediaPlayerSafely(new ParamAction<MediaPlayer>() {
+							@Override
+							public void execute(MediaPlayer value) {
+								saveMediaPlayerStateAndNotify(playerToState(value));
+							}
+						});
+					}
+				});
 	}
 
 	@Override
@@ -38,28 +47,32 @@ class StartedPlayerState extends BasePlayerState {
 				player.getCurrentPosition(),
 				maxDuration != -1
 						? Optional.of(maxDuration)
-						: Optional.absent());
+						: Optional.<Integer>absent());
 	}
 
 	@Override
-	protected void doOnApply(MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
+	protected void doOnApply(final MediaPlayer player) throws IllegalStateException, PlayerInitializeException, FailRequestAudioFocusException {
 		denyDeviceSleep();
-		this.checkPlayerProgressSubscription = this.checkPlayerProgressObservable
-				.onErrorResumeNext(throwable -> Observable.just(0L))
-				.subscribe(aLong ->
-						getMediaPlayerSafely(value ->
-								saveMediaPlayerStateAndNotify(playerToState(value))));
+		this.periodicAction.start();
 		this.playerStateContext
 				.requestFocus(
-						player::start,
-						() -> {
-							throw new FailRequestAudioFocusException();
+						new Action() {
+							@Override
+							public void execute() {
+								player.start();
+							}
+						},
+						new Action() {
+							@Override
+							public void execute() {
+								throw new FailRequestAudioFocusException();
+							}
 						});
 	}
 
 	@Override
 	public void unapply() {
-		this.checkPlayerProgressSubscription.unsubscribe();
+		this.periodicAction.stop();
 		super.unapply();
 	}
 
@@ -86,4 +99,5 @@ class StartedPlayerState extends BasePlayerState {
 		super.audioFocusLoss();
 		handleError(new AudioFocusLostException());
 	}
+
 }

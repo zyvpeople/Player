@@ -12,10 +12,12 @@ import com.develop.zuzik.player.exception.FailRequestAudioFocusException;
 import com.develop.zuzik.player.exception.FakeMediaPlayerException;
 import com.develop.zuzik.player.exception.PlayerInitializeException;
 import com.develop.zuzik.player.interfaces.Action;
+import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.Playback;
 import com.develop.zuzik.player.interfaces.PlaybackListener;
 import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
+import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.null_object.NullDeviceSleep;
 import com.develop.zuzik.player.null_object.NullPlaybackListener;
 import com.develop.zuzik.player.source.PlayerSource;
@@ -32,6 +34,9 @@ import com.fernandocejas.arrow.optional.Optional;
  */
 public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerStateContext<SourceInfo> {
 
+	private static final float FOCUS_GAIN_VOLUME_LEVEL = 1f;
+	private static final float FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL = 0.1f;
+
 	private final Context context;
 	private final AudioManager audioManager;
 	private PlaybackState<SourceInfo> playbackState;
@@ -43,7 +48,7 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	public LocalPlayback(Context context, boolean repeat, PlayerSource<SourceInfo> playerSource) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		this.playbackState = new PlaybackState<>(State.NONE, 0, Optional.absent(), repeat, playerSource);
+		this.playbackState = new PlaybackState<SourceInfo>(State.NONE, 0, Optional.<Integer>absent(), repeat, playerSource);
 	}
 
 	//region Playback
@@ -54,8 +59,15 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 	}
 
 	@Override
+	public void videoViewSetter(ParamAction<VideoViewSetter> success) {
+		if (this.mediaPlayer != null) {
+			this.playerState.videoViewSetter(success);
+		}
+	}
+
+	@Override
 	public void setPlaybackListener(PlaybackListener<SourceInfo> playbackListener) {
-		this.playbackListener = playbackListener != null ? playbackListener : NullPlaybackListener.getInstance();
+		this.playbackListener = playbackListener != null ? playbackListener : NullPlaybackListener.<SourceInfo>getInstance();
 	}
 
 	@Override
@@ -197,16 +209,20 @@ public class LocalPlayback<SourceInfo> implements Playback<SourceInfo>, PlayerSt
 		Log.d(getClass().getSimpleName(), oldState.getClass().getSimpleName() + " -> " + newState.getClass().getSimpleName());
 	}
 
-	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = focusChange -> {
-		if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
-			this.playerState.audioFocusLossTransient();
-		} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-			this.playerState.audioFocusGain();
-			//TODO: in this place we should restore volume to previous normal state
-		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-			this.playerState.audioFocusLoss();
-		} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
-			//TODO: in this place we should made volume level lower
+	private final AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+		@Override
+		public void onAudioFocusChange(int focusChange) {
+			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
+				playerState.audioFocusLossTransient();
+			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+				playerState.audioFocusGain();
+				mediaPlayer.setVolume(FOCUS_GAIN_VOLUME_LEVEL, FOCUS_GAIN_VOLUME_LEVEL);
+			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+				playerState.audioFocusLoss();
+			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+				mediaPlayer.setVolume(FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL, FOCUS_LOSS_TRANSIENT_DUCK_VOLUME_LEVEL);
+			}
+
 		}
 	};
 

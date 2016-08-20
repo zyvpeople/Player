@@ -8,7 +8,10 @@ import com.develop.zuzik.player.interfaces.PlaybackState;
 import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.playermvp.null_object.NullPlayerView;
+import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,7 +42,7 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 	public void setView(Player.View<SourceInfo> view) {
 		this.view = view != null
 				? view
-				: NullPlayerView.getInstance();
+				: NullPlayerView.<SourceInfo>getInstance();
 	}
 
 	@Override
@@ -132,7 +135,13 @@ public class PlayerPresenter<SourceInfo> implements Player.Presenter<SourceInfo>
 			showLoading = bundle.state == State.PREPARING;
 			sourceInfo = Optional.of(bundle.playerSource.getSourceInfo());
 			currentTimeText = bundle.maxTimeInMilliseconds.isPresent() ? String.valueOf(bundle.currentTimeInMilliseconds) : currentTimeText;
-			totalTimeText = bundle.maxTimeInMilliseconds.transform(String::valueOf).or(totalTimeText);
+			totalTimeText = bundle.maxTimeInMilliseconds.transform(new Function<Integer, String>() {
+				@Nullable
+				@Override
+				public String apply(Integer obj) {
+					return String.valueOf(obj);
+				}
+			}).or(totalTimeText);
 		}
 
 		this.view.enablePlayControls(playAvailable, pauseAvailable, stopAvailable);
