@@ -54,28 +54,28 @@ public class App extends Application {
 //		this.model = new PlayerServiceModel<>(this, new InMemoryPlaybackSettings(), new LocalPlaybackFactory<Song>(), 100500, new SongPlayerNotificationFactory());
 
 		InMemoryMultiplePlaybackSettings playbackSettings = new InMemoryMultiplePlaybackSettings();
-		this.multiplePlayerModel = new MultiplePlayerModel<Song>(
-				this,
-				new LocalMultiplePlaybackFactory<Song>(
-						new LocalPlaybackFactory<Song>(),
-						new EndedNextPlayerSourceStrategy<Song>(),
-						new EndedPreviousPlayerSourceStrategy<Song>(),
-						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
-						playbackSettings.isRepeatSingle(),
-						playbackSettings.isShuffle()),
-				playbackSettings);
-//		this.multiplePlayerModel = new MultiplePlayerServiceModel<Song>(
+//		this.multiplePlayerModel = new MultiplePlayerModel<Song>(
 //				this,
-//				playbackSettings,
-//				new LocalMultiplePlaybackFactory<>(
+//				new LocalMultiplePlaybackFactory<Song>(
 //						new LocalPlaybackFactory<Song>(),
 //						new EndedNextPlayerSourceStrategy<Song>(),
 //						new EndedPreviousPlayerSourceStrategy<Song>(),
 //						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
 //						playbackSettings.isRepeatSingle(),
 //						playbackSettings.isShuffle()),
-//				100500,
-//				new SongMultiplePlayerNotificationFactory());
+//				playbackSettings);
+		this.multiplePlayerModel = new MultiplePlayerServiceModel<Song>(
+				this,
+				playbackSettings,
+				new LocalMultiplePlaybackFactory<>(
+						new LocalPlaybackFactory<Song>(),
+						new EndedNextPlayerSourceStrategy<Song>(),
+						new EndedPreviousPlayerSourceStrategy<Song>(),
+						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
+						playbackSettings.isRepeatSingle(),
+						playbackSettings.isShuffle()),
+				100500,
+				new SongMultiplePlayerNotificationFactory());
 
 		PlaybackBroadcastReceiver.register(this, new Action() {
 			@Override
