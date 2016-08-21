@@ -9,7 +9,7 @@
         android:name=".application.App"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".presentation.activity.MainActivity">
+        <activity android:name=".presentation.activity.ScreensRoutingActivity">
         </activity>
         <activity android:name=".presentation.activity.SplashActivity">
         </activity>

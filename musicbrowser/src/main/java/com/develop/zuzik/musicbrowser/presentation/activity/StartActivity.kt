@@ -17,7 +17,7 @@ class StartActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ActivityRequestCode.StartActivity.SPLASH_ACTIVITY) {
             if (resultCode == Activity.RESULT_OK) {
-                startActivity(MainActivity.createIntent(this))
+                startActivity(ScreensRoutingActivity.createIntent(this))
             }
             finish()
         }
