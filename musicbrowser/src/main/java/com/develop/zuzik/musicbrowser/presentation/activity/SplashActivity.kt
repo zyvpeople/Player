@@ -1,8 +1,8 @@
 package com.develop.zuzik.musicbrowser.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.develop.zuzik.musicbrowser.presentation.fragment.splash.SplashFragment
 import com.develop.zuzik.musicbrowser.presentation.fragment.splash.SplashFragmentContainer
@@ -17,4 +17,13 @@ class SplashActivity : FragmentContainerActivity(), SplashFragmentContainer {
         super.onCreate(savedInstanceState)
         addFragment { SplashFragment.create() }
     }
+
+    //region SplashFragmentContainer
+
+    override fun onSplashFinished() {
+        setResult(Activity.RESULT_OK)
+        finish()
+    }
+
+    //endregion
 }

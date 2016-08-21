@@ -5,4 +5,5 @@ package com.develop.zuzik.musicbrowser.presentation.fragment.splash
  * Date: 8/20/16
  */
 interface SplashFragmentContainer {
+    fun onSplashFinished()
 }
