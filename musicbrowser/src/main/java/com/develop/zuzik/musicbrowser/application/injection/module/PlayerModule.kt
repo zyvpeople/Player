@@ -10,6 +10,7 @@ import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter
 import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy
 import com.develop.zuzik.musicbrowser.domain.entity.Song
@@ -72,4 +73,8 @@ class PlayerModule {
     @Singleton
     @Provides
     fun notificationFactory(): MultiplePlayerNotificationFactory<Song> = MultiplePlayerNotificationFactoryImpl()
+
+    @Provides
+    fun controlPresenter(model: MultiplePlayer.Model<Song>): MultiplePlayer.ControlPresenter<Song> =
+            MultiplePlayerControlPresenter(model)
 }

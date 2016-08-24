@@ -75,56 +75,6 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	}
 
 	@Override
-	public void onPlay() {
-		this.model.play();
-	}
-
-	@Override
-	public void onPause() {
-		this.model.pause();
-	}
-
-	@Override
-	public void onStop() {
-		this.model.stop();
-	}
-
-	@Override
-	public void onSkipNext() {
-		this.model.skipNext();
-	}
-
-	@Override
-	public void onSkipPrevious() {
-		this.model.skipPrevious();
-	}
-
-	@Override
-	public void onSeekToPosition(int positionInMilliseconds) {
-		this.model.seekToPosition(positionInMilliseconds);
-	}
-
-	@Override
-	public void onRepeatSingle() {
-		this.model.repeatSingle();
-	}
-
-	@Override
-	public void onDoNotRepeatSingle() {
-		this.model.doNotRepeatSingle();
-	}
-
-	@Override
-	public void onShuffle() {
-		this.model.shuffle();
-	}
-
-	@Override
-	public void onDoNotShuffle() {
-		this.model.doNotShuffle();
-	}
-
-	@Override
 	public void onSwitchToSource(PlayerSource<SourceInfo> source) {
 		this.model.switchToSource(source);
 	}
@@ -139,26 +89,10 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 	}
 
 	private void updateView(Optional<MultiplePlaybackState<SourceInfo>> state) {
-		boolean repeatSingle = false;
-		boolean shuffle = false;
 		List<PlayerSource<SourceInfo>> sources = new ArrayList<>();
 
 		if (state.isPresent()) {
-			repeatSingle = state.get().repeatSingle;
-			shuffle = state.get().shuffle;
 			sources = state.get().playerSources;
-		}
-
-		if (repeatSingle) {
-			this.view.repeat();
-		} else {
-			this.view.doNotRepeat();
-		}
-
-		if (shuffle) {
-			this.view.shuffle();
-		} else {
-			this.view.doNotShuffle();
 		}
 
 		this.view.displaySources(sources);
@@ -172,39 +106,10 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 			PlaybackState<SourceInfo> playbackState = state.get().currentPlaybackState.get();
 			PlaybackStateAnalyzer<SourceInfo> analyzer = new PlaybackStateAnalyzer<>(playbackState);
 
-			this.view.enablePlayControls(
-					analyzer.playAvailable(),
-					analyzer.pauseAvailable(),
-					analyzer.stopAvailable());
-
-			if (playbackState.maxTimeInMilliseconds.isPresent()) {
-				int currentTime = playbackState.currentTimeInMilliseconds;
-				int maxTime = playbackState.maxTimeInMilliseconds.get();
-				this.view.showTime(
-						timeToRepresentation(currentTime),
-						timeToRepresentation(maxTime));
-				this.view.showProgress();
-				this.view.setProgress(currentTime, maxTime);
-			} else {
-				this.view.showTime("", "");
-				this.view.hideProgress();
-				this.view.setProgress(0, 100);
-			}
 			this.view.displayCurrentSource(playbackState.playerSource);
 		} else {
-			this.view.showTime("", "");
-			this.view.hideProgress();
-			this.view.setProgress(0, 100);
 			this.view.doNotDisplayCurrentSource();
 		}
-	}
-
-	private String timeToRepresentation(long milliseconds) {
-		return String.format(Locale.getDefault(),
-				"%d:%02d",
-				TimeUnit.MILLISECONDS.toMinutes(milliseconds),
-				TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-						TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
 	}
 
 	private final MultiplePlayer.Model.Listener<SourceInfo> listener = new MultiplePlayer.Model.Listener<SourceInfo>() {

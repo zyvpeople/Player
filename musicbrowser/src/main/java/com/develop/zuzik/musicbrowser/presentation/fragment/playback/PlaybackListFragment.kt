@@ -29,6 +29,8 @@ class PlaybackListFragment : Fragment(), MultiplePlayer.View<Song> {
 
     @Inject
     lateinit var presenter: MultiplePlayer.Presenter<Song>
+    @Inject
+    lateinit var controlPresenter: MultiplePlayer.ControlPresenter<Song>
 
     val adapter = PlaybackListRecyclerViewAdapter()
 
@@ -47,6 +49,7 @@ class PlaybackListFragment : Fragment(), MultiplePlayer.View<Song> {
         recyclerView.adapter = adapter
         this.presenter.setView(this)
         this.presenter.onCreate()
+        this.controlPresenter.onCreate()
         this.presenter.onSetPlayerSources(listOf(UriPlayerSource(Song("Enter Shikari", "the Last garrison", ""), "http://www.ex.ua/get/147185586")))
 //        this.presenter.onSetPlayerSources(listOf())
     }
@@ -54,50 +57,25 @@ class PlaybackListFragment : Fragment(), MultiplePlayer.View<Song> {
     override fun onDestroyView() {
         this.presenter.onDestroy()
         this.presenter.setView(null)
+        this.controlPresenter.onDestroy()
         super.onDestroyView()
     }
 
     override fun onStart() {
         super.onStart()
         this.presenter.onAppear()
-        this.presenter.onPlay()
+        this.controlPresenter.onPlay()
     }
 
     override fun onStop() {
         this.presenter.onDisappear()
+        this.controlPresenter.onDisappear()
         super.onStop()
     }
 
     //region MultiplePlayer.View<Song>
-    override fun repeat() {
-
-    }
-
-    override fun doNotRepeat() {
-    }
-
-    override fun shuffle() {
-    }
-
-    override fun doNotShuffle() {
-    }
-
-    override fun setProgress(currentTimeInMilliseconds: Int, totalTimeInMilliseconds: Int) {
-    }
-
-    override fun showProgress() {
-    }
-
-    override fun hideProgress() {
-    }
-
-    override fun showTime(currentTime: String, totalTime: String) {
-    }
 
     override fun showError(message: String) {
-    }
-
-    override fun enablePlayControls(play: Boolean, pause: Boolean, stop: Boolean) {
     }
 
     override fun displayCurrentSource(source: PlayerSource<Song>) {
