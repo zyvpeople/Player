@@ -18,6 +18,7 @@ import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.Song;
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.volume.Volume;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
@@ -31,12 +32,16 @@ import com.develop.zuzik.player.source.UriPlayerSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * User: zuzik
  * Date: 6/4/16
  */
-public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song> {
+public class PlayerFragment
+		extends Fragment
+		implements MultiplePlayer.View<Song>, MultiplePlayer.ControlView<Song> {
 
 	private static final String TAG_STATE_PLAY = "TAG_STATE_PLAY";
 	private static final String TAG_STATE_PAUSE = "TAG_STATE_PAUSE";
@@ -64,6 +69,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	private SongViewPagerAdapter adapter;
 
 	private MultiplePlayer.Presenter<Song> presenter;
+	private MultiplePlayer.ControlPresenter<Song> controlPresenter;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,7 +81,11 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 				getModel(),
 				new DoNothingMultiplePlayerPresenterDestroyStrategy(),
 				new ExamplePlayerExceptionMessageProvider());
+		this.controlPresenter = new MultiplePlayerControlPresenter<>(getModel());
+
 		this.presenter.setView(this);
+		this.controlPresenter.setView(this);
+
 		this.presenter.onSetPlayerSources(
 				Arrays.asList(
 						new RawResourcePlayerSource<>(new Song("Image", "Image", R.drawable.enter_shikari_1), R.raw.enter_shikari_1),
@@ -86,12 +96,15 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 						new RawResourcePlayerSource<>(new Song("Of monsters and men", "Crystal", R.drawable.of_monsters_and_men_2), R.raw.song_short),
 						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
 						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
+
 		this.presenter.onCreate();
+		this.controlPresenter.onCreate();
 	}
 
 	@Override
 	public void onDestroy() {
 		this.presenter.onDestroy();
+		this.controlPresenter.onDestroy();
 		super.onDestroy();
 	}
 
@@ -120,9 +133,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 			@Override
 			public void onClick(View v) {
 				if (TAG_STATE_PLAY.equals(v.getTag())) {
-					PlayerFragment.this.presenter.onPlay();
+					PlayerFragment.this.controlPresenter.onPlay();
 				} else if (TAG_STATE_PAUSE.equals(v.getTag())) {
-					PlayerFragment.this.presenter.onPause();
+					PlayerFragment.this.controlPresenter.onPause();
 				} else {
 					Log.w(PlayerFragment.this.getClass().getSimpleName(), "Tag is not set");
 				}
@@ -132,9 +145,9 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 			@Override
 			public void onClick(View v) {
 				if (TAG_STATE_REPEAT_ON.equals(v.getTag())) {
-					PlayerFragment.this.presenter.onDoNotRepeatSingle();
+					PlayerFragment.this.controlPresenter.onDoNotRepeat();
 				} else if (TAG_STATE_REPEAT_OFF.equals(v.getTag())) {
-					PlayerFragment.this.presenter.onRepeatSingle();
+					PlayerFragment.this.controlPresenter.onRepeat();
 				} else {
 					Log.w(PlayerFragment.this.getClass().getSimpleName(), "Tag is not set");
 				}
@@ -143,22 +156,22 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		skipPrevious.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				PlayerFragment.this.presenter.onSkipPrevious();
+				PlayerFragment.this.controlPresenter.onSkipPrevious();
 			}
 		});
 		skipNext.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				PlayerFragment.this.presenter.onSkipNext();
+				PlayerFragment.this.controlPresenter.onSkipNext();
 			}
 		});
 		this.shuffle.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (TAG_STATE_SHUFFLE_ON.equals(v.getTag())) {
-					PlayerFragment.this.presenter.onDoNotShuffle();
+					PlayerFragment.this.controlPresenter.onDoNotShuffle();
 				} else if (TAG_STATE_SHUFFLE_OFF.equals(v.getTag())) {
-					PlayerFragment.this.presenter.onShuffle();
+					PlayerFragment.this.controlPresenter.onShuffle();
 				} else {
 					Log.w(PlayerFragment.this.getClass().getSimpleName(), "Tag is not set");
 				}
@@ -168,7 +181,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				if (fromUser) {
-					presenter.onSeekToPosition(progress);
+					controlPresenter.onSeekToPosition(progress);
 				}
 			}
 
@@ -192,6 +205,7 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 		}
 
 		this.presenter.onAppear();
+		this.controlPresenter.onAppear();
 
 		return view;
 	}
@@ -199,66 +213,15 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 	@Override
 	public void onDestroyView() {
 		this.presenter.onDisappear();
+		this.controlPresenter.onDisappear();
 		super.onDestroyView();
 	}
 
 	//region Player.View
 
 	@Override
-	public void repeat() {
-		showRepeatButtonAsOn();
-	}
-
-	@Override
-	public void doNotRepeat() {
-		showRepeatButtonAsOff();
-	}
-
-	@Override
-	public void shuffle() {
-		showShuffleButtonAsOn();
-	}
-
-	@Override
-	public void doNotShuffle() {
-		showShuffleButtonAsOff();
-	}
-
-	@Override
-	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
-		this.progress.setProgress(currentTimeInMilliseconds);
-		this.progress.setMax(totalTimeInMilliseconds);
-	}
-
-	@Override
-	public void showProgress() {
-		this.progress.setVisibility(View.VISIBLE);
-	}
-
-	@Override
-	public void hideProgress() {
-		this.progress.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void showTime(String currentTime, String totalTime) {
-		this.currentTime.setText(currentTime);
-		this.totalTime.setText(totalTime);
-	}
-
-	@Override
 	public void showError(String message) {
 		Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-	}
-
-	@Override
-	public void enablePlayControls(boolean play, boolean pause, boolean stop) {
-		if (play) {
-			showPlayPauseButtonAsPlay();
-		} else if (pause) {
-			showPlayPauseButtonAsPause();
-		} else {
-		}
 	}
 
 	@Override
@@ -285,6 +248,62 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 			this.viewPager.removeOnPageChangeListener(this.onPageChangeListener);
 			this.adapter.setSongs(playerSources);
 			this.adapter.notifyDataSetChanged();
+		}
+	}
+
+	//endregion
+
+	//region MultiplePlayer.ControlView
+
+	@Override
+	public void repeat() {
+		showRepeatButtonAsOn();
+	}
+
+	@Override
+	public void doNotRepeat() {
+		showRepeatButtonAsOff();
+	}
+
+	@Override
+	public void shuffle() {
+		showShuffleButtonAsOn();
+	}
+
+	@Override
+	public void doNotShuffle() {
+		showShuffleButtonAsOff();
+	}
+
+	@Override
+	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
+		this.progress.setProgress(currentTimeInMilliseconds);
+		this.progress.setMax(totalTimeInMilliseconds);
+		this.currentTime.setText(timeToRepresentation(currentTimeInMilliseconds));
+		this.totalTime.setText(timeToRepresentation(totalTimeInMilliseconds));
+	}
+
+	@Override
+	public void showProgress() {
+		this.progress.setVisibility(View.VISIBLE);
+		this.currentTime.setVisibility(View.VISIBLE);
+		this.totalTime.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void hideProgress() {
+		this.progress.setVisibility(View.GONE);
+		this.currentTime.setVisibility(View.GONE);
+		this.totalTime.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void enablePlayControls(boolean play, boolean pause, boolean stop) {
+		if (play) {
+			showPlayPauseButtonAsPlay();
+		} else if (pause) {
+			showPlayPauseButtonAsPause();
+		} else {
 		}
 	}
 
@@ -331,6 +350,14 @@ public class PlayerFragment extends Fragment implements MultiplePlayer.View<Song
 
 	private MultiplePlayer.Model<Song> getModel() {
 		return ((App) getActivity().getApplicationContext()).getMultiplePlayerModel();
+	}
+
+	private String timeToRepresentation(long milliseconds) {
+		return String.format(Locale.getDefault(),
+				"%d:%02d",
+				TimeUnit.MILLISECONDS.toMinutes(milliseconds),
+				TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+						TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
 	}
 
 	private final ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {

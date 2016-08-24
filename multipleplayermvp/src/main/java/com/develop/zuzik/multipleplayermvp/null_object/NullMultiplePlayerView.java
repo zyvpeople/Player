@@ -21,52 +21,7 @@ public class NullMultiplePlayerView<SourceInfo> implements MultiplePlayer.View<S
 	}
 
 	@Override
-	public void repeat() {
-
-	}
-
-	@Override
-	public void doNotRepeat() {
-
-	}
-
-	@Override
-	public void shuffle() {
-
-	}
-
-	@Override
-	public void doNotShuffle() {
-
-	}
-
-	@Override
-	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
-
-	}
-
-	@Override
-	public void showProgress() {
-
-	}
-
-	@Override
-	public void hideProgress() {
-
-	}
-
-	@Override
-	public void showTime(String currentTime, String totalTime) {
-
-	}
-
-	@Override
 	public void showError(String message) {
-
-	}
-
-	@Override
-	public void enablePlayControls(boolean play, boolean pause, boolean stop) {
 
 	}
 
@@ -84,5 +39,4 @@ public class NullMultiplePlayerView<SourceInfo> implements MultiplePlayer.View<S
 	public void displaySources(List<PlayerSource<SourceInfo>> playerSources) {
 
 	}
-
 }
