@@ -115,12 +115,10 @@ public class MultiplePlayerControlPresenter<SourceInfo> implements MultiplePlaye
 	private void updateView(Optional<MultiplePlaybackState<SourceInfo>> state) {
 		boolean repeatSingle = false;
 		boolean shuffle = false;
-		List<PlayerSource<SourceInfo>> sources = new ArrayList<>();
 
 		if (state.isPresent()) {
 			repeatSingle = state.get().repeatSingle;
 			shuffle = state.get().shuffle;
-			sources = state.get().playerSources;
 		}
 
 		if (repeatSingle) {

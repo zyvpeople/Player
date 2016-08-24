@@ -67,7 +67,6 @@ public interface MultiplePlayer {
 		void doNotDisplayCurrentSource();
 
 		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
-
 	}
 
 	interface Presenter<SourceInfo> {
@@ -87,6 +86,27 @@ public interface MultiplePlayer {
 
 		void simulateError();
 
+	}
+
+	interface ActiveSourceView<SourceInfo> {
+
+		void displayAsActiveSource();
+
+		void displayAsInactiveSource();
+
+		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
+	}
+
+	interface ActiveSourcePresenter<SourceInfo> {
+		void setView(ActiveSourceView<SourceInfo> view);
+
+		void onCreate();
+
+		void onDestroy();
+
+		void onAppear();
+
+		void onDisappear();
 	}
 
 	interface ControlView<SourceInfo> {
