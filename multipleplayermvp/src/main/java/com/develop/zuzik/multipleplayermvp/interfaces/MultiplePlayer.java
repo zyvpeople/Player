@@ -13,6 +13,7 @@ import java.util.List;
  * Date: 6/4/16
  */
 public interface MultiplePlayer {
+
 	interface Model<SourceInfo> {
 		void setSources(List<PlayerSource<SourceInfo>> sources);
 
@@ -58,32 +59,14 @@ public interface MultiplePlayer {
 	}
 
 	interface View<SourceInfo> {
-		void repeat();
-
-		void doNotRepeat();
-
-		void shuffle();
-
-		void doNotShuffle();
-
-		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
-
-		void showProgress();
-
-		void hideProgress();
-
-		void showTime(String currentTime, String totalTime);
 
 		void showError(String message);
-
-		void enablePlayControls(boolean play, boolean pause, boolean stop);
 
 		void displayCurrentSource(PlayerSource<SourceInfo> source);
 
 		void doNotDisplayCurrentSource();
 
 		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
-
 	}
 
 	interface Presenter<SourceInfo> {
@@ -99,6 +82,62 @@ public interface MultiplePlayer {
 
 		void onSetPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
 
+		void onSwitchToSource(PlayerSource<SourceInfo> source);
+
+		void simulateError();
+
+	}
+
+	interface ActiveSourceView<SourceInfo> {
+
+		void displayAsActiveSource();
+
+		void displayAsInactiveSource();
+
+		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
+	}
+
+	interface ActiveSourcePresenter<SourceInfo> {
+		void setView(ActiveSourceView<SourceInfo> view);
+
+		void onCreate();
+
+		void onDestroy();
+
+		void onAppear();
+
+		void onDisappear();
+	}
+
+	interface ControlView<SourceInfo> {
+		void repeat();
+
+		void doNotRepeat();
+
+		void shuffle();
+
+		void doNotShuffle();
+
+		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
+
+		void showProgress();
+
+		void hideProgress();
+
+		void enablePlayControls(boolean play, boolean pause, boolean stop);
+	}
+
+	interface ControlPresenter<SourceInfo> {
+		void setView(ControlView<SourceInfo> view);
+
+		void onCreate();
+
+		void onDestroy();
+
+		void onAppear();
+
+		void onDisappear();
+
 		void onPlay();
 
 		void onPause();
@@ -111,17 +150,13 @@ public interface MultiplePlayer {
 
 		void onSeekToPosition(int positionInMilliseconds);
 
-		void onRepeatSingle();
+		void onRepeat();
 
-		void onDoNotRepeatSingle();
+		void onDoNotRepeat();
 
 		void onShuffle();
 
 		void onDoNotShuffle();
-
-		void onSwitchToSource(PlayerSource<SourceInfo> source);
-
-		void simulateError();
 
 	}
 

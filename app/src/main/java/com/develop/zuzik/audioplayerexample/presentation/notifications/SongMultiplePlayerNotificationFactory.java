@@ -40,17 +40,17 @@ public class SongMultiplePlayerNotificationFactory implements MultiplePlayerNoti
 					public String apply(PlaybackState<Song> input) {
 						return input.playerSource.getSourceInfo().artist;
 					}
-				}).or(""))
+				}).or("Player"))
 				.setContentText(playbackState.currentPlaybackState.transform(new Function<PlaybackState<Song>, String>() {
 					@Nullable
 					@Override
 					public String apply(PlaybackState<Song> input) {
 						return input.playerSource.getSourceInfo().name;
 					}
-				}).or(""))
+				}).or("Player"))
 				.setTicker("Ticker")
-				.setSmallIcon(R.mipmap.ic_launcher)
-				.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
+				.setSmallIcon(R.drawable.ic_stat_name)
+//				.setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
 				.setProgress(
 						playbackState.currentPlaybackState.transform(new Function<PlaybackState<Song>, Integer>() {
 							@Nullable
@@ -69,9 +69,9 @@ public class SongMultiplePlayerNotificationFactory implements MultiplePlayerNoti
 						false)
 				.setOngoing(true)
 				.setAutoCancel(true)
-				.addAction(R.drawable.ic_play, "Play", playIntent)
-				.addAction(R.drawable.ic_pause, "Pause", pauseIntent)
-				.addAction(R.drawable.ic_stop, "Stop", stopIntent)
+				.addAction(R.drawable.ic_stat_name, "Play", playIntent)
+				.addAction(R.drawable.ic_stat_name, "Pause", pauseIntent)
+				.addAction(R.drawable.ic_stat_name, "Stop", stopIntent)
 				.build();
 	}
 }
