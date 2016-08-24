@@ -3,4 +3,11 @@
 
     <string name="splash_screen_message">Music Browser</string>
 
+    <string name="player_error_message_initialize">Error initialize player</string>
+    <string name="player_error_message_request_audio_focus">Error request audio focus</string>
+    <string name="player_error_message_audio_focus_lost">Audio focus lost error</string>
+    <string name="player_error_message_state">Error playing song</string>
+    <string name="player_error_message_fake">Fake error</string>
+    <string name="player_error_message_unknown">Unknown error</string>
+
 </resources>

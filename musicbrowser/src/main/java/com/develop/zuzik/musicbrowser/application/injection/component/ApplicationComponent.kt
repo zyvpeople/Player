@@ -1,6 +1,7 @@
 package com.develop.zuzik.musicbrowser.application.injection.component
 
 import com.develop.zuzik.musicbrowser.application.injection.module.ApplicationModule
+import com.develop.zuzik.musicbrowser.application.injection.module.PlayerModule
 import com.develop.zuzik.musicbrowser.application.injection.module.SettingsModule
 import dagger.Component
 import javax.inject.Singleton
@@ -15,4 +16,5 @@ import javax.inject.Singleton
         SettingsModule::class))
 interface ApplicationComponent {
     fun splashFragmentComponent(): SplashFragmentComponent
+    fun playbackListFragmentComponent(): PlaybackListFragmentComponent
 }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.develop.zuzik.musicbrowser.domain.entity.Song
 import com.develop.zuzik.musicbrowser.presentation.view.PlaybackListItemView
 import com.develop.zuzik.musicbrowser.presentation.view_holder.ViewHolder
+import com.develop.zuzik.player.source.PlayerSource
 
 /**
  * User: zuzik
@@ -12,7 +13,7 @@ import com.develop.zuzik.musicbrowser.presentation.view_holder.ViewHolder
  */
 class PlaybackListRecyclerViewAdapter : RecyclerView.Adapter<ViewHolder<PlaybackListItemView>>() {
 
-    var songs: List<Song> = emptyList()
+    var songs: List<PlayerSource<Song>> = emptyList()
 
     override fun getItemCount(): Int = this.songs.count()
 

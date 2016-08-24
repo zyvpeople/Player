@@ -4,30 +4,37 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer
 import com.develop.zuzik.musicbrowser.R
+import com.develop.zuzik.musicbrowser.application.injection.injector.PlaybackListFragmentInjector
 import com.develop.zuzik.musicbrowser.domain.entity.Song
 import com.develop.zuzik.musicbrowser.presentation.adapter.PlaybackListRecyclerViewAdapter
+import com.develop.zuzik.player.source.PlayerSource
+import com.develop.zuzik.player.source.UriPlayerSource
 import kotlinx.android.synthetic.main.fragment_playback_list.*
+import javax.inject.Inject
 
 /**
  * User: zuzik
  * Date: 8/21/16
  */
-class PlaybackListFragment : Fragment() {
+class PlaybackListFragment : Fragment(), MultiplePlayer.View<Song> {
 
     companion object {
         fun create(): PlaybackListFragment = PlaybackListFragment()
     }
 
+    @Inject
+    lateinit var presenter: MultiplePlayer.Presenter<Song>
+
     val adapter = PlaybackListRecyclerViewAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter.songs = listOf(Song("author", "name", Uri.parse("")))
+        PlaybackListFragmentInjector().inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View?
@@ -38,5 +45,74 @@ class PlaybackListFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+        this.presenter.setView(this)
+        this.presenter.onCreate()
+        this.presenter.onSetPlayerSources(listOf(UriPlayerSource(Song("Enter Shikari", "the Last garrison", ""), "http://www.ex.ua/get/147185586")))
+//        this.presenter.onSetPlayerSources(listOf())
     }
+
+    override fun onDestroyView() {
+        this.presenter.onDestroy()
+        this.presenter.setView(null)
+        super.onDestroyView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        this.presenter.onAppear()
+        this.presenter.onPlay()
+    }
+
+    override fun onStop() {
+        this.presenter.onDisappear()
+        super.onStop()
+    }
+
+    //region MultiplePlayer.View<Song>
+    override fun repeat() {
+
+    }
+
+    override fun doNotRepeat() {
+    }
+
+    override fun shuffle() {
+    }
+
+    override fun doNotShuffle() {
+    }
+
+    override fun setProgress(currentTimeInMilliseconds: Int, totalTimeInMilliseconds: Int) {
+    }
+
+    override fun showProgress() {
+    }
+
+    override fun hideProgress() {
+    }
+
+    override fun showTime(currentTime: String, totalTime: String) {
+    }
+
+    override fun showError(message: String) {
+    }
+
+    override fun enablePlayControls(play: Boolean, pause: Boolean, stop: Boolean) {
+    }
+
+    override fun displayCurrentSource(source: PlayerSource<Song>) {
+    }
+
+    override fun doNotDisplayCurrentSource() {
+    }
+
+    override fun displaySources(playerSources: MutableList<PlayerSource<Song>>) {
+        if (this.adapter.songs.equals(playerSources)) {
+            return
+        }
+        this.adapter.songs = playerSources
+        this.adapter.notifyDataSetChanged()
+    }
+
+    //endregion
 }

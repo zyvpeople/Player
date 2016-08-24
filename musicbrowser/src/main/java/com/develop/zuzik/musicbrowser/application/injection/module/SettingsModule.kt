@@ -1,5 +1,7 @@
 package com.develop.zuzik.musicbrowser.application.injection.module
 
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings
+import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings
 import com.develop.zuzik.musicbrowser.application.settings.SplashSettings
 import dagger.Module
 import dagger.Provides
@@ -14,5 +16,9 @@ import javax.inject.Singleton
 class SettingsModule {
     @Provides
     @Singleton
-    fun provideSplashSettings(): SplashSettings = SplashSettings(3000)
+    fun splashSettings(): SplashSettings = SplashSettings(3000)
+
+    @Provides
+    @Singleton
+    fun playbackSettings(): MultiplePlaybackSettings = InMemoryMultiplePlaybackSettings()
 }

@@ -8,7 +8,5 @@ import com.develop.zuzik.musicbrowser.presentation.fragment.splash.SplashFragmen
  * Date: 8/20/16
  */
 class SplashFragmentInjector {
-    fun inject(fragment: SplashFragment) {
-        App.INSTANCE.applicationComponent.splashFragmentComponent().inject(fragment)
-    }
+    fun inject(fragment: SplashFragment) = App.INSTANCE.applicationComponent.splashFragmentComponent().inject(fragment)
 }
