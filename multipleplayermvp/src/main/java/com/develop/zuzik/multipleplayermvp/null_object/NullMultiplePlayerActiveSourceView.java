@@ -27,8 +27,4 @@ public class NullMultiplePlayerActiveSourceView<SourceInfo> implements MultipleP
 
 	}
 
-	@Override
-	public void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds) {
-
-	}
 }

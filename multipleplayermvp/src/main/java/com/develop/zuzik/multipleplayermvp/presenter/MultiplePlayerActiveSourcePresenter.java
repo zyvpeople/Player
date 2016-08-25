@@ -2,21 +2,12 @@ package com.develop.zuzik.multipleplayermvp.presenter;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerActiveSourceView;
-import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerView;
-import com.develop.zuzik.player.analyzer.PlaybackStateAnalyzer;
-import com.develop.zuzik.player.interfaces.PlaybackState;
-import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.player.source.PlayerSource;
-import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
 import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
 
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * User: zuzik
@@ -71,15 +62,7 @@ public class MultiplePlayerActiveSourcePresenter<SourceInfo> implements Multiple
 			}
 		}).or(false)) {
 			if (state.get().currentPlaybackState.get().playerSource.equals(this.playerSource)) {
-				PlaybackState<SourceInfo> playbackState = state.get().currentPlaybackState.get();
 				this.view.displayAsActiveSource();
-				if (playbackState.maxTimeInMilliseconds.isPresent()) {
-					int currentTime = playbackState.currentTimeInMilliseconds;
-					int maxTime = playbackState.maxTimeInMilliseconds.get();
-					this.view.setProgress(currentTime, maxTime);
-				} else {
-					this.view.setProgress(0, 100);
-				}
 			} else {
 				this.view.displayAsInactiveSource();
 			}
