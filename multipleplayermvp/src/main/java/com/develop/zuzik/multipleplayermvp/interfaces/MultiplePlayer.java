@@ -94,7 +94,6 @@ public interface MultiplePlayer {
 
 		void displayAsInactiveSource();
 
-		void setProgress(int currentTimeInMilliseconds, int totalTimeInMilliseconds);
 	}
 
 	interface ActiveSourcePresenter<SourceInfo> {
