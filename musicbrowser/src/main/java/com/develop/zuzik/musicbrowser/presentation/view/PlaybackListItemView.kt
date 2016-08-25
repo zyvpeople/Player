@@ -1,10 +1,14 @@
 package com.develop.zuzik.musicbrowser.presentation.view
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer
 import com.develop.zuzik.musicbrowser.R
+import com.develop.zuzik.musicbrowser.application.injection.injector.PlaybackListItemViewComponentInjector
 import com.develop.zuzik.musicbrowser.domain.entity.Song
 import com.develop.zuzik.player.source.PlayerSource
 import kotlinx.android.synthetic.main.view_playback_list_item.view.*
@@ -13,10 +17,21 @@ import kotlinx.android.synthetic.main.view_playback_list_item.view.*
  * User: zuzik
  * Date: 8/21/16
  */
-class PlaybackListItemView(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : LinearLayout(context, attrs, defStyleAttr) {
+class PlaybackListItemView(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : LinearLayout(context, attrs, defStyleAttr), MultiplePlayer.ActiveSourceView<Song> {
+
+    private var presenter: MultiplePlayer.ActiveSourcePresenter<Song>? = null
 
     var song: PlayerSource<Song>? = null
         set(value) {
+            this.presenter?.setView(null)
+            this.presenter?.onDisappear()
+            this.presenter?.onDestroy()
+            if (value != null) {
+                this.presenter = PlaybackListItemViewComponentInjector().presenterFactory().create(value)
+                this.presenter?.setView(this)
+                this.presenter?.onCreate()
+                this.presenter?.onAppear()
+            }
             //TODO: set image
             this.author.text = value?.sourceInfo?.author
             this.name.text = value?.sourceInfo?.name
@@ -27,4 +42,29 @@ class PlaybackListItemView(context: Context?, attrs: AttributeSet?, defStyleAttr
         View.inflate(context, R.layout.view_playback_list_item, this)
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        this.presenter?.setView(this)
+        this.presenter?.onCreate()
+        this.presenter?.onAppear()
+    }
+
+    override fun onDetachedFromWindow() {
+        this.presenter?.setView(null)
+        this.presenter?.onDisappear()
+        this.presenter?.onDestroy()
+        super.onDetachedFromWindow()
+    }
+
+    //region MultiplePlayer.ActiveSourceView
+
+    override fun displayAsActiveSource() {
+        setBackgroundColor(ContextCompat.getColor(this.context, R.color.playback_item_background_active))
+    }
+
+    override fun displayAsInactiveSource() {
+        setBackgroundColor(ContextCompat.getColor(this.context, R.color.playback_item_background_not_active))
+    }
+
+    //endregion
 }

@@ -50,7 +50,9 @@ class PlaybackListFragment : Fragment(), MultiplePlayer.View<Song> {
         this.presenter.setView(this)
         this.presenter.onCreate()
         this.controlPresenter.onCreate()
-        this.presenter.onSetPlayerSources(listOf(UriPlayerSource(Song("Enter Shikari", "the Last garrison", ""), "http://www.ex.ua/get/147185586")))
+        this.presenter.onSetPlayerSources(listOf(
+                UriPlayerSource(Song("Enter Shikari", "the Last garrison", ""), "http://www.ex.ua/get/147185586"),
+                UriPlayerSource(Song("Enter Shikari", "the Last garrison", ""), "http://www.ex.ua/get/147185586")))
 //        this.presenter.onSetPlayerSources(listOf())
     }
 

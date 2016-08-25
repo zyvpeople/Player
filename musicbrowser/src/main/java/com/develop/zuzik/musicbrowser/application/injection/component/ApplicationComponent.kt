@@ -17,4 +17,5 @@ import javax.inject.Singleton
 interface ApplicationComponent {
     fun splashFragmentComponent(): SplashFragmentComponent
     fun playbackListFragmentComponent(): PlaybackListFragmentComponent
+    fun playbackListItemViewComponent(): PlaybackListItemViewComponent
 }

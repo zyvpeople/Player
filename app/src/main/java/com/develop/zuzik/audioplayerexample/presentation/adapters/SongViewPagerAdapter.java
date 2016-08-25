@@ -34,7 +34,7 @@ public class SongViewPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
-		return SongFragment.newInstance(this.songs.get(position).getSourceInfo());
+		return SongFragment.newInstance(this.songs.get(position));
 	}
 
 	@Override
