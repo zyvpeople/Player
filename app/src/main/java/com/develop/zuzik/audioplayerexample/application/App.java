@@ -7,12 +7,11 @@ import com.develop.zuzik.audioplayerexample.domain.ExampleOnCompletePlayerSource
 import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousPlayerSourceStrategyFactory;
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
-import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
-import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.AlwaysReleasePlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleasePlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.player.broadcast_receiver.PlaybackBroadcastReceiver;
@@ -20,7 +19,6 @@ import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.playermvp.model.PlayerModel;
-import com.develop.zuzik.playermvp.model.PlayerServiceModel;
 import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 
 /**
@@ -74,6 +72,7 @@ public class App extends Application {
 						new ExampleNextPlayerSourceStrategyFactory<>(),
 						new ExamplePreviousPlayerSourceStrategyFactory<>(),
 						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
+						new DoNotReleaseIfExistsPlayerSourceReleaseStrategy<>(),
 						playbackSettings.isRepeatSingle(),
 						playbackSettings.isShuffle()),
 				100500,
