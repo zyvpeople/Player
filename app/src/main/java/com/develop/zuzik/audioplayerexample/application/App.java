@@ -2,15 +2,13 @@ package com.develop.zuzik.audioplayerexample.application;
 
 import android.app.Application;
 
-import com.develop.zuzik.audioplayerexample.domain.ExampleNextPlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.domain.ExampleOnCompletePlayerSourceStrategyFactory;
-import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousPlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.domain.ExampleNextPlayerSourceDetermineStrategyFactory;
+import com.develop.zuzik.audioplayerexample.domain.ExampleOnCompletePlayerSourceDetermineStrategyFactory;
+import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousPlayerSourceDetermineStrategyFactory;
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
-import com.develop.zuzik.multipleplayer.player_source_release_strategy.AlwaysReleasePlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
-import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleasePlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
@@ -69,9 +67,9 @@ public class App extends Application {
 				playbackSettings,
 				new LocalMultiplePlaybackFactory<>(
 						new LocalPlaybackFactory<Song>(),
-						new ExampleNextPlayerSourceStrategyFactory<>(),
-						new ExamplePreviousPlayerSourceStrategyFactory<>(),
-						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
+						new ExampleNextPlayerSourceDetermineStrategyFactory<>(),
+						new ExamplePreviousPlayerSourceDetermineStrategyFactory<>(),
+						new ExampleOnCompletePlayerSourceDetermineStrategyFactory<Song>(),
 						new DoNotReleaseIfExistsPlayerSourceReleaseStrategy<>(),
 						playbackSettings.isRepeatSingle(),
 						playbackSettings.isShuffle()),

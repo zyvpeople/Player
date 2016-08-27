@@ -8,7 +8,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
-import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceDetermineStrategyFactory;
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
@@ -36,9 +36,9 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	private final Context context;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory;
-	private final PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory;
-	private final PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory;
 	private final PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy;
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
@@ -46,17 +46,17 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	public LocalMultiplePlayback(Context context,
 								 PlaybackFactory<SourceInfo> playbackFactory,
-								 PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
-								 PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory,
-								 PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
+								 PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory,
+								 PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory,
+								 PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory,
 								 PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy,
 								 boolean repeatSingle,
 								 boolean shuffle) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackFactory = playbackFactory;
-		this.nextPlayerSourceStrategyFactory = nextPlayerSourceStrategyFactory;
-		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
-		this.onCompletePlayerSourceStrategyFactory = onCompletePlayerSourceStrategyFactory;
+		this.nextPlayerSourceDetermineStrategyFactory = nextPlayerSourceDetermineStrategyFactory;
+		this.previousPlayerSourceDetermineStrategyFactory = previousPlayerSourceDetermineStrategyFactory;
+		this.onCompletePlayerSourceDetermineStrategyFactory = onCompletePlayerSourceDetermineStrategyFactory;
 		this.releaseStrategy = releaseStrategy;
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<PlayerSource<SourceInfo>>(),
@@ -254,12 +254,12 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	@Override
 	public void playNextPlayerSource() {
-		determineAndPlayPlayerSource(this.nextPlayerSourceStrategyFactory);
+		determineAndPlayPlayerSource(this.nextPlayerSourceDetermineStrategyFactory);
 	}
 
 	@Override
 	public void playPreviousPlayerSource() {
-		determineAndPlayPlayerSource(this.previousPlayerSourceStrategyFactory);
+		determineAndPlayPlayerSource(this.previousPlayerSourceDetermineStrategyFactory);
 	}
 
 	private boolean shouldSwitchToNewPlayerSource(PlaybackState<SourceInfo> playbackState) {
@@ -267,7 +267,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	private void switchToNewPlayerSource() {
-		determineAndPlayPlayerSource(this.onCompletePlayerSourceStrategyFactory);
+		determineAndPlayPlayerSource(this.onCompletePlayerSourceDetermineStrategyFactory);
 	}
 
 	private void setAndInitCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
@@ -339,7 +339,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 		}
 	}
 
-	private void determineAndPlayPlayerSource(final PlayerSourceStrategyFactory<SourceInfo> strategyFactory) {
+	private void determineAndPlayPlayerSource(final PlayerSourceDetermineStrategyFactory<SourceInfo> strategyFactory) {
 		currentPlayback(
 				new ParamAction<Playback<SourceInfo>>() {
 					@Override
