@@ -16,17 +16,22 @@ import org.jetbrains.annotations.Nullable;
 public class MultiplePlayerActiveSourcePresenter<SourceInfo> implements MultiplePlayer.ActiveSourcePresenter<SourceInfo> {
 
 	private final MultiplePlayer.Model<SourceInfo> model;
-	private final PlayerSource<SourceInfo> playerSource;
+	private PlayerSource<SourceInfo> playerSourceOrNull;
 	private MultiplePlayer.ActiveSourceView<SourceInfo> view = NullMultiplePlayerActiveSourceView.getInstance();
 
-	public MultiplePlayerActiveSourcePresenter(MultiplePlayer.Model<SourceInfo> model, PlayerSource<SourceInfo> playerSource) {
+	public MultiplePlayerActiveSourcePresenter(MultiplePlayer.Model<SourceInfo> model) {
 		this.model = model;
-		this.playerSource = playerSource;
 	}
 
 	@Override
 	public void setView(MultiplePlayer.ActiveSourceView<SourceInfo> view) {
 		this.view = view != null ? view : NullMultiplePlayerActiveSourceView.<SourceInfo>getInstance();
+	}
+
+	@Override
+	public void setPlayerSource(PlayerSource<SourceInfo> playerSource) {
+		this.playerSourceOrNull = playerSource;
+		updateView();
 	}
 
 	@Override
@@ -61,7 +66,7 @@ public class MultiplePlayerActiveSourcePresenter<SourceInfo> implements Multiple
 				return input.currentPlaybackState.isPresent();
 			}
 		}).or(false)) {
-			if (state.get().currentPlaybackState.get().playerSource.equals(this.playerSource)) {
+			if (state.get().currentPlaybackState.get().playerSource.equals(this.playerSourceOrNull)) {
 				this.view.displayAsActiveSource();
 			} else {
 				this.view.displayAsInactiveSource();
