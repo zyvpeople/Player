@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
-import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 

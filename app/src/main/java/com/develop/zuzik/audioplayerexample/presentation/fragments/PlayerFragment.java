@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
+import com.develop.zuzik.audioplayerexample.domain.ExampleNextControlAvailabilityStrategy;
+import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousControlAvailabilityStrategy;
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
@@ -66,6 +68,9 @@ public class PlayerFragment
 	private ImageView shuffle;
 	private ImageView playPause;
 
+	private ImageView skipNext;
+	private ImageView skipPrevious;
+
 	private SongViewPagerAdapter adapter;
 
 	private MultiplePlayer.Presenter<Song> presenter;
@@ -81,7 +86,10 @@ public class PlayerFragment
 				getModel(),
 				new DoNothingMultiplePlayerPresenterDestroyStrategy(),
 				new ExamplePlayerExceptionMessageProvider());
-		this.controlPresenter = new MultiplePlayerControlPresenter<>(getModel());
+		this.controlPresenter = new MultiplePlayerControlPresenter<>(
+				getModel(),
+				new ExampleNextControlAvailabilityStrategy(),
+				new ExamplePreviousControlAvailabilityStrategy());
 
 		this.presenter.setView(this);
 		this.controlPresenter.setView(this);
@@ -121,8 +129,8 @@ public class PlayerFragment
 		this.singer = (TextView) view.findViewById(R.id.singer);
 		this.song = (TextView) view.findViewById(R.id.song);
 		this.repeat = (ImageView) view.findViewById(R.id.repeat);
-		ImageView skipPrevious = (ImageView) view.findViewById(R.id.skipPrevious);
-		ImageView skipNext = (ImageView) view.findViewById(R.id.skipNext);
+		this.skipPrevious = (ImageView) view.findViewById(R.id.skipPrevious);
+		this.skipNext = (ImageView) view.findViewById(R.id.skipNext);
 		this.shuffle = (ImageView) view.findViewById(R.id.shuffle);
 		this.playPause = (ImageView) view.findViewById(R.id.playPause);
 
@@ -305,6 +313,12 @@ public class PlayerFragment
 			showPlayPauseButtonAsPause();
 		} else {
 		}
+	}
+
+	@Override
+	public void enableSwitchControls(boolean next, boolean previous) {
+		this.skipNext.setVisibility(next ? View.VISIBLE : View.INVISIBLE);
+		this.skipPrevious.setVisibility(previous ? View.VISIBLE : View.INVISIBLE);
 	}
 
 	//endregion

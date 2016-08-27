@@ -36,7 +36,6 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: add and remove player source -> get sources, add/remove any, set sources.
 //TODO: add strategy for setSources method -> clear current playback or if current exist leave it play
 //TODO: add strategy for switching between songs -> when current is pause should I do not play next/previous song or if current is playing should I play next/previous song
-//TODO: logic for disabling play next/previous
 public class App extends Application {
 
 	private Player.Model<Song> model;

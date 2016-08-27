@@ -126,6 +126,8 @@ public interface MultiplePlayer {
 		void hideProgress();
 
 		void enablePlayControls(boolean play, boolean pause, boolean stop);
+
+		void enableSwitchControls(boolean next, boolean previous);
 	}
 
 	interface ControlPresenter<SourceInfo> {
