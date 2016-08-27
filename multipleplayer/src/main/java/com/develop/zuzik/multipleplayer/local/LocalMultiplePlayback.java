@@ -36,8 +36,8 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	private final Context context;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy;
-	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
+	private final PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory;
+	private final PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory;
 	private final PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
@@ -45,15 +45,15 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	public LocalMultiplePlayback(Context context,
 								 PlaybackFactory<SourceInfo> playbackFactory,
-								 PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
-								 PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
+								 PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
+								 PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory,
 								 PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
 								 boolean repeatSingle,
 								 boolean shuffle) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackFactory = playbackFactory;
-		this.nextPlayerSourceStrategy = nextPlayerSourceStrategy;
-		this.previousPlayerSourceStrategy = previousPlayerSourceStrategy;
+		this.nextPlayerSourceStrategyFactory = nextPlayerSourceStrategyFactory;
+		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
 		this.onCompletePlayerSourceStrategyFactory = onCompletePlayerSourceStrategyFactory;
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<PlayerSource<SourceInfo>>(),
@@ -246,12 +246,12 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	@Override
 	public void playNextPlayerSource() {
-		determineAndPlayPlayerSource(this.nextPlayerSourceStrategy);
+		determineAndPlayPlayerSource(this.nextPlayerSourceStrategyFactory);
 	}
 
 	@Override
 	public void playPreviousPlayerSource() {
-		determineAndPlayPlayerSource(this.previousPlayerSourceStrategy);
+		determineAndPlayPlayerSource(this.previousPlayerSourceStrategyFactory);
 	}
 
 	private boolean shouldSwitchToNewPlayerSource(PlaybackState<SourceInfo> playbackState) {
@@ -259,7 +259,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	private void switchToNewPlayerSource() {
-		determineAndPlayPlayerSource(this.onCompletePlayerSourceStrategyFactory.create(getMultiplePlaybackState().shuffle));
+		determineAndPlayPlayerSource(this.onCompletePlayerSourceStrategyFactory);
 	}
 
 	private void setAndInitCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
@@ -320,12 +320,13 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 		return playback;
 	}
 
-	private void determineAndPlayPlayerSource(final PlayerSourceStrategy<SourceInfo> strategy) {
+	private void determineAndPlayPlayerSource(final PlayerSourceStrategyFactory<SourceInfo> strategyFactory) {
 		currentPlayback(
 				new ParamAction<Playback<SourceInfo>>() {
 					@Override
 					public void execute(Playback<SourceInfo> playback) {
-						Optional<PlayerSource<SourceInfo>> newPlayerSource = strategy.determine(LocalMultiplePlayback.this.getMultiplePlaybackState().playerSources, playback.getPlaybackState().playerSource);
+						Optional<PlayerSource<SourceInfo>> newPlayerSource = strategyFactory.create(getMultiplePlaybackState().shuffle)
+								.determine(LocalMultiplePlayback.this.getMultiplePlaybackState().playerSources, playback.getPlaybackState().playerSource);
 						if (!newPlayerSource.isPresent()) {
 							Log.w(LocalMultiplePlayback.this.getClass().getSimpleName(), "Player source is not determined");
 							return;

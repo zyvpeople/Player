@@ -15,22 +15,22 @@ import com.develop.zuzik.player.interfaces.PlaybackFactory;
 public class LocalMultiplePlaybackFactory<SourceInfo> implements MultiplePlaybackFactory<SourceInfo> {
 
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy;
-	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
+	private final PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory;
+	private final PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory;
 	private final PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
 	private final boolean repeatSingle;
 	private final boolean shuffle;
 
 	public LocalMultiplePlaybackFactory(
 			PlaybackFactory<SourceInfo> playbackFactory,
-			PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
-			PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
+			PlayerSourceStrategyFactory<SourceInfo> nextPlayerSourceStrategyFactory,
+			PlayerSourceStrategyFactory<SourceInfo> previousPlayerSourceStrategyFactory,
 			PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
 			boolean repeatSingle,
 			boolean shuffle) {
 		this.playbackFactory = playbackFactory;
-		this.nextPlayerSourceStrategy = nextPlayerSourceStrategy;
-		this.previousPlayerSourceStrategy = previousPlayerSourceStrategy;
+		this.nextPlayerSourceStrategyFactory = nextPlayerSourceStrategyFactory;
+		this.previousPlayerSourceStrategyFactory = previousPlayerSourceStrategyFactory;
 		this.onCompletePlayerSourceStrategyFactory = onCompletePlayerSourceStrategyFactory;
 		this.repeatSingle = repeatSingle;
 		this.shuffle = shuffle;
@@ -41,8 +41,8 @@ public class LocalMultiplePlaybackFactory<SourceInfo> implements MultiplePlaybac
 		return new LocalMultiplePlayback<>(
 				context,
 				this.playbackFactory,
-				this.nextPlayerSourceStrategy,
-				this.previousPlayerSourceStrategy,
+				this.nextPlayerSourceStrategyFactory,
+				this.previousPlayerSourceStrategyFactory,
 				this.onCompletePlayerSourceStrategyFactory,
 				this.repeatSingle,
 				this.shuffle);
