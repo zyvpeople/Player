@@ -99,6 +99,8 @@ public interface MultiplePlayer {
 	interface ActiveSourcePresenter<SourceInfo> {
 		void setView(ActiveSourceView<SourceInfo> view);
 
+		void setPlayerSource(PlayerSource<SourceInfo> playerSource);
+
 		void onCreate();
 
 		void onDestroy();
