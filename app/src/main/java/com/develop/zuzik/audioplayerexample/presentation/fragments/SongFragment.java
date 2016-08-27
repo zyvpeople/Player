@@ -76,7 +76,8 @@ public class SongFragment extends Fragment implements MultiplePlayer.VideoView<S
 						.load(value.getSourceInfo().image)
 						.into(SongFragment.this.image);
 				SongFragment.this.presenter = new MultiplePlayerVideoPresenter<>(SongFragment.this.getModel(), value.getSourceInfo());
-				SongFragment.this.activeSourcePresenter = new MultiplePlayerActiveSourcePresenter<Song>(SongFragment.this.getModel(), value);
+				SongFragment.this.activeSourcePresenter = new MultiplePlayerActiveSourcePresenter<Song>(SongFragment.this.getModel());
+				SongFragment.this.activeSourcePresenter.setPlayerSource(value);
 				SongFragment.this.surfaceView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {

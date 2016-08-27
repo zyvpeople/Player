@@ -10,7 +10,7 @@ import javax.inject.Singleton
  * Date: 8/24/16
  */
 @Singleton
-@Subcomponent(modules = arrayOf(PlayerModule::class))
+@Subcomponent
 interface PlaybackListFragmentComponent {
     fun inject(fragment: PlaybackListFragment)
 }

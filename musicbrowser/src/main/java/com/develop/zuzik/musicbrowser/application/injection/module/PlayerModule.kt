@@ -9,6 +9,7 @@ import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlay
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerActiveSourcePresenter
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter
 import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy
@@ -16,8 +17,6 @@ import com.develop.zuzik.musicbrowser.domain.entity.Song
 import com.develop.zuzik.musicbrowser.domain.player.OnCompletePlayerSourceStrategyFactory
 import com.develop.zuzik.musicbrowser.presentation.player.MultiplePlayerNotificationFactoryImpl
 import com.develop.zuzik.musicbrowser.presentation.player.PlayerExceptionMessageProviderImpl
-import com.develop.zuzik.musicbrowser.presentation.player.presenter_factory.MultiplePlayerActiveSourcePresenterFactory
-import com.develop.zuzik.musicbrowser.presentation.player.presenter_factory.MultiplePlayerActiveSourcePresenterFactoryImpl
 import com.develop.zuzik.player.interfaces.PlaybackFactory
 import com.develop.zuzik.player.local.LocalPlaybackFactory
 import dagger.Module
@@ -79,6 +78,6 @@ class PlayerModule {
             MultiplePlayerControlPresenter(model)
 
     @Provides
-    fun activeSourcePresenterFactory(model: MultiplePlayer.Model<Song>): MultiplePlayerActiveSourcePresenterFactory<Song> =
-            MultiplePlayerActiveSourcePresenterFactoryImpl<Song>(model)
+    fun activeSourcePresenter(model: MultiplePlayer.Model<Song>): MultiplePlayer.ActiveSourcePresenter<Song> =
+            MultiplePlayerActiveSourcePresenter(model)
 }

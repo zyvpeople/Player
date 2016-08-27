@@ -13,7 +13,8 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(
         ApplicationModule::class,
-        SettingsModule::class))
+        SettingsModule::class,
+        PlayerModule::class))
 interface ApplicationComponent {
     fun splashFragmentComponent(): SplashFragmentComponent
     fun playbackListFragmentComponent(): PlaybackListFragmentComponent
