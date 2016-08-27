@@ -39,7 +39,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	private final PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory;
 	private final PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory;
 	private final PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory;
-	private final PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy;
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	private Optional<Playback<SourceInfo>> currentPlayback = Optional.absent();
@@ -49,7 +48,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 								 PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory,
 								 PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory,
 								 PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory,
-								 PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy,
 								 boolean repeatSingle,
 								 boolean shuffle) {
 		this.context = new ContextWrapper(context).getApplicationContext();
@@ -57,7 +55,6 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 		this.nextPlayerSourceDetermineStrategyFactory = nextPlayerSourceDetermineStrategyFactory;
 		this.previousPlayerSourceDetermineStrategyFactory = previousPlayerSourceDetermineStrategyFactory;
 		this.onCompletePlayerSourceDetermineStrategyFactory = onCompletePlayerSourceDetermineStrategyFactory;
-		this.releaseStrategy = releaseStrategy;
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<PlayerSource<SourceInfo>>(),
 				Optional.<PlaybackState<SourceInfo>>absent(),
@@ -205,7 +202,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	@Override
-	public void setPlayerSources(final List<PlayerSource<SourceInfo>> playerSources) {
+	public void setPlayerSources(final List<PlayerSource<SourceInfo>> playerSources, final PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
 		currentPlayback(
 				new ParamAction<Playback<SourceInfo>>() {
 					@Override

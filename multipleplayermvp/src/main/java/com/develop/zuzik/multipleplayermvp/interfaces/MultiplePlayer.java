@@ -1,6 +1,7 @@
 package com.develop.zuzik.multipleplayermvp.interfaces;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface MultiplePlayer {
 
 	interface Model<SourceInfo> {
-		void setSources(List<PlayerSource<SourceInfo>> sources);
+		void setSources(List<PlayerSource<SourceInfo>> sources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy);
 
 		void clear();
 

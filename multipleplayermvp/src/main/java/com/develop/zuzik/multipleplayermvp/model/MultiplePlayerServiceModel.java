@@ -11,6 +11,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackService;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceInitializeBundle;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory;
@@ -92,9 +93,9 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 	}
 
 	@Override
-	public void setSources(List<PlayerSource<SourceInfo>> playerSources) {
+	public void setSources(List<PlayerSource<SourceInfo>> playerSources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
 		this.sources = Optional.of(playerSources);
-		startServiceForInit(playerSources);
+		startServiceForInit(playerSources, releaseStrategy);
 		this.context.bindService(create(this.context), this.serviceConnection, Context.BIND_AUTO_CREATE);
 
 	}
@@ -201,13 +202,14 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		startService(createSimulateError(this.context));
 	}
 
-	private void startServiceForInit(List<PlayerSource<SourceInfo>> sources) {
+	private void startServiceForInit(List<PlayerSource<SourceInfo>> sources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
 		startService(
 				MultiplePlaybackServiceIntentFactory.createForInit(
 						this.context,
 						new MultiplePlaybackServiceInitializeBundle<>(
 								this.playbackFactory,
 								sources,
+								releaseStrategy,
 								this.notificationId,
 								this.playerNotificationFactory)));
 	}

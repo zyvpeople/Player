@@ -13,6 +13,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
@@ -59,9 +60,9 @@ public class MultiplePlaybackService extends Service {
 				MultiplePlaybackService.this.notificationId = bundle.notificationId;
 				MultiplePlaybackService.this.multiplePlayerNotificationFactory = bundle.multiplePlayerNotificationFactory;
 				if (MultiplePlaybackService.this.multiplePlayback.isPresent()) {
-					MultiplePlaybackService.this.multiplePlayback.get().setPlayerSources(playerSources);
+					MultiplePlaybackService.this.multiplePlayback.get().setPlayerSources(playerSources, bundle.releaseStrategy);
 				} else {
-					MultiplePlaybackService.this.initMultiplePlayback(multiplePlaybackFactory, playerSources);
+					MultiplePlaybackService.this.initMultiplePlayback(multiplePlaybackFactory, playerSources, bundle.releaseStrategy);
 				}
 			}
 		});
@@ -200,7 +201,7 @@ public class MultiplePlaybackService extends Service {
 		return START_STICKY;
 	}
 
-	private void initMultiplePlayback(MultiplePlaybackFactory factory, List<PlayerSource> playerSources) {
+	private void initMultiplePlayback(MultiplePlaybackFactory factory, List<PlayerSource> playerSources, PlayerSourceReleaseStrategy releaseStrategy) {
 		this.multiplePlayback = Optional.of(factory.create(this));
 		this.multiplePlayback.get().setMultiplePlaybackListener(new MultiplePlaybackListener() {
 			@Override
@@ -214,7 +215,7 @@ public class MultiplePlaybackService extends Service {
 				multiplePlaybackListener.onError(throwable);
 			}
 		});
-		this.multiplePlayback.get().setPlayerSources(playerSources);
+		this.multiplePlayback.get().setPlayerSources(playerSources, releaseStrategy);
 	}
 
 	public Optional<MultiplePlaybackState> getMultiplePlaybackState() {

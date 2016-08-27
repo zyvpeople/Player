@@ -18,7 +18,6 @@ public class LocalMultiplePlaybackFactory<SourceInfo> implements MultiplePlaybac
 	private final PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory;
 	private final PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory;
 	private final PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory;
-	private final PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy;
 	private final boolean repeatSingle;
 	private final boolean shuffle;
 
@@ -27,13 +26,12 @@ public class LocalMultiplePlaybackFactory<SourceInfo> implements MultiplePlaybac
 			PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory,
 			PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory,
 			PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory,
-			PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy, boolean repeatSingle,
+			boolean repeatSingle,
 			boolean shuffle) {
 		this.playbackFactory = playbackFactory;
 		this.nextPlayerSourceDetermineStrategyFactory = nextPlayerSourceDetermineStrategyFactory;
 		this.previousPlayerSourceDetermineStrategyFactory = previousPlayerSourceDetermineStrategyFactory;
 		this.onCompletePlayerSourceDetermineStrategyFactory = onCompletePlayerSourceDetermineStrategyFactory;
-		this.releaseStrategy = releaseStrategy;
 		this.repeatSingle = repeatSingle;
 		this.shuffle = shuffle;
 	}
@@ -46,7 +44,6 @@ public class LocalMultiplePlaybackFactory<SourceInfo> implements MultiplePlaybac
 				this.nextPlayerSourceDetermineStrategyFactory,
 				this.previousPlayerSourceDetermineStrategyFactory,
 				this.onCompletePlayerSourceDetermineStrategyFactory,
-				this.releaseStrategy,
 				this.repeatSingle,
 				this.shuffle);
 	}

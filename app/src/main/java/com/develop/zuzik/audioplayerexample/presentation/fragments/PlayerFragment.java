@@ -20,6 +20,7 @@ import com.develop.zuzik.audioplayerexample.application.App;
 import com.develop.zuzik.audioplayerexample.domain.ExampleNextControlAvailabilityStrategy;
 import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousControlAvailabilityStrategy;
 import com.develop.zuzik.audioplayerexample.domain.Song;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.volume.Volume;
@@ -85,6 +86,7 @@ public class PlayerFragment
 		this.presenter = new MultiplePlayerPresenter<>(
 				getModel(),
 				new DoNothingMultiplePlayerPresenterDestroyStrategy(),
+				new DoNotReleaseIfExistsPlayerSourceReleaseStrategy<>(),
 				new ExamplePlayerExceptionMessageProvider());
 		this.controlPresenter = new MultiplePlayerControlPresenter<>(
 				getModel(),
