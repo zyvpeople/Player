@@ -28,8 +28,7 @@ import com.develop.zuzik.player.volume.Volume;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter;
-import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerSourcesPresenter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.source.UriPlayerSource;
 
@@ -45,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PlayerFragment
 		extends Fragment
-		implements MultiplePlayer.View<Song>, MultiplePlayer.ControlView<Song> {
+		implements MultiplePlayer.SourcesView<Song>, MultiplePlayer.ControlView<Song> {
 
 	private static final String TAG_STATE_PLAY = "TAG_STATE_PLAY";
 	private static final String TAG_STATE_PAUSE = "TAG_STATE_PAUSE";
@@ -75,7 +74,7 @@ public class PlayerFragment
 
 	private SongViewPagerAdapter adapter;
 
-	private MultiplePlayer.Presenter<Song> presenter;
+	private MultiplePlayer.SourcesPresenter<Song> presenter;
 	private MultiplePlayer.ControlPresenter<Song> controlPresenter;
 
 	@Override
@@ -84,7 +83,7 @@ public class PlayerFragment
 
 		new Volume().useVolumeKeysToControlPlaybackVolume(getActivity());
 
-		this.presenter = new MultiplePlayerPresenter<>(
+		this.presenter = new MultiplePlayerSourcesPresenter<>(
 				getModel(),
 				new ClearSourcesMultiplePlayerPresenterDestroyStrategy<>(),
 				new DoNotReleaseIfExistsPlayerSourceReleaseStrategy<>(),

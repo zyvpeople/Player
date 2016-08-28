@@ -9,15 +9,15 @@ import java.util.List;
  * User: zuzik
  * Date: 7/12/16
  */
-public class NullMultiplePlayerView<SourceInfo> implements MultiplePlayer.View<SourceInfo> {
+public class NullMultiplePlayerSourcesView<SourceInfo> implements MultiplePlayer.SourcesView<SourceInfo> {
 
-	private static final NullMultiplePlayerView INSTANCE = new NullMultiplePlayerView();
+	private static final NullMultiplePlayerSourcesView INSTANCE = new NullMultiplePlayerSourcesView();
 
-	public static <SourceInfo> NullMultiplePlayerView<SourceInfo> getInstance() {
+	public static <SourceInfo> NullMultiplePlayerSourcesView<SourceInfo> getInstance() {
 		return INSTANCE;
 	}
 
-	private NullMultiplePlayerView() {
+	private NullMultiplePlayerSourcesView() {
 	}
 
 	@Override

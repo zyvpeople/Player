@@ -3,23 +3,13 @@ package com.develop.zuzik.multipleplayermvp.presenter;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayermvp.interfaces.ControlAvailabilityStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerControlView;
-import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerView;
 import com.develop.zuzik.player.analyzer.PlaybackStateAnalyzer;
 import com.develop.zuzik.player.interfaces.PlaybackState;
-import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
-import com.develop.zuzik.player.source.PlayerSource;
-import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
 import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
 
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * User: zuzik

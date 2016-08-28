@@ -59,7 +59,7 @@ public interface MultiplePlayer {
 		}
 	}
 
-	interface View<SourceInfo> {
+	interface SourcesView<SourceInfo> {
 
 		void showError(String message);
 
@@ -70,8 +70,8 @@ public interface MultiplePlayer {
 		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
 	}
 
-	interface Presenter<SourceInfo> {
-		void setView(View<SourceInfo> view);
+	interface SourcesPresenter<SourceInfo> {
+		void setView(SourcesView<SourceInfo> view);
 
 		void onCreate();
 
