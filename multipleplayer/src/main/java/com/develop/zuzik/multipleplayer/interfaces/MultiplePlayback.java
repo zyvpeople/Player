@@ -18,7 +18,7 @@ public interface MultiplePlayback<SourceInfo> {
 
 	void setMultiplePlaybackListener(MultiplePlaybackListener<SourceInfo> multiplePlaybackListener);
 
-	void clear();
+	void release();
 
 	void play();
 

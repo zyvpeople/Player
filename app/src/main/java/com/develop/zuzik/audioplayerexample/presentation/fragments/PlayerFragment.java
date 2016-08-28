@@ -22,6 +22,7 @@ import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousControlAvailab
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter;
+import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.ClearSourcesMultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.volume.Volume;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
@@ -85,7 +86,7 @@ public class PlayerFragment
 
 		this.presenter = new MultiplePlayerPresenter<>(
 				getModel(),
-				new DoNothingMultiplePlayerPresenterDestroyStrategy(),
+				new ClearSourcesMultiplePlayerPresenterDestroyStrategy<>(),
 				new DoNotReleaseIfExistsPlayerSourceReleaseStrategy<>(),
 				new ExamplePlayerExceptionMessageProvider());
 		this.controlPresenter = new MultiplePlayerControlPresenter<>(
@@ -250,6 +251,7 @@ public class PlayerFragment
 	public void doNotDisplayCurrentSource() {
 		this.singer.setText("");
 		this.song.setText("");
+		this.viewPager.setCurrentItem(-1);
 	}
 
 	@Override
@@ -258,6 +260,11 @@ public class PlayerFragment
 			this.viewPager.removeOnPageChangeListener(this.onPageChangeListener);
 			this.adapter.setSongs(playerSources);
 			this.adapter.notifyDataSetChanged();
+
+			if (playerSources.isEmpty()) {
+				this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<PlayerSource<Song>>());
+				this.viewPager.setAdapter(this.adapter);
+			}
 		}
 	}
 

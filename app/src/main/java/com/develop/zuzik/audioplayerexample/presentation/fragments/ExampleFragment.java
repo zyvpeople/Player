@@ -25,6 +25,7 @@ import com.develop.zuzik.player.video.SurfaceViewWrapper;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.playermvp.presenter.PlayerPresenter;
 import com.develop.zuzik.playermvp.presenter.PlayerVideoPresenter;
+import com.develop.zuzik.playermvp.presenter_destroy_strategy.ClearModelPlayerPresenterDestroyStrategy;
 import com.develop.zuzik.playermvp.presenter_destroy_strategy.DoNothingPlayerPresenterDestroyStrategy;
 
 public class ExampleFragment extends Fragment implements Player.View<Song>, Player.VideoView<Song> {
@@ -51,7 +52,7 @@ public class ExampleFragment extends Fragment implements Player.View<Song>, Play
 
 		final Song song = new Song("Of monsters and men", "Crystal (long)", R.drawable.of_monsters_and_men_1);
 
-		this.presenter = new PlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider(), new DoNothingPlayerPresenterDestroyStrategy());
+		this.presenter = new PlayerPresenter<>(getModel(), new ExamplePlayerExceptionMessageProvider(), new ClearModelPlayerPresenterDestroyStrategy());
 		this.presenter.setView(this);
 //		this.presenter.onSetSource(new RawResourcePlayerSource<>(song, R.raw.song));
 		this.presenter.onSetSource(new RawResourcePlayerSource<>(song, R.raw.video));

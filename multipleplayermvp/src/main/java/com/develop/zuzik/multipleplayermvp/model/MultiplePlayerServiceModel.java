@@ -96,12 +96,10 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 	public void setSources(List<PlayerSource<SourceInfo>> playerSources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
 		this.sources = Optional.of(playerSources);
 		startServiceForInit(playerSources, releaseStrategy);
-		this.context.bindService(create(this.context), this.serviceConnection, Context.BIND_AUTO_CREATE);
-
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		this.context.unbindService(this.serviceConnection);
 		this.context.stopService(create(this.context));
 		this.sources = Optional.absent();
@@ -220,6 +218,7 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		if (!expectedServiceName.equals(serviceName)) {
 			throw new ServiceIsNotDeclaredInManifestException(MultiplePlaybackService.class);
 		}
+		this.context.bindService(create(this.context), this.serviceConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	private void notifyOnUpdate() {

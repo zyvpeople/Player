@@ -10,6 +10,7 @@ import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMulti
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
+import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
 import com.develop.zuzik.multipleplayermvp.settings.InMemoryMultiplePlaybackSettings;
 import com.develop.zuzik.player.broadcast_receiver.PlaybackBroadcastReceiver;
@@ -30,7 +31,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: in notification display X to close notification
 //TODO: do not use optional from library
 //TODO: add and remove player source -> get sources, add/remove any, set sources.
-//TODO: add strategy for switching between songs -> when current is pause should I do not play next/previous song or if current is playing should I play next/previous song
+//TODO: add logic to notify all when clear model because view after that can display data but service does not work
 public class App extends Application {
 
 	private Player.Model<Song> model;
@@ -55,9 +56,9 @@ public class App extends Application {
 //				this,
 //				new LocalMultiplePlaybackFactory<Song>(
 //						new LocalPlaybackFactory<Song>(),
-//						new EndedNextPlayerSourceStrategy<Song>(),
-//						new EndedPreviousPlayerSourceStrategy<Song>(),
-//						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
+//						new ExampleNextPlayerSourceDetermineStrategyFactory<Song>(),
+//						new ExamplePreviousPlayerSourceDetermineStrategyFactory<Song>(),
+//						new ExampleOnCompletePlayerSourceDetermineStrategyFactory<Song>(),
 //						playbackSettings.isRepeatSingle(),
 //						playbackSettings.isShuffle()),
 //				playbackSettings);

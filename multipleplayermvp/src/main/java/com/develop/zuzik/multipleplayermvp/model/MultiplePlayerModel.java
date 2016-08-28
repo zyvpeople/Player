@@ -69,9 +69,9 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		this.playback.setMultiplePlaybackListener(null);
-		this.playback.clear();
+		this.playback.release();
 	}
 
 	@Override

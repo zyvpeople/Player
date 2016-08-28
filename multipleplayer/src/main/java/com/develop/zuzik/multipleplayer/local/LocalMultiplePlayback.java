@@ -82,14 +82,15 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		releaseCurrentPlaybackAndUpdateState();
-		this.multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<PlayerSource<SourceInfo>>(),
 				Optional.<PlaybackState<SourceInfo>>absent(),
 				false,
 				false);
+		notifyStateChanged();
+		this.multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	}
 
 	@Override
@@ -293,7 +294,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 			public void execute(Playback<SourceInfo> value) {
 				value.release();
 				LocalMultiplePlayback.this.currentPlayback = Optional.absent();
-				LocalMultiplePlayback.this.multiplePlaybackState.builder().currentPlaybackState(Optional.<PlaybackState<SourceInfo>>absent());
+				LocalMultiplePlayback.this.multiplePlaybackState = LocalMultiplePlayback.this.multiplePlaybackState.builder().currentPlaybackState(Optional.<PlaybackState<SourceInfo>>absent()).build();
 			}
 		});
 	}

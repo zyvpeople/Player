@@ -14,7 +14,7 @@ public interface Player {
 	interface Model<SourceInfo> {
 		void setSource(PlayerSource<SourceInfo> source);
 
-		void clear();
+		void release();
 
 		Optional<PlaybackState<SourceInfo>> getState();
 

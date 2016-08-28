@@ -18,7 +18,7 @@ public interface MultiplePlayer {
 	interface Model<SourceInfo> {
 		void setSources(List<PlayerSource<SourceInfo>> sources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy);
 
-		void clear();
+		void release();
 
 		Optional<MultiplePlaybackState<SourceInfo>> getState();
 

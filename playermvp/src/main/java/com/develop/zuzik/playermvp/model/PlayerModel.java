@@ -65,7 +65,7 @@ public class PlayerModel<SourceInfo> implements Player.Model<SourceInfo> {
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		getPlayback(new ParamAction<Playback<SourceInfo>>() {
 			@Override
 			public void execute(Playback<SourceInfo> value) {

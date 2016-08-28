@@ -17,6 +17,7 @@ public class MultiplePlaybackServiceIntentFactory {
 	private static final String EXTRA_SEEK_TO = "EXTRA_SEEK_TO";
 	private static final String EXTRA_SWITCH_TO_SOURCE = "EXTRA_SWITCH_TO_SOURCE";
 	private static final String ACTION_INIT = "ACTION_INIT";
+	private static final String ACTION_DESTROY = "ACTION_DESTROY";
 	private static final String ACTION_PLAY = "ACTION_PLAY";
 	private static final String ACTION_PAUSE = "ACTION_PAUSE";
 	private static final String ACTION_STOP = "ACTION_STOP";
@@ -53,6 +54,14 @@ public class MultiplePlaybackServiceIntentFactory {
 				}
 			}
 		});
+	}
+
+	public static Intent createForDestroy(Context context) {
+		return createWithAction(context, ACTION_DESTROY);
+	}
+
+	static void parseForDestroy(final Intent intent, final Action success) {
+		parseAction(intent, ACTION_DESTROY, success);
 	}
 
 	public static Intent createPlay(Context context) {
