@@ -21,6 +21,7 @@ import com.develop.zuzik.audioplayerexample.domain.ExampleNextControlAvailabilit
 import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousControlAvailabilityStrategy;
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayermvp.presenter.CompositeMultiplePlayerBasePresenter;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerHidingPresenter;
 import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.ClearSourcesMultiplePlayerPresenterDestroyStrategy;
@@ -77,6 +78,7 @@ public class PlayerFragment
 
 	private MultiplePlayer.SourcesPresenter<Song> presenter;
 	private MultiplePlayer.ControlPresenter<Song> controlPresenter;
+	private final CompositeMultiplePlayerBasePresenter<Song> compositePresenter = new CompositeMultiplePlayerBasePresenter<>();
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,6 +96,9 @@ public class PlayerFragment
 				new ExampleNextControlAvailabilityStrategy(),
 				new ExamplePreviousControlAvailabilityStrategy());
 
+		this.compositePresenter.add(this.presenter);
+		this.compositePresenter.add(this.controlPresenter);
+
 		this.presenter.setView(this);
 		this.controlPresenter.setView(this);
 
@@ -108,14 +113,12 @@ public class PlayerFragment
 						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
 						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
 
-		this.presenter.onCreate();
-		this.controlPresenter.onCreate();
+		this.compositePresenter.onCreate();
 	}
 
 	@Override
 	public void onDestroy() {
-		this.presenter.onDestroy();
-		this.controlPresenter.onDestroy();
+		this.compositePresenter.onDestroy();
 		super.onDestroy();
 	}
 
@@ -215,16 +218,14 @@ public class PlayerFragment
 			});
 		}
 
-		this.presenter.onAppear();
-		this.controlPresenter.onAppear();
+		this.compositePresenter.onAppear();
 
 		return view;
 	}
 
 	@Override
 	public void onDestroyView() {
-		this.presenter.onDisappear();
-		this.controlPresenter.onDisappear();
+		this.compositePresenter.onDisappear();
 		super.onDestroyView();
 	}
 

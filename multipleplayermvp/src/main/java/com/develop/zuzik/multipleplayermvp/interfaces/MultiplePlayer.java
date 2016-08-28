@@ -70,16 +70,9 @@ public interface MultiplePlayer {
 		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
 	}
 
-	interface SourcesPresenter<SourceInfo> {
+	interface SourcesPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
 		void setView(SourcesView<SourceInfo> view);
-
-		void onCreate();
-
-		void onDestroy();
-
-		void onAppear();
-
-		void onDisappear();
 
 		void onSetPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
 
@@ -97,18 +90,11 @@ public interface MultiplePlayer {
 
 	}
 
-	interface ActiveSourcePresenter<SourceInfo> {
+	interface ActiveSourcePresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
 		void setView(ActiveSourceView<SourceInfo> view);
 
 		void setPlayerSource(PlayerSource<SourceInfo> playerSource);
-
-		void onCreate();
-
-		void onDestroy();
-
-		void onAppear();
-
-		void onDisappear();
 	}
 
 	interface ControlView<SourceInfo> {
@@ -131,16 +117,9 @@ public interface MultiplePlayer {
 		void enableSwitchControls(boolean next, boolean previous);
 	}
 
-	interface ControlPresenter<SourceInfo> {
+	interface ControlPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
 		void setView(ControlView<SourceInfo> view);
-
-		void onCreate();
-
-		void onDestroy();
-
-		void onAppear();
-
-		void onDisappear();
 
 		void onPlay();
 
@@ -175,16 +154,9 @@ public interface MultiplePlayer {
 		void clearVideoView(VideoViewSetter setter);
 	}
 
-	interface VideoPresenter<SourceInfo> {
+	interface VideoPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
 		void setView(VideoView<SourceInfo> view);
-
-		void onCreate();
-
-		void onDestroy();
-
-		void onAppear();
-
-		void onDisappear();
 
 		void onVideoViewCreated();
 
@@ -199,9 +171,13 @@ public interface MultiplePlayer {
 
 	}
 
-	interface HidingPresenter<SourceInfo> {
+	interface HidingPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
 
 		void setView(HidingView<SourceInfo> view);
+
+	}
+
+	interface BasePresenter<SourceInfo> {
 
 		void onCreate();
 

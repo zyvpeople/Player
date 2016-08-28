@@ -28,12 +28,12 @@ public class MultiplePlayerSourcesPresenter<SourceInfo> implements MultiplePlaye
 	private MultiplePlayer.SourcesView<SourceInfo> view = NullMultiplePlayerSourcesView.getInstance();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 
-	private final MultiplePlayerPresenterDestroyStrategy destroyStrategy;
+	private final MultiplePlayerPresenterDestroyStrategy<SourceInfo> destroyStrategy;
 	private final DoNotReleaseIfExistsPlayerSourceReleaseStrategy<SourceInfo> releaseStrategy;
 
 	public MultiplePlayerSourcesPresenter(
 			MultiplePlayer.Model<SourceInfo> model,
-			MultiplePlayerPresenterDestroyStrategy destroyStrategy,
+			MultiplePlayerPresenterDestroyStrategy<SourceInfo> destroyStrategy,
 			DoNotReleaseIfExistsPlayerSourceReleaseStrategy<SourceInfo> releaseStrategy,
 			PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;

@@ -31,7 +31,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: in notification display X to close notification
 //TODO: do not use optional from library
 //TODO: add and remove player source -> get sources, add/remove any, set sources.
-//TODO: add logic to notify all when clear model because view after that can display data but service does not work
+//TODO: compare multiplePlayback with playback, and models. some methods added to multiplePlayback like notify when release, new presenters
 public class App extends Application {
 
 	private Player.Model<Song> model;
