@@ -11,10 +11,12 @@ import android.util.Log;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackServiceListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackServiceListener;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;
@@ -41,6 +43,7 @@ public class MultiplePlaybackService extends Service {
 	private final IBinder binder = new MultiplePlaybackServiceBinder();
 	private Optional<MultiplePlayback> multiplePlayback = Optional.absent();
 	private MultiplePlaybackListener multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
+	private MultiplePlaybackServiceListener multiplePlaybackServiceListener = NullMultiplePlaybackServiceListener.INSTANCE;
 	private int notificationId;
 	private MultiplePlayerNotificationFactory multiplePlayerNotificationFactory;
 
@@ -70,7 +73,7 @@ public class MultiplePlaybackService extends Service {
 		MultiplePlaybackServiceIntentFactory.parseForDestroy(intent, new Action() {
 			@Override
 			public void execute() {
-				stopForeground(true);
+				multiplePlaybackServiceListener.onReceiveDestroyCommand();
 			}
 		});
 		MultiplePlaybackServiceIntentFactory.parsePlay(intent, new Action() {
@@ -248,6 +251,10 @@ public class MultiplePlaybackService extends Service {
 		this.multiplePlaybackListener = multiplePlaybackListener != null ? multiplePlaybackListener : NullMultiplePlaybackListener.getInstance();
 	}
 
+	public void setMultiplePlaybackServiceListener(MultiplePlaybackServiceListener listener) {
+		this.multiplePlaybackServiceListener = listener != null ? listener : NullMultiplePlaybackServiceListener.INSTANCE;
+	}
+
 	private void getMultiplePlayback(ParamAction<MultiplePlayback> success) {
 		getMultiplePlayback(success, NullAction.INSTANCE);
 	}
@@ -269,7 +276,6 @@ public class MultiplePlaybackService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.d(getClass().getSimpleName(), "onDestroy");
-		setMultiplePlaybackListener(null);
 		getMultiplePlayback(new ParamAction<MultiplePlayback>() {
 			@Override
 			public void execute(MultiplePlayback multiplePlayback1) {
@@ -278,6 +284,8 @@ public class MultiplePlaybackService extends Service {
 		});
 		this.multiplePlayback = Optional.absent();
 		stopForeground(true);
+		setMultiplePlaybackListener(null);
+		setMultiplePlaybackServiceListener(null);
 		super.onDestroy();
 	}
 

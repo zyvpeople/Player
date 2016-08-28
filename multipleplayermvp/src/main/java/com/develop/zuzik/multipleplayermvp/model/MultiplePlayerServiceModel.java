@@ -9,9 +9,11 @@ import android.os.IBinder;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackServiceListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
 import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.ReleasePlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackService;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceInitializeBundle;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory;
@@ -28,6 +30,7 @@ import com.fernandocejas.arrow.optional.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.create;
@@ -245,6 +248,13 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 				@Override
 				public void onError(Throwable throwable) {
 					compositeListener.onError(throwable);
+				}
+			});
+			boundedService.get().setMultiplePlaybackServiceListener(new MultiplePlaybackServiceListener() {
+				@Override
+				public void onReceiveDestroyCommand() {
+					//TODO: refactor
+					release();
 				}
 			});
 			notifyOnUpdate();
