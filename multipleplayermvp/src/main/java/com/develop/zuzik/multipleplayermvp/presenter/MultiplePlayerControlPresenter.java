@@ -1,24 +1,15 @@
 package com.develop.zuzik.multipleplayermvp.presenter;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayermvp.interfaces.ControlAvailabilityStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerControlView;
-import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerView;
 import com.develop.zuzik.player.analyzer.PlaybackStateAnalyzer;
 import com.develop.zuzik.player.interfaces.PlaybackState;
-import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
-import com.develop.zuzik.player.source.PlayerSource;
-import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
 import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
 
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * User: zuzik
@@ -27,10 +18,17 @@ import java.util.concurrent.TimeUnit;
 public class MultiplePlayerControlPresenter<SourceInfo> implements MultiplePlayer.ControlPresenter<SourceInfo> {
 
 	private final MultiplePlayer.Model<SourceInfo> model;
+	private final ControlAvailabilityStrategy<SourceInfo> nextControlAvailabilityStrategy;
+	private final ControlAvailabilityStrategy<SourceInfo> previousControlAvailabilityStrategy;
 	private MultiplePlayer.ControlView<SourceInfo> view = NullMultiplePlayerControlView.getInstance();
 
-	public MultiplePlayerControlPresenter(MultiplePlayer.Model<SourceInfo> model) {
+	public MultiplePlayerControlPresenter(
+			MultiplePlayer.Model<SourceInfo> model,
+			ControlAvailabilityStrategy<SourceInfo> nextControlAvailabilityStrategy,
+			ControlAvailabilityStrategy<SourceInfo> previousControlAvailabilityStrategy) {
 		this.model = model;
+		this.nextControlAvailabilityStrategy = nextControlAvailabilityStrategy;
+		this.previousControlAvailabilityStrategy = previousControlAvailabilityStrategy;
 	}
 
 	@Override
@@ -147,6 +145,9 @@ public class MultiplePlayerControlPresenter<SourceInfo> implements MultiplePlaye
 					analyzer.playAvailable(),
 					analyzer.pauseAvailable(),
 					analyzer.stopAvailable());
+			this.view.enableSwitchControls(
+					this.nextControlAvailabilityStrategy.available(state.get().playerSources, state.get().currentPlaybackState.get().playerSource, state.get().shuffle),
+					this.previousControlAvailabilityStrategy.available(state.get().playerSources, state.get().currentPlaybackState.get().playerSource, state.get().shuffle));
 
 			if (playbackState.maxTimeInMilliseconds.isPresent()) {
 				int currentTime = playbackState.currentTimeInMilliseconds;
@@ -158,6 +159,9 @@ public class MultiplePlayerControlPresenter<SourceInfo> implements MultiplePlaye
 				this.view.setProgress(0, 100);
 			}
 		} else {
+			this.view.enablePlayControls(false, false, false);
+			this.view.enableSwitchControls(false, false);
+
 			this.view.hideProgress();
 			this.view.setProgress(0, 100);
 		}

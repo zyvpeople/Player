@@ -7,8 +7,8 @@ import android.util.Log;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
-import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
-import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceDetermineStrategyFactory;
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
@@ -36,25 +36,25 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	private final Context context;
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy;
-	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
-	private final PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory;
 	private MultiplePlaybackState<SourceInfo> multiplePlaybackState;
 	private MultiplePlaybackListener<SourceInfo> multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	private Optional<Playback<SourceInfo>> currentPlayback = Optional.absent();
 
 	public LocalMultiplePlayback(Context context,
 								 PlaybackFactory<SourceInfo> playbackFactory,
-								 PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
-								 PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
-								 PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
+								 PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory,
+								 PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory,
+								 PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory,
 								 boolean repeatSingle,
 								 boolean shuffle) {
 		this.context = new ContextWrapper(context).getApplicationContext();
 		this.playbackFactory = playbackFactory;
-		this.nextPlayerSourceStrategy = nextPlayerSourceStrategy;
-		this.previousPlayerSourceStrategy = previousPlayerSourceStrategy;
-		this.onCompletePlayerSourceStrategyFactory = onCompletePlayerSourceStrategyFactory;
+		this.nextPlayerSourceDetermineStrategyFactory = nextPlayerSourceDetermineStrategyFactory;
+		this.previousPlayerSourceDetermineStrategyFactory = previousPlayerSourceDetermineStrategyFactory;
+		this.onCompletePlayerSourceDetermineStrategyFactory = onCompletePlayerSourceDetermineStrategyFactory;
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<PlayerSource<SourceInfo>>(),
 				Optional.<PlaybackState<SourceInfo>>absent(),
@@ -82,14 +82,15 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		releaseCurrentPlaybackAndUpdateState();
-		this.multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 		this.multiplePlaybackState = new MultiplePlaybackState<>(
 				new ArrayList<PlayerSource<SourceInfo>>(),
 				Optional.<PlaybackState<SourceInfo>>absent(),
 				false,
 				false);
+		notifyStateChanged();
+		this.multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
 	}
 
 	@Override
@@ -202,21 +203,26 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	@Override
-	public void setPlayerSources(List<PlayerSource<SourceInfo>> playerSources) {
-		boolean playerSourcesEqual = getMultiplePlaybackState().playerSources.equals(playerSources);
-		if (playerSourcesEqual) {
-			Log.w(getClass().getSimpleName(), "Attempt to add same player sources");
-			return;
-		}
-		releaseCurrentPlaybackAndUpdateState();
-		this.multiplePlaybackState = this.multiplePlaybackState.builder().playerSources(playerSources).build();
-		boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
-		if (hasPlayerSources) {
-			PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
-			setAndInitCurrentPlayback(playerSource);
-		} else {
-			notifyStateChanged();
-		}
+	public void setPlayerSources(final List<PlayerSource<SourceInfo>> playerSources, final PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
+		currentPlayback(
+				new ParamAction<Playback<SourceInfo>>() {
+					@Override
+					public void execute(Playback<SourceInfo> value) {
+						if (releaseStrategy.releaseCurrentPlayback(playerSources, value.getPlaybackState().playerSource)) {
+							releaseCurrentPlaybackAndUpdateState();
+							savePlayerSourcesAndInitFirst(playerSources);
+						} else {
+							multiplePlaybackState = multiplePlaybackState.builder().playerSources(playerSources).build();
+							notifyStateChanged();
+						}
+					}
+				},
+				new Action() {
+					@Override
+					public void execute() {
+						savePlayerSourcesAndInitFirst(playerSources);
+					}
+				});
 	}
 
 	@Override
@@ -246,12 +252,12 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 
 	@Override
 	public void playNextPlayerSource() {
-		determineAndPlayPlayerSource(this.nextPlayerSourceStrategy);
+		determineAndPlayPlayerSource(this.nextPlayerSourceDetermineStrategyFactory);
 	}
 
 	@Override
 	public void playPreviousPlayerSource() {
-		determineAndPlayPlayerSource(this.previousPlayerSourceStrategy);
+		determineAndPlayPlayerSource(this.previousPlayerSourceDetermineStrategyFactory);
 	}
 
 	private boolean shouldSwitchToNewPlayerSource(PlaybackState<SourceInfo> playbackState) {
@@ -259,7 +265,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 	}
 
 	private void switchToNewPlayerSource() {
-		determineAndPlayPlayerSource(this.onCompletePlayerSourceStrategyFactory.create(getMultiplePlaybackState().shuffle));
+		determineAndPlayPlayerSource(this.onCompletePlayerSourceDetermineStrategyFactory);
 	}
 
 	private void setAndInitCurrentPlayback(PlayerSource<SourceInfo> playerSource) {
@@ -288,7 +294,7 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 			public void execute(Playback<SourceInfo> value) {
 				value.release();
 				LocalMultiplePlayback.this.currentPlayback = Optional.absent();
-				LocalMultiplePlayback.this.multiplePlaybackState.builder().currentPlaybackState(Optional.<PlaybackState<SourceInfo>>absent());
+				LocalMultiplePlayback.this.multiplePlaybackState = LocalMultiplePlayback.this.multiplePlaybackState.builder().currentPlaybackState(Optional.<PlaybackState<SourceInfo>>absent()).build();
 			}
 		});
 	}
@@ -320,12 +326,24 @@ public class LocalMultiplePlayback<SourceInfo> implements MultiplePlayback<Sourc
 		return playback;
 	}
 
-	private void determineAndPlayPlayerSource(final PlayerSourceStrategy<SourceInfo> strategy) {
+	private void savePlayerSourcesAndInitFirst(List<PlayerSource<SourceInfo>> playerSources) {
+		this.multiplePlaybackState = this.multiplePlaybackState.builder().playerSources(playerSources).build();
+		boolean hasPlayerSources = !getMultiplePlaybackState().playerSources.isEmpty();
+		if (hasPlayerSources) {
+			PlayerSource<SourceInfo> playerSource = getMultiplePlaybackState().playerSources.get(0);
+			setAndInitCurrentPlayback(playerSource);
+		} else {
+			notifyStateChanged();
+		}
+	}
+
+	private void determineAndPlayPlayerSource(final PlayerSourceDetermineStrategyFactory<SourceInfo> strategyFactory) {
 		currentPlayback(
 				new ParamAction<Playback<SourceInfo>>() {
 					@Override
 					public void execute(Playback<SourceInfo> playback) {
-						Optional<PlayerSource<SourceInfo>> newPlayerSource = strategy.determine(LocalMultiplePlayback.this.getMultiplePlaybackState().playerSources, playback.getPlaybackState().playerSource);
+						Optional<PlayerSource<SourceInfo>> newPlayerSource = strategyFactory.create(getMultiplePlaybackState().shuffle)
+								.determine(LocalMultiplePlayback.this.getMultiplePlaybackState().playerSources, playback.getPlaybackState().playerSource);
 						if (!newPlayerSource.isPresent()) {
 							Log.w(LocalMultiplePlayback.this.getClass().getSimpleName(), "Player source is not determined");
 							return;

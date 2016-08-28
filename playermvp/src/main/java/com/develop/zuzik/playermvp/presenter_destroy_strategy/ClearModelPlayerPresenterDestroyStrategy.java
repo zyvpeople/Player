@@ -10,6 +10,6 @@ import com.develop.zuzik.playermvp.interfaces.PlayerPresenterDestroyStrategy;
 public class ClearModelPlayerPresenterDestroyStrategy implements PlayerPresenterDestroyStrategy {
 	@Override
 	public void onDestroy(Player.Model model) {
-		model.clear();
+		model.release();
 	}
 }

@@ -18,7 +18,7 @@ public interface MultiplePlayback<SourceInfo> {
 
 	void setMultiplePlaybackListener(MultiplePlaybackListener<SourceInfo> multiplePlaybackListener);
 
-	void clear();
+	void release();
 
 	void play();
 
@@ -38,7 +38,7 @@ public interface MultiplePlayback<SourceInfo> {
 
 	void simulateError();
 
-	void setPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
+	void setPlayerSources(List<PlayerSource<SourceInfo>> playerSources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy);
 
 	void playPlayerSource(PlayerSource<SourceInfo> playerSource);
 

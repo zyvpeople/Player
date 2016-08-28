@@ -7,8 +7,9 @@ import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDes
  * User: zuzik
  * Date: 7/4/16
  */
-public class DoNothingMultiplePlayerPresenterDestroyStrategy implements MultiplePlayerPresenterDestroyStrategy {
+public class DoNothingMultiplePlayerPresenterDestroyStrategy<SourceInfo> implements MultiplePlayerPresenterDestroyStrategy<SourceInfo> {
 	@Override
-	public void onDestroy(MultiplePlayer.Model model) {
+	public void onDestroy(MultiplePlayer.Model<SourceInfo> model) {
+		
 	}
 }

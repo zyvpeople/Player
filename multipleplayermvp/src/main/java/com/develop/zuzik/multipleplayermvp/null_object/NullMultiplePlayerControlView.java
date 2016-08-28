@@ -53,4 +53,9 @@ public class NullMultiplePlayerControlView<SourceInfo> implements MultiplePlayer
 	public void enablePlayControls(boolean play, boolean pause, boolean stop) {
 
 	}
+
+	@Override
+	public void enableSwitchControls(boolean next, boolean previous) {
+
+	}
 }

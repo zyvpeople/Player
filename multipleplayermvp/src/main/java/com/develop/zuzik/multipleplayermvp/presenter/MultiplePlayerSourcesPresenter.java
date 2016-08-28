@@ -1,14 +1,14 @@
 package com.develop.zuzik.multipleplayermvp.presenter;
 
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerView;
+import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerSourcesView;
 import com.develop.zuzik.player.analyzer.PlaybackStateAnalyzer;
 import com.develop.zuzik.player.interfaces.PlayerExceptionMessageProvider;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.transformation.ExceptionToMessageTransformation;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.player.interfaces.PlaybackState;
-import com.develop.zuzik.player.interfaces.State;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.fernandocejas.arrow.functions.Function;
 import com.fernandocejas.arrow.optional.Optional;
@@ -16,36 +16,35 @@ import com.fernandocejas.arrow.optional.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * User: zuzik
  * Date: 6/4/16
  */
-public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Presenter<SourceInfo> {
+public class MultiplePlayerSourcesPresenter<SourceInfo> implements MultiplePlayer.SourcesPresenter<SourceInfo> {
 
 	private final MultiplePlayer.Model<SourceInfo> model;
-	private MultiplePlayer.View<SourceInfo> view = NullMultiplePlayerView.getInstance();
+	private MultiplePlayer.SourcesView<SourceInfo> view = NullMultiplePlayerSourcesView.getInstance();
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 
-	private final MultiplePlayerPresenterDestroyStrategy destroyStrategy;
+	private final MultiplePlayerPresenterDestroyStrategy<SourceInfo> destroyStrategy;
+	private final DoNotReleaseIfExistsPlayerSourceReleaseStrategy<SourceInfo> releaseStrategy;
 
-	public MultiplePlayerPresenter(
+	public MultiplePlayerSourcesPresenter(
 			MultiplePlayer.Model<SourceInfo> model,
-			MultiplePlayerPresenterDestroyStrategy destroyStrategy,
+			MultiplePlayerPresenterDestroyStrategy<SourceInfo> destroyStrategy,
+			DoNotReleaseIfExistsPlayerSourceReleaseStrategy<SourceInfo> releaseStrategy,
 			PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;
 		this.destroyStrategy = destroyStrategy;
+		this.releaseStrategy = releaseStrategy;
 		this.exceptionToMessageTransformation = new ExceptionToMessageTransformation(exceptionMessageProvider);
 	}
 
 	@Override
-	public void setView(MultiplePlayer.View<SourceInfo> view) {
-		this.view = view != null ? view : NullMultiplePlayerView.<SourceInfo>getInstance();
+	public void setView(MultiplePlayer.SourcesView<SourceInfo> view) {
+		this.view = view != null ? view : NullMultiplePlayerSourcesView.<SourceInfo>getInstance();
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	@Override
 	public void onDestroy() {
-		this.view = NullMultiplePlayerView.getInstance();
+		this.view = NullMultiplePlayerSourcesView.getInstance();
 		this.destroyStrategy.onDestroy(this.model);
 	}
 
@@ -71,7 +70,7 @@ public class MultiplePlayerPresenter<SourceInfo> implements MultiplePlayer.Prese
 
 	@Override
 	public void onSetPlayerSources(List<PlayerSource<SourceInfo>> playerSources) {
-		this.model.setSources(playerSources);
+		this.model.setSources(playerSources, this.releaseStrategy);
 	}
 
 	@Override

@@ -9,8 +9,11 @@ import android.os.IBinder;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackServiceListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.ReleasePlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackService;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceInitializeBundle;
 import com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory;
@@ -27,6 +30,7 @@ import com.fernandocejas.arrow.optional.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.develop.zuzik.multipleplayer.service.MultiplePlaybackServiceIntentFactory.create;
@@ -92,15 +96,13 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 	}
 
 	@Override
-	public void setSources(List<PlayerSource<SourceInfo>> playerSources) {
+	public void setSources(List<PlayerSource<SourceInfo>> playerSources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
 		this.sources = Optional.of(playerSources);
-		startServiceForInit(playerSources);
-		this.context.bindService(create(this.context), this.serviceConnection, Context.BIND_AUTO_CREATE);
-
+		startServiceForInit(playerSources, releaseStrategy);
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		this.context.unbindService(this.serviceConnection);
 		this.context.stopService(create(this.context));
 		this.sources = Optional.absent();
@@ -201,13 +203,14 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		startService(createSimulateError(this.context));
 	}
 
-	private void startServiceForInit(List<PlayerSource<SourceInfo>> sources) {
+	private void startServiceForInit(List<PlayerSource<SourceInfo>> sources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
 		startService(
 				MultiplePlaybackServiceIntentFactory.createForInit(
 						this.context,
 						new MultiplePlaybackServiceInitializeBundle<>(
 								this.playbackFactory,
 								sources,
+								releaseStrategy,
 								this.notificationId,
 								this.playerNotificationFactory)));
 	}
@@ -218,6 +221,7 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 		if (!expectedServiceName.equals(serviceName)) {
 			throw new ServiceIsNotDeclaredInManifestException(MultiplePlaybackService.class);
 		}
+		this.context.bindService(create(this.context), this.serviceConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	private void notifyOnUpdate() {
@@ -244,6 +248,13 @@ public class MultiplePlayerServiceModel<SourceInfo> implements MultiplePlayer.Mo
 				@Override
 				public void onError(Throwable throwable) {
 					compositeListener.onError(throwable);
+				}
+			});
+			boundedService.get().setMultiplePlaybackServiceListener(new MultiplePlaybackServiceListener() {
+				@Override
+				public void onReceiveDestroyCommand() {
+					//TODO: refactor
+					release();
 				}
 			});
 			notifyOnUpdate();

@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
-import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategy;
-import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceStrategyFactory;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceDetermineStrategyFactory;
 import com.develop.zuzik.player.interfaces.PlaybackFactory;
 
 /**
@@ -15,23 +15,23 @@ import com.develop.zuzik.player.interfaces.PlaybackFactory;
 public class LocalMultiplePlaybackFactory<SourceInfo> implements MultiplePlaybackFactory<SourceInfo> {
 
 	private final PlaybackFactory<SourceInfo> playbackFactory;
-	private final PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy;
-	private final PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy;
-	private final PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory;
+	private final PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory;
 	private final boolean repeatSingle;
 	private final boolean shuffle;
 
 	public LocalMultiplePlaybackFactory(
 			PlaybackFactory<SourceInfo> playbackFactory,
-			PlayerSourceStrategy<SourceInfo> nextPlayerSourceStrategy,
-			PlayerSourceStrategy<SourceInfo> previousPlayerSourceStrategy,
-			PlayerSourceStrategyFactory<SourceInfo> onCompletePlayerSourceStrategyFactory,
+			PlayerSourceDetermineStrategyFactory<SourceInfo> nextPlayerSourceDetermineStrategyFactory,
+			PlayerSourceDetermineStrategyFactory<SourceInfo> previousPlayerSourceDetermineStrategyFactory,
+			PlayerSourceDetermineStrategyFactory<SourceInfo> onCompletePlayerSourceDetermineStrategyFactory,
 			boolean repeatSingle,
 			boolean shuffle) {
 		this.playbackFactory = playbackFactory;
-		this.nextPlayerSourceStrategy = nextPlayerSourceStrategy;
-		this.previousPlayerSourceStrategy = previousPlayerSourceStrategy;
-		this.onCompletePlayerSourceStrategyFactory = onCompletePlayerSourceStrategyFactory;
+		this.nextPlayerSourceDetermineStrategyFactory = nextPlayerSourceDetermineStrategyFactory;
+		this.previousPlayerSourceDetermineStrategyFactory = previousPlayerSourceDetermineStrategyFactory;
+		this.onCompletePlayerSourceDetermineStrategyFactory = onCompletePlayerSourceDetermineStrategyFactory;
 		this.repeatSingle = repeatSingle;
 		this.shuffle = shuffle;
 	}
@@ -41,9 +41,9 @@ public class LocalMultiplePlaybackFactory<SourceInfo> implements MultiplePlaybac
 		return new LocalMultiplePlayback<>(
 				context,
 				this.playbackFactory,
-				this.nextPlayerSourceStrategy,
-				this.previousPlayerSourceStrategy,
-				this.onCompletePlayerSourceStrategyFactory,
+				this.nextPlayerSourceDetermineStrategyFactory,
+				this.previousPlayerSourceDetermineStrategyFactory,
+				this.onCompletePlayerSourceDetermineStrategyFactory,
 				this.repeatSingle,
 				this.shuffle);
 	}

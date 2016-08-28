@@ -10,7 +10,7 @@ import java.util.List;
  * User: zuzik
  * Date: 6/13/16
  */
-public interface PlayerSourceStrategy<SourceInfo> extends Serializable{
+public interface PlayerSourceDetermineStrategy<SourceInfo> extends Serializable{
 	Optional<PlayerSource<SourceInfo>> determine(
 			List<PlayerSource<SourceInfo>> playerSources,
 			PlayerSource<SourceInfo> currentPlayerSource);

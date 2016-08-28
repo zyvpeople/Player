@@ -87,7 +87,7 @@ public class PlayerServiceModel<SourceInfo> implements Player.Model<SourceInfo> 
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		this.context.unbindService(this.serviceConnection);
 		this.context.stopService(create(this.context));
 		this.source = Optional.absent();

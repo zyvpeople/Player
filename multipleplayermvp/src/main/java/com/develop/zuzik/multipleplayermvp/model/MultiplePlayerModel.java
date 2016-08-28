@@ -6,6 +6,7 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.composite.CompositeListener;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
@@ -63,14 +64,14 @@ public class MultiplePlayerModel<SourceInfo> implements MultiplePlayer.Model<Sou
 	}
 
 	@Override
-	public void setSources(List<PlayerSource<SourceInfo>> playerSources) {
-		this.playback.setPlayerSources(playerSources);
+	public void setSources(List<PlayerSource<SourceInfo>> playerSources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy) {
+		this.playback.setPlayerSources(playerSources, releaseStrategy);
 	}
 
 	@Override
-	public void clear() {
+	public void release() {
 		this.playback.setMultiplePlaybackListener(null);
-		this.playback.clear();
+		this.playback.release();
 	}
 
 	@Override

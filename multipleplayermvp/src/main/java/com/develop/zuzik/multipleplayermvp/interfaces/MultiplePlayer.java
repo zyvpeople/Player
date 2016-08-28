@@ -1,6 +1,7 @@
 package com.develop.zuzik.multipleplayermvp.interfaces;
 
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;
 import com.develop.zuzik.player.source.PlayerSource;
@@ -15,9 +16,9 @@ import java.util.List;
 public interface MultiplePlayer {
 
 	interface Model<SourceInfo> {
-		void setSources(List<PlayerSource<SourceInfo>> sources);
+		void setSources(List<PlayerSource<SourceInfo>> sources, PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy);
 
-		void clear();
+		void release();
 
 		Optional<MultiplePlaybackState<SourceInfo>> getState();
 
@@ -58,7 +59,7 @@ public interface MultiplePlayer {
 		}
 	}
 
-	interface View<SourceInfo> {
+	interface SourcesView<SourceInfo> {
 
 		void showError(String message);
 
@@ -69,16 +70,9 @@ public interface MultiplePlayer {
 		void displaySources(List<PlayerSource<SourceInfo>> playerSources);
 	}
 
-	interface Presenter<SourceInfo> {
-		void setView(View<SourceInfo> view);
+	interface SourcesPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
 
-		void onCreate();
-
-		void onDestroy();
-
-		void onAppear();
-
-		void onDisappear();
+		void setView(SourcesView<SourceInfo> view);
 
 		void onSetPlayerSources(List<PlayerSource<SourceInfo>> playerSources);
 
@@ -96,18 +90,11 @@ public interface MultiplePlayer {
 
 	}
 
-	interface ActiveSourcePresenter<SourceInfo> {
+	interface ActiveSourcePresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
 		void setView(ActiveSourceView<SourceInfo> view);
 
 		void setPlayerSource(PlayerSource<SourceInfo> playerSource);
-
-		void onCreate();
-
-		void onDestroy();
-
-		void onAppear();
-
-		void onDisappear();
 	}
 
 	interface ControlView<SourceInfo> {
@@ -126,18 +113,13 @@ public interface MultiplePlayer {
 		void hideProgress();
 
 		void enablePlayControls(boolean play, boolean pause, boolean stop);
+
+		void enableSwitchControls(boolean next, boolean previous);
 	}
 
-	interface ControlPresenter<SourceInfo> {
+	interface ControlPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
 		void setView(ControlView<SourceInfo> view);
-
-		void onCreate();
-
-		void onDestroy();
-
-		void onAppear();
-
-		void onDisappear();
 
 		void onPlay();
 
@@ -172,8 +154,30 @@ public interface MultiplePlayer {
 		void clearVideoView(VideoViewSetter setter);
 	}
 
-	interface VideoPresenter<SourceInfo> {
+	interface VideoPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
 		void setView(VideoView<SourceInfo> view);
+
+		void onVideoViewCreated();
+
+		void onVideoViewDestroyed();
+	}
+
+	interface HidingView<SourceInfo> {
+
+		void displayPlayerView();
+
+		void doNotDisplayPlayerView();
+
+	}
+
+	interface HidingPresenter<SourceInfo> extends BasePresenter<SourceInfo> {
+
+		void setView(HidingView<SourceInfo> view);
+
+	}
+
+	interface BasePresenter<SourceInfo> {
 
 		void onCreate();
 
@@ -182,9 +186,5 @@ public interface MultiplePlayer {
 		void onAppear();
 
 		void onDisappear();
-
-		void onVideoViewCreated();
-
-		void onVideoViewDestroyed();
 	}
 }

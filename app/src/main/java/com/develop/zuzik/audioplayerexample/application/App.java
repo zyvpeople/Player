@@ -2,13 +2,13 @@ package com.develop.zuzik.audioplayerexample.application;
 
 import android.app.Application;
 
-import com.develop.zuzik.audioplayerexample.domain.ExampleOnCompletePlayerSourceStrategyFactory;
+import com.develop.zuzik.audioplayerexample.domain.ExampleNextPlayerSourceDetermineStrategyFactory;
+import com.develop.zuzik.audioplayerexample.domain.ExampleOnCompletePlayerSourceDetermineStrategyFactory;
+import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousPlayerSourceDetermineStrategyFactory;
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.audioplayerexample.presentation.notifications.SongMultiplePlayerNotificationFactory;
-import com.develop.zuzik.audioplayerexample.presentation.notifications.SongPlayerNotificationFactory;
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory;
-import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy;
-import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerModel;
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel;
@@ -18,7 +18,6 @@ import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.local.LocalPlaybackFactory;
 import com.develop.zuzik.playermvp.interfaces.Player;
 import com.develop.zuzik.playermvp.model.PlayerModel;
-import com.develop.zuzik.playermvp.model.PlayerServiceModel;
 import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 
 /**
@@ -32,8 +31,7 @@ import com.develop.zuzik.playermvp.settings.InMemoryPlaybackSettings;
 //TODO: in notification display X to close notification
 //TODO: do not use optional from library
 //TODO: add and remove player source -> get sources, add/remove any, set sources.
-//TODO: add strategy for setSources method -> clear current playback or if current exist leave it play
-//TODO: add strategy for switching between songs -> when current is pause should I do not play next/previous song or if current is playing should I play next/previous song
+//TODO: compare multiplePlayback with playback, and models. some methods added to multiplePlayback like notify when release, new presenters
 public class App extends Application {
 
 	private Player.Model<Song> model;
@@ -58,9 +56,9 @@ public class App extends Application {
 //				this,
 //				new LocalMultiplePlaybackFactory<Song>(
 //						new LocalPlaybackFactory<Song>(),
-//						new EndedNextPlayerSourceStrategy<Song>(),
-//						new EndedPreviousPlayerSourceStrategy<Song>(),
-//						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
+//						new ExampleNextPlayerSourceDetermineStrategyFactory<Song>(),
+//						new ExamplePreviousPlayerSourceDetermineStrategyFactory<Song>(),
+//						new ExampleOnCompletePlayerSourceDetermineStrategyFactory<Song>(),
 //						playbackSettings.isRepeatSingle(),
 //						playbackSettings.isShuffle()),
 //				playbackSettings);
@@ -69,9 +67,9 @@ public class App extends Application {
 				playbackSettings,
 				new LocalMultiplePlaybackFactory<>(
 						new LocalPlaybackFactory<Song>(),
-						new EndedNextPlayerSourceStrategy<Song>(),
-						new EndedPreviousPlayerSourceStrategy<Song>(),
-						new ExampleOnCompletePlayerSourceStrategyFactory<Song>(),
+						new ExampleNextPlayerSourceDetermineStrategyFactory<>(),
+						new ExamplePreviousPlayerSourceDetermineStrategyFactory<>(),
+						new ExampleOnCompletePlayerSourceDetermineStrategyFactory<Song>(),
 						playbackSettings.isRepeatSingle(),
 						playbackSettings.isShuffle()),
 				100500,

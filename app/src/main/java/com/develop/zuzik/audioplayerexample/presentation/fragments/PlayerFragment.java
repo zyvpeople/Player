@@ -17,15 +17,20 @@ import android.widget.Toast;
 import com.develop.zuzik.audioplayerexample.BuildConfig;
 import com.develop.zuzik.audioplayerexample.R;
 import com.develop.zuzik.audioplayerexample.application.App;
+import com.develop.zuzik.audioplayerexample.domain.ExampleNextControlAvailabilityStrategy;
+import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousControlAvailabilityStrategy;
 import com.develop.zuzik.audioplayerexample.domain.Song;
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
+import com.develop.zuzik.multipleplayermvp.presenter.CompositeMultiplePlayerBasePresenter;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter;
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerHidingPresenter;
+import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.ClearSourcesMultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.volume.Volume;
 import com.develop.zuzik.audioplayerexample.presentation.adapters.SongViewPagerAdapter;
 import com.develop.zuzik.audioplayerexample.presentation.player_exception_message_provider.ExamplePlayerExceptionMessageProvider;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
-import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter;
-import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy;
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerSourcesPresenter;
 import com.develop.zuzik.player.source.PlayerSource;
 import com.develop.zuzik.player.source.UriPlayerSource;
 
@@ -41,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class PlayerFragment
 		extends Fragment
-		implements MultiplePlayer.View<Song>, MultiplePlayer.ControlView<Song> {
+		implements MultiplePlayer.SourcesView<Song>, MultiplePlayer.ControlView<Song> {
 
 	private static final String TAG_STATE_PLAY = "TAG_STATE_PLAY";
 	private static final String TAG_STATE_PAUSE = "TAG_STATE_PAUSE";
@@ -66,10 +71,14 @@ public class PlayerFragment
 	private ImageView shuffle;
 	private ImageView playPause;
 
+	private ImageView skipNext;
+	private ImageView skipPrevious;
+
 	private SongViewPagerAdapter adapter;
 
-	private MultiplePlayer.Presenter<Song> presenter;
+	private MultiplePlayer.SourcesPresenter<Song> presenter;
 	private MultiplePlayer.ControlPresenter<Song> controlPresenter;
+	private final CompositeMultiplePlayerBasePresenter<Song> compositePresenter = new CompositeMultiplePlayerBasePresenter<>();
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,11 +86,18 @@ public class PlayerFragment
 
 		new Volume().useVolumeKeysToControlPlaybackVolume(getActivity());
 
-		this.presenter = new MultiplePlayerPresenter<>(
+		this.presenter = new MultiplePlayerSourcesPresenter<>(
 				getModel(),
-				new DoNothingMultiplePlayerPresenterDestroyStrategy(),
+				new ClearSourcesMultiplePlayerPresenterDestroyStrategy<>(),
+				new DoNotReleaseIfExistsPlayerSourceReleaseStrategy<>(),
 				new ExamplePlayerExceptionMessageProvider());
-		this.controlPresenter = new MultiplePlayerControlPresenter<>(getModel());
+		this.controlPresenter = new MultiplePlayerControlPresenter<>(
+				getModel(),
+				new ExampleNextControlAvailabilityStrategy(),
+				new ExamplePreviousControlAvailabilityStrategy());
+
+		this.compositePresenter.add(this.presenter);
+		this.compositePresenter.add(this.controlPresenter);
 
 		this.presenter.setView(this);
 		this.controlPresenter.setView(this);
@@ -97,14 +113,12 @@ public class PlayerFragment
 						new UriPlayerSource<>(new Song("Enter Shikari", "Enter Shikari", R.drawable.enter_shikari_1), "http://www.ex.ua/get/147185586"),
 						new RawResourcePlayerSource<>(new Song("Enter Shikari", "Take it back", R.drawable.enter_shikari_2), R.raw.song_take_it_back)));
 
-		this.presenter.onCreate();
-		this.controlPresenter.onCreate();
+		this.compositePresenter.onCreate();
 	}
 
 	@Override
 	public void onDestroy() {
-		this.presenter.onDestroy();
-		this.controlPresenter.onDestroy();
+		this.compositePresenter.onDestroy();
 		super.onDestroy();
 	}
 
@@ -121,8 +135,8 @@ public class PlayerFragment
 		this.singer = (TextView) view.findViewById(R.id.singer);
 		this.song = (TextView) view.findViewById(R.id.song);
 		this.repeat = (ImageView) view.findViewById(R.id.repeat);
-		ImageView skipPrevious = (ImageView) view.findViewById(R.id.skipPrevious);
-		ImageView skipNext = (ImageView) view.findViewById(R.id.skipNext);
+		this.skipPrevious = (ImageView) view.findViewById(R.id.skipPrevious);
+		this.skipNext = (ImageView) view.findViewById(R.id.skipNext);
 		this.shuffle = (ImageView) view.findViewById(R.id.shuffle);
 		this.playPause = (ImageView) view.findViewById(R.id.playPause);
 
@@ -204,16 +218,14 @@ public class PlayerFragment
 			});
 		}
 
-		this.presenter.onAppear();
-		this.controlPresenter.onAppear();
+		this.compositePresenter.onAppear();
 
 		return view;
 	}
 
 	@Override
 	public void onDestroyView() {
-		this.presenter.onDisappear();
-		this.controlPresenter.onDisappear();
+		this.compositePresenter.onDisappear();
 		super.onDestroyView();
 	}
 
@@ -240,6 +252,7 @@ public class PlayerFragment
 	public void doNotDisplayCurrentSource() {
 		this.singer.setText("");
 		this.song.setText("");
+		this.viewPager.setCurrentItem(-1);
 	}
 
 	@Override
@@ -248,6 +261,11 @@ public class PlayerFragment
 			this.viewPager.removeOnPageChangeListener(this.onPageChangeListener);
 			this.adapter.setSongs(playerSources);
 			this.adapter.notifyDataSetChanged();
+
+			if (playerSources.isEmpty()) {
+				this.adapter = new SongViewPagerAdapter(getChildFragmentManager(), new ArrayList<PlayerSource<Song>>());
+				this.viewPager.setAdapter(this.adapter);
+			}
 		}
 	}
 
@@ -305,6 +323,12 @@ public class PlayerFragment
 			showPlayPauseButtonAsPause();
 		} else {
 		}
+	}
+
+	@Override
+	public void enableSwitchControls(boolean next, boolean previous) {
+		this.skipNext.setVisibility(next ? View.VISIBLE : View.INVISIBLE);
+		this.skipPrevious.setVisibility(previous ? View.VISIBLE : View.INVISIBLE);
 	}
 
 	//endregion

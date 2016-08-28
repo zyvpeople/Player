@@ -11,9 +11,12 @@ import android.util.Log;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayback;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackServiceListener;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState;
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory;
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackListener;
+import com.develop.zuzik.multipleplayer.null_object.NullMultiplePlaybackServiceListener;
 import com.develop.zuzik.player.interfaces.Action;
 import com.develop.zuzik.player.interfaces.ParamAction;
 import com.develop.zuzik.player.interfaces.VideoViewSetter;
@@ -35,10 +38,12 @@ public class MultiplePlaybackService extends Service {
 	private static final int PENDING_INTENT_ID_STOP = 3;
 	private static final int PENDING_INTENT_ID_PLAY_NEXT = 4;
 	private static final int PENDING_INTENT_ID_PLAY_PREVIOUS = 5;
+	private static final int PENDING_INTENT_ID_DESTROY_SERVICE = 6;
 
 	private final IBinder binder = new MultiplePlaybackServiceBinder();
 	private Optional<MultiplePlayback> multiplePlayback = Optional.absent();
 	private MultiplePlaybackListener multiplePlaybackListener = NullMultiplePlaybackListener.getInstance();
+	private MultiplePlaybackServiceListener multiplePlaybackServiceListener = NullMultiplePlaybackServiceListener.INSTANCE;
 	private int notificationId;
 	private MultiplePlayerNotificationFactory multiplePlayerNotificationFactory;
 
@@ -59,10 +64,16 @@ public class MultiplePlaybackService extends Service {
 				MultiplePlaybackService.this.notificationId = bundle.notificationId;
 				MultiplePlaybackService.this.multiplePlayerNotificationFactory = bundle.multiplePlayerNotificationFactory;
 				if (MultiplePlaybackService.this.multiplePlayback.isPresent()) {
-					MultiplePlaybackService.this.multiplePlayback.get().setPlayerSources(playerSources);
+					MultiplePlaybackService.this.multiplePlayback.get().setPlayerSources(playerSources, bundle.releaseStrategy);
 				} else {
-					MultiplePlaybackService.this.initMultiplePlayback(multiplePlaybackFactory, playerSources);
+					MultiplePlaybackService.this.initMultiplePlayback(multiplePlaybackFactory, playerSources, bundle.releaseStrategy);
 				}
+			}
+		});
+		MultiplePlaybackServiceIntentFactory.parseForDestroy(intent, new Action() {
+			@Override
+			public void execute() {
+				multiplePlaybackServiceListener.onReceiveDestroyCommand();
 			}
 		});
 		MultiplePlaybackServiceIntentFactory.parsePlay(intent, new Action() {
@@ -200,13 +211,17 @@ public class MultiplePlaybackService extends Service {
 		return START_STICKY;
 	}
 
-	private void initMultiplePlayback(MultiplePlaybackFactory factory, List<PlayerSource> playerSources) {
+	private void initMultiplePlayback(MultiplePlaybackFactory factory, List<PlayerSource> playerSources, PlayerSourceReleaseStrategy releaseStrategy) {
 		this.multiplePlayback = Optional.of(factory.create(this));
 		this.multiplePlayback.get().setMultiplePlaybackListener(new MultiplePlaybackListener() {
 			@Override
 			public void onUpdate(MultiplePlaybackState multiplePlaybackState) {
 				multiplePlaybackListener.onUpdate(multiplePlaybackState);
-				showForegroundNotification(multiplePlaybackState);
+				if (multiplePlaybackState.currentPlaybackState.isPresent()) {
+					showForegroundNotification(multiplePlaybackState);
+				} else {
+					stopForeground(true);
+				}
 			}
 
 			@Override
@@ -214,7 +229,7 @@ public class MultiplePlaybackService extends Service {
 				multiplePlaybackListener.onError(throwable);
 			}
 		});
-		this.multiplePlayback.get().setPlayerSources(playerSources);
+		this.multiplePlayback.get().setPlayerSources(playerSources, releaseStrategy);
 	}
 
 	public Optional<MultiplePlaybackState> getMultiplePlaybackState() {
@@ -234,6 +249,10 @@ public class MultiplePlaybackService extends Service {
 
 	public void setMultiplePlaybackListener(MultiplePlaybackListener multiplePlaybackListener) {
 		this.multiplePlaybackListener = multiplePlaybackListener != null ? multiplePlaybackListener : NullMultiplePlaybackListener.getInstance();
+	}
+
+	public void setMultiplePlaybackServiceListener(MultiplePlaybackServiceListener listener) {
+		this.multiplePlaybackServiceListener = listener != null ? listener : NullMultiplePlaybackServiceListener.INSTANCE;
 	}
 
 	private void getMultiplePlayback(ParamAction<MultiplePlayback> success) {
@@ -257,15 +276,16 @@ public class MultiplePlaybackService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.d(getClass().getSimpleName(), "onDestroy");
-		setMultiplePlaybackListener(null);
 		getMultiplePlayback(new ParamAction<MultiplePlayback>() {
 			@Override
 			public void execute(MultiplePlayback multiplePlayback1) {
-				multiplePlayback1.clear();
+				multiplePlayback1.release();
 			}
 		});
 		this.multiplePlayback = Optional.absent();
 		stopForeground(true);
+		setMultiplePlaybackListener(null);
+		setMultiplePlaybackServiceListener(null);
 		super.onDestroy();
 	}
 
@@ -275,8 +295,20 @@ public class MultiplePlaybackService extends Service {
 		PendingIntent stopIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_STOP, MultiplePlaybackServiceIntentFactory.createStop(this), 0);
 		PendingIntent playNextIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY_NEXT, MultiplePlaybackServiceIntentFactory.createPlayNext(this), 0);
 		PendingIntent playPreviousIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_PLAY_PREVIOUS, MultiplePlaybackServiceIntentFactory.createPlayPrevious(this), 0);
+		PendingIntent destroyServiceIntent = PendingIntent.getService(getApplicationContext(), PENDING_INTENT_ID_DESTROY_SERVICE, MultiplePlaybackServiceIntentFactory.createForDestroy(this), 0);
 
-		startForeground(this.notificationId, this.multiplePlayerNotificationFactory.create(this, multiplePlaybackState, playIntent, pauseIntent, stopIntent, playNextIntent, playPreviousIntent));
+		startForeground(
+				this.notificationId,
+				this.multiplePlayerNotificationFactory
+						.create(
+								this,
+								multiplePlaybackState,
+								playIntent,
+								pauseIntent,
+								stopIntent,
+								playNextIntent,
+								playPreviousIntent,
+								destroyServiceIntent));
 	}
 
 	public final class MultiplePlaybackServiceBinder extends Binder {
