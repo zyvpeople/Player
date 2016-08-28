@@ -190,4 +190,25 @@ public interface MultiplePlayer {
 
 		void onVideoViewDestroyed();
 	}
+
+	interface HidingView<SourceInfo> {
+
+		void displayPlayerView();
+
+		void doNotDisplayPlayerView();
+
+	}
+
+	interface HidingPresenter<SourceInfo> {
+
+		void setView(HidingView<SourceInfo> view);
+
+		void onCreate();
+
+		void onDestroy();
+
+		void onAppear();
+
+		void onDisappear();
+	}
 }

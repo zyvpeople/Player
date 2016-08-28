@@ -22,6 +22,7 @@ import com.develop.zuzik.audioplayerexample.domain.ExamplePreviousControlAvailab
 import com.develop.zuzik.audioplayerexample.domain.Song;
 import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter;
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerHidingPresenter;
 import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.ClearSourcesMultiplePlayerPresenterDestroyStrategy;
 import com.develop.zuzik.player.source.RawResourcePlayerSource;
 import com.develop.zuzik.player.volume.Volume;
