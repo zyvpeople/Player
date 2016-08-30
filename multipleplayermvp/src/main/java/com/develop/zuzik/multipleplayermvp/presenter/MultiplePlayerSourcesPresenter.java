@@ -1,5 +1,6 @@
 package com.develop.zuzik.multipleplayermvp.presenter;
 
+import com.develop.zuzik.multipleplayer.interfaces.PlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy;
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer;
 import com.develop.zuzik.multipleplayermvp.null_object.NullMultiplePlayerSourcesView;
@@ -29,12 +30,12 @@ public class MultiplePlayerSourcesPresenter<SourceInfo> implements MultiplePlaye
 	private final ExceptionToMessageTransformation exceptionToMessageTransformation;
 
 	private final MultiplePlayerPresenterDestroyStrategy<SourceInfo> destroyStrategy;
-	private final DoNotReleaseIfExistsPlayerSourceReleaseStrategy<SourceInfo> releaseStrategy;
+	private final PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy;
 
 	public MultiplePlayerSourcesPresenter(
 			MultiplePlayer.Model<SourceInfo> model,
 			MultiplePlayerPresenterDestroyStrategy<SourceInfo> destroyStrategy,
-			DoNotReleaseIfExistsPlayerSourceReleaseStrategy<SourceInfo> releaseStrategy,
+			PlayerSourceReleaseStrategy<SourceInfo> releaseStrategy,
 			PlayerExceptionMessageProvider exceptionMessageProvider) {
 		this.model = model;
 		this.destroyStrategy = destroyStrategy;
