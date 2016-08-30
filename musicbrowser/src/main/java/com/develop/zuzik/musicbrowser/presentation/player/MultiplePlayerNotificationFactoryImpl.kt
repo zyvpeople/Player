@@ -9,8 +9,6 @@ import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackState
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory
 import com.develop.zuzik.musicbrowser.R
 import com.develop.zuzik.musicbrowser.domain.entity.Song
-import com.fernandocejas.arrow.functions.Function
-import java.io.Serializable
 
 /**
  * User: zuzik
@@ -24,13 +22,14 @@ class MultiplePlayerNotificationFactoryImpl : MultiplePlayerNotificationFactory<
             pauseIntent: PendingIntent,
             stopIntent: PendingIntent,
             playNextIntent: PendingIntent,
-            playPreviousIntent: PendingIntent): Notification {
+            playPreviousIntent: PendingIntent,
+            destroyServiceIntent: PendingIntent): Notification {
         val icon = BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher)
         return NotificationCompat
                 .Builder(context)
                 .setStyle(android.support.v7.app.NotificationCompat.MediaStyle())
                 .setContentTitle(playbackState.currentPlaybackState
-                        .transform(Function<com.develop.zuzik.player.interfaces.PlaybackState<com.develop.zuzik.musicbrowser.domain.entity.Song>, kotlin.String> { input -> input.playerSource.sourceInfo.author }).or("Player")).setContentText(playbackState.currentPlaybackState.transform { input -> input.playerSource.sourceInfo.name }.or("Player")).setTicker("Ticker").setSmallIcon(R.drawable.ic_stat_name)
+                        .transform({ input -> input.playerSource.sourceInfo.author }).or("Player")).setContentText(playbackState.currentPlaybackState.transform { input -> input.playerSource.sourceInfo.name }.or("Player")).setTicker("Ticker").setSmallIcon(R.drawable.ic_stat_name)
                 .setProgress(
                         playbackState.currentPlaybackState.transform { input -> input.maxTimeInMilliseconds.or(100) }.or(100),
                         playbackState.currentPlaybackState.transform { input -> input.currentTimeInMilliseconds }.or(0),

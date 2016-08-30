@@ -1,6 +1,5 @@
 package com.develop.zuzik.musicbrowser.domain.entity
 
-import android.net.Uri
 import java.io.Serializable
 
 /**
@@ -10,4 +9,4 @@ import java.io.Serializable
 data class Song(
         val author: String,
         val name: String,
-        val imageUri: String):Serializable
+        val imageUri: String) : Serializable

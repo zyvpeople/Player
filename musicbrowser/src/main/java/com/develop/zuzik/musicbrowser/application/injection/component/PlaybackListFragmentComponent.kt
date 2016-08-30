@@ -1,6 +1,5 @@
 package com.develop.zuzik.musicbrowser.application.injection.component
 
-import com.develop.zuzik.musicbrowser.application.injection.module.PlayerModule
 import com.develop.zuzik.musicbrowser.presentation.fragment.playback.PlaybackListFragment
 import dagger.Subcomponent
 import javax.inject.Singleton

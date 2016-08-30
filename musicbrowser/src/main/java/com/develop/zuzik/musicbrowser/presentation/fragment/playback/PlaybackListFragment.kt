@@ -21,14 +21,14 @@ import javax.inject.Inject
  * User: zuzik
  * Date: 8/21/16
  */
-class PlaybackListFragment : Fragment(), MultiplePlayer.View<Song> {
+class PlaybackListFragment : Fragment(), MultiplePlayer.SourcesView<Song> {
 
     companion object {
         fun create(): PlaybackListFragment = PlaybackListFragment()
     }
 
     @Inject
-    lateinit var presenter: MultiplePlayer.Presenter<Song>
+    lateinit var presenter: MultiplePlayer.SourcesPresenter<Song>
     @Inject
     lateinit var controlPresenter: MultiplePlayer.ControlPresenter<Song>
 

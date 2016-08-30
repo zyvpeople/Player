@@ -4,17 +4,16 @@ import android.content.Context
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlaybackFactory
 import com.develop.zuzik.multipleplayer.interfaces.MultiplePlayerNotificationFactory
 import com.develop.zuzik.multipleplayer.local.LocalMultiplePlaybackFactory
-import com.develop.zuzik.multipleplayer.player_source_strategy.EndedNextPlayerSourceStrategy
-import com.develop.zuzik.multipleplayer.player_source_strategy.EndedPreviousPlayerSourceStrategy
+import com.develop.zuzik.multipleplayer.player_source_release_strategy.DoNotReleaseIfExistsPlayerSourceReleaseStrategy
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlaybackSettings
 import com.develop.zuzik.multipleplayermvp.interfaces.MultiplePlayer
 import com.develop.zuzik.multipleplayermvp.model.MultiplePlayerServiceModel
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerActiveSourcePresenter
 import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerControlPresenter
-import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerPresenter
+import com.develop.zuzik.multipleplayermvp.presenter.MultiplePlayerSourcesPresenter
 import com.develop.zuzik.multipleplayermvp.presenter_destroy_strategy.DoNothingMultiplePlayerPresenterDestroyStrategy
 import com.develop.zuzik.musicbrowser.domain.entity.Song
-import com.develop.zuzik.musicbrowser.domain.player.OnCompletePlayerSourceStrategyFactory
+import com.develop.zuzik.musicbrowser.domain.player.*
 import com.develop.zuzik.musicbrowser.presentation.player.MultiplePlayerNotificationFactoryImpl
 import com.develop.zuzik.musicbrowser.presentation.player.PlayerExceptionMessageProviderImpl
 import com.develop.zuzik.player.interfaces.PlaybackFactory
@@ -52,9 +51,9 @@ class PlayerModule {
             playbackSettings: MultiplePlaybackSettings): MultiplePlaybackFactory<Song> =
             LocalMultiplePlaybackFactory(
                     playbackFactory,
-                    EndedNextPlayerSourceStrategy<Song>(),
-                    EndedPreviousPlayerSourceStrategy<Song>(),
-                    OnCompletePlayerSourceStrategyFactory<Song>(),
+                    NextPlayerSourceDetermineStrategyFactory<Song>(),
+                    PreviousPlayerSourceDetermineStrategyFactory<Song>(),
+                    OnCompletePlayerSourceDetermineStrategyFactory<Song>(),
                     playbackSettings.isRepeatSingle,
                     playbackSettings.isShuffle)
 
@@ -63,10 +62,11 @@ class PlayerModule {
     fun playbackFactory(): PlaybackFactory<Song> = LocalPlaybackFactory()
 
     @Provides
-    fun presenter(context: Context, model: MultiplePlayer.Model<Song>): MultiplePlayer.Presenter<Song> =
-            MultiplePlayerPresenter(
+    fun presenter(context: Context, model: MultiplePlayer.Model<Song>): MultiplePlayer.SourcesPresenter<Song> =
+            MultiplePlayerSourcesPresenter(
                     model,
                     DoNothingMultiplePlayerPresenterDestroyStrategy(),
+                    DoNotReleaseIfExistsPlayerSourceReleaseStrategy(),
                     PlayerExceptionMessageProviderImpl(context))
 
     @Singleton
@@ -75,7 +75,10 @@ class PlayerModule {
 
     @Provides
     fun controlPresenter(model: MultiplePlayer.Model<Song>): MultiplePlayer.ControlPresenter<Song> =
-            MultiplePlayerControlPresenter(model)
+            MultiplePlayerControlPresenter(
+                    model,
+                    NextControlAvailabilityStrategy(),
+                    PreviousControlAvailabilityStrategy())
 
     @Provides
     fun activeSourcePresenter(model: MultiplePlayer.Model<Song>): MultiplePlayer.ActiveSourcePresenter<Song> =

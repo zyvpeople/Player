@@ -2,7 +2,6 @@ package com.develop.zuzik.musicbrowser.presentation.view
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
